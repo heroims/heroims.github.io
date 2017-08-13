@@ -77,7 +77,7 @@ extern NSString * const AOPLoggerPositionType;//执行日志统计的类型Key
 
 @end
 ```
-
+<!-- more -->
 这里提供了两种方式一种直接读取自定义的Plist，一种就是调用类方法，而即使调用类方法，也是单独建一个类，某个模块的日志类负责记录，传入类名方法名统计信息即可，而plist得形式在初期还好，后期统计曾多可就真的太扯了毕竟要在初始化的时候加载遍历执行
 ![QQ20170306-012628.png](http://upload-images.jianshu.io/upload_images/3994053-46f6bef1c87511f6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 # 定制扩展

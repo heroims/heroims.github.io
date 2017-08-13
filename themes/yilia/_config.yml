@@ -17,7 +17,7 @@ subnav:
   #segmentfault: "#"
   #bilibili: "#"
   #acfun: "#"
-  mail: "heroims@163.com"
+  mail: "mailto:heroims@163.com"
   #facebook: "#"
   #google: "#"
   #twitter: "#"
@@ -33,13 +33,16 @@ root:
 # Content
 
 # 文章太长，截断按钮文字
-excerpt_link: more
+excerpt_link: 'more'
 # 文章卡片右下角常驻链接，不需要请设置为false
 show_all_link: '展开全文'
+
 # 数学公式
 mathjax: false
 # 是否在新窗口打开链接
 open_in_new: false
+
+fancybox: true
 
 # 打赏
 # 打赏type设定：0-关闭打赏； 1-文章对应的md文件里有reward:true属性，才有打赏； 2-所有文章均有打赏
@@ -113,5 +116,6 @@ smart_menu:
 
 friends:
   简书: http://www.jianshu.com/u/8ece68b113e5
+  无聊练手网页:  http://heroims.github.io/MyWeblog/
 
-aboutme: 现阶段很想进个bat<br><br>又能推荐的希望推荐下<br>谢谢大家
+aboutme: 现阶段很想进个bat<br><br>有能推荐的希望推荐下<br>谢谢大家

@@ -28,7 +28,7 @@ ps:郑重声明AOP 至少我现在还没发现IOS里怎么实现切面静态方�
 通用统计就是可以脱离业务完全抽离的部分，这部分其实可以设计部分业务承接，比如通用点击事件可以把点击的UI对象扩展出一个字典的属性值，如此对于通用统计来说只是看看有没有某个属性有的话就扔到统计里，和业务层没有关联，但后面带来的好处很大！这个最后说。
 #### App生命周期统计
 应用生命周期的统计随便建个类，监听下面的通知就ok了，当然这个类就不能销毁了，比较懒得做法直接AOPLogger 类扩展一下init里监听，因为我本身的类里连init方法都没重写。
-
+<!-- more -->
 UIApplicationDidFinishLaunchingNotification （通知名称） --->   application:didFinishLaunchingWithOptions:(委托方法）：在应用程序启动后直接进行应用程序级编码的主要方式。
 
 UIApplicationWillResignActiveNotification(通知名称）--->applicationWillResignActive:（委托方法）：用户按下主屏幕按钮调用 ，不要在此方法中假设将进入后台状态，只是一种临时变化，最终将恢复到活动状态

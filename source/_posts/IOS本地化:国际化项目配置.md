@@ -20,6 +20,7 @@ xib，storyboard和image也是一个套路看划线那点击就ok了
 # 百行代码全局Hook完成本地化
 废话不多说先放代码在解释
 https://github.com/heroims/LocalizedEngine
+<!-- more -->
 ```Objective-C
 #import "LocalizedEngine.h"
 #import <objc/runtime.h>
