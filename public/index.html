@@ -141,6 +141,314 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-IOS 切面统计事件解耦" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/02/IOS 切面统计事件解耦/">IOS 切面统计事件解耦</a>
+    </h1>
+  
+
+        
+        <a href="/2017/08/02/IOS 切面统计事件解耦/" class="archive-article-date">
+  	<time datetime="2017-08-01T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>统计这个事情可以说是个巨无语的系统，当然不把他独立出来也就不是什么问题了，只是一堆牛皮癣似得代码穿插在项目各个地方，毕竟真正应用到一个app里的统计都跟业务有着很强的绑定关系，脱离业务的统计数据基本没什么大用，先吐槽一波再开始正文。。。。<br><img src="http://upload-images.jianshu.io/upload_images/3994053-18807a49c709e49a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="DingTalk20170802140347.png"></p>
+<h1 id="基础封装"><a href="#基础封装" class="headerlink" title="基础封装"></a>基础封装</h1><p>先从用第三方的来说，基本上就只是需要包个壳就ok了，建个manager，初始化sdk一封装，加几个常用统计方法基本ok。常见的方法就是传个event名再加个properties传扩展字典，用户登录状态绑定注销，通用字段增删改，基本上这就满足了大部分需求。。。</p>
+<p>如果是纯自己手写，上面说的壳放着，剩下的仿照sdk来，基本功能要实现异步队列记录往本地写数据，定期上传，处理好读写关系是关键，这里不多说不是这篇重点。</p>
+<p>ps:有个壳才敢放开手折腾优化</p>
+<h4 id="切面封装"><a href="#切面封装" class="headerlink" title="切面封装"></a>切面封装</h4><p>切面统计其实可以看我之前的<a href="http://www.jianshu.com/p/a9219e618ca2" target="_blank" rel="external">IOS 百行代码切面日志</a>，整个完成的就是切面的封装，看过的基本应该了解这套逻辑切面的时候不关心切面方法的参数的话会非常好用。<br>如果业务关联强的情况，虽然也能处理但要针对那些业务作出对应的逻辑，导致切面封装里夹杂很多特殊逻辑,下面的方法内部要对originAOP拆分取所有参，甚至要复制部分业务层逻辑过来最后完成一个统计。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">-(void)al_logger:(id)log originAOP:(id)originAOP</div></pre></td></tr></table></figure></p>
+<p>所以我个人建议这里就封装些简单的少参甚至无参的统计，然后基本上简单的通用统计和业务统计建个类或者plist，列一下要切面的类和方法就完成了。</p>
+<p>凡事都有特例，如果本身方法内多个参数完成一次统计就不多，那我之前的百行系列就已经足够你解耦了。</p>
+<p>ps:郑重声明AOP 至少我现在还没发现IOS里怎么实现切面静态方法（类方法）</p>
+<h1 id="通用统计"><a href="#通用统计" class="headerlink" title="通用统计"></a>通用统计</h1><p>通用统计就是可以脱离业务完全抽离的部分，这部分其实可以设计部分业务承接，比如通用点击事件可以把点击的UI对象扩展出一个字典的属性值，如此对于通用统计来说只是看看有没有某个属性有的话就扔到统计里，和业务层没有关联，但后面带来的好处很大！这个最后说。</p>
+<h4 id="App生命周期统计"><a href="#App生命周期统计" class="headerlink" title="App生命周期统计"></a>App生命周期统计</h4><p>应用生命周期的统计随便建个类，监听下面的通知就ok了，当然这个类就不能销毁了，比较懒得做法直接AOPLogger 类扩展一下init里监听，因为我本身的类里连init方法都没重写。</p>
+<p>UIApplicationDidFinishLaunchingNotification （通知名称） —&gt;   application:didFinishLaunchingWithOptions:(委托方法）：在应用程序启动后直接进行应用程序级编码的主要方式。</p>
+<p>UIApplicationWillResignActiveNotification(通知名称）—&gt;applicationWillResignActive:（委托方法）：用户按下主屏幕按钮调用 ，不要在此方法中假设将进入后台状态，只是一种临时变化，最终将恢复到活动状态</p>
+<p>UIApplicationDidBecomActiveNotification（通知名称） —-&gt;applicationDidBecomeActive:(委托方法）：应用程序按下主屏幕按钮后想要将应用程序切换到前台时调用，应用程序启动时也会调用，可以在其中添加一些应用程序初始化代码</p>
+<p>UIApplicationDidEnterBackgroundNotification(通知名称）—–&gt;applicationDidEnterBackground:（委托方法）：应用程序在此方法中释放所有可在以后重新创建的资源，保存所有用户数据，关闭网络连接等。如果需要，也可以在这里请求在后台运行更长时间。如果在这里花费了太长时间（超过5秒），系统将断定应用程序的行为异常并终止他。</p>
+<p>UIApplicationWillEnterForegroundNotification(通知名称） —-&gt;applicationWillEnterForeground:(委托方法):当应用程序在applicationDidEnterBackground:花费了太长时间，终止后，应该实现此方法来重新创建在applicationDidEnterBackground中销毁的内容，比如重新加载用户数据、重新建立网络连接等。</p>
+<p>UIApplicationWllTerminateNotification（通知名称） —-&gt; applicationWillTerminate:(委托方法):现在很少使用，只有在应用程序已进入后台，并且系统出于某种原因决定跳过暂停状态并终止应用程序时，才会真正调用它。</p>
+<h4 id="点击事件（不包括手势）"><a href="#点击事件（不包括手势）" class="headerlink" title="点击事件（不包括手势）"></a>点击事件（不包括手势）</h4><p>这里点击事件切面分为3类<br>1.UIControl的addTarget触发，UIButton都会走UIApplication里的这方法，但需要忽略一部分，不然会和第二个部分重叠，而且手势addTarget不走，不过手势不走正好可以区分手势<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">-(void)sendAction:(SEL)action to:(id)target from:(id)sender forEvent:(UIEvent *)event;</div></pre></td></tr></table></figure></p>
+<p>2.设置delegate委托式系统点击触发，这里直接切了UICollectionView，UITableView，UITabBarController，UITabBar，UIAlertView，UIActionSheet这几个setDelegate方法，然后加标识判断切委托方法，用Aspects库的方法swizzing因为他不允许重复swizzing算双保险。</p>
+<p>3.UIAlertAction切block属性的set方法，每次setBlock的时候替换成我自己的block，在我的block内执行设置的block。</p>
+<p>下面就是协议，用pod的话AOPLogger/AOPClick就有了，用的时候类扩展一下AOPLogger遵守协议实现对应方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">@protocol AOPLoggerClickProtocol &lt;NSObject&gt;</div><div class="line"></div><div class="line">@optional</div><div class="line">- (void)alcp_sendAction:(SEL)action to:(id)target from:(id)sender forEvent:(UIEvent *)event;</div><div class="line">- (void)alcp_customIgnore_sendAction:(SEL)action to:(id)target from:(id)sender forEvent:(UIEvent *)event;</div><div class="line">- (void)alcp_collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath from:(id)sender;</div><div class="line">- (void)alcp_tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath from:(id)sender;</div><div class="line">- (void)alcp_tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController from:(id)sender;</div><div class="line">- (void)alcp_tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item from:(id)sender;</div><div class="line">- (void)alcp_alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex from:(id)sender;</div><div class="line">- (void)alcp_actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex from:(id)sender;</div><div class="line">- (void)alcp_alertControllerAction:(UIAlertAction *)action from:(id)sender;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure></p>
+<p>ps:覆盖可能不全，漏了什么欢迎git提pull request</p>
+<h4 id="手势统计"><a href="#手势统计" class="headerlink" title="手势统计"></a>手势统计</h4><p>这个是切了UIView的addGestureRecognizer方法，每次添加手势的时候我多加个自己AOPLogger的taget-action到gestureRecognizer对象上，这样手势统计就搞定了。<br>如果要用这个统计点击和长按，判断一下状态是结束的时候统计gestureRecognizer类型是UITapGestureRecognizer,UILongPressGestureRecognizer就行，其实手势的统计或许都在结束的时候统计区分下类型就够了吧！<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">@protocol AOPLoggerGestureRecognizerProtocol &lt;NSObject&gt;</div><div class="line"></div><div class="line">@optional</div><div class="line">-(void)algrp_handleGesture:(UIGestureRecognizer*)gestureRecognizer;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure></p>
+<h4 id="页面统计"><a href="#页面统计" class="headerlink" title="页面统计"></a>页面统计</h4><p>这个太寻常了，感觉没什么好说，使用方法如上，之所以还提供个pod的AOPLogger/AOPPageView,主要是如果要统计浏览时长逻辑，自己方便实现（如显示的时候runtime随便塞个date进去，消失的时候算一下上报），还有我默认预先忽略了部分页面,省了自己写。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">@protocol AOPLoggerPageViewProtocol &lt;NSObject&gt;</div><div class="line"></div><div class="line">@optional</div><div class="line">-(BOOL)alpvp_viewIgnore:(id)sender;</div><div class="line">-(void)alpvp_viewDidAppear:(BOOL)animated sender:(id)sender;</div><div class="line">-(void)alpvp_viewDidDisappear:(BOOL)animated sender:(id)sender;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure></p>
+<h1 id="业务统计"><a href="#业务统计" class="headerlink" title="业务统计"></a>业务统计</h1><p>业务统计首先放的位置要保证在对应业务线的目录里，毕竟跟业务关联密切，大的业务逻辑调整的时候看一下放业务统计目录下对应的地方需不需要修改。</p>
+<h4 id="无参数方法统计"><a href="#无参数方法统计" class="headerlink" title="无参数方法统计"></a>无参数方法统计</h4><p>这一类就是需要写在业务层里但统计的时候只记录一个Event名，比如有个方法-(void)abc:(id)a b:(id)b c:(id)c;我只是记录他被调用，这种直接AOPLogger调用下[AOPLogger AOPLoggerWithClassString:classString methodString:@”abc:b:c” log:@”abc”]或扔plist里默认直接解决。</p>
+<h4 id="方法内逻辑处理统计"><a href="#方法内逻辑处理统计" class="headerlink" title="方法内逻辑处理统计"></a>方法内逻辑处理统计</h4><p>这个就有点厉害了，比如下订单的时候我买了一堆东西里面带着各种商品属性，要你把某种属性的商品做统计，只是举例…这时候直接写这个类的类扩展load方法里切面然后写逻辑处理统计，这里不建议用Aspects库，底层保证切一个类的一个方法一次是好用的，可业务层各种奇葩逻辑都会有，想解耦经常用奇招所以最好允许多次切面，dispatch_once保证自己的逻辑需要的切一次就可以了，可以用我简单封装的方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">@interface NSObject (AOPLogger)</div><div class="line"></div><div class="line">+(void)al_hookOrAddWithOriginSeletor:(SEL)originalSelector swizzledSelector:(SEL)swizzledSelector error:(NSError**)error;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure></p>
+<h4 id="前后逻辑关联统计"><a href="#前后逻辑关联统计" class="headerlink" title="前后逻辑关联统计"></a>前后逻辑关联统计</h4><p>这个可以结合点击来讲，比上面还要让人头疼，类似统计我查看一个东西，要记录我在哪点击的查看以及当前页面的数据属性，还有从哪来到当前页面的，要查看东西的id。这个时候就需要结合通用统计来搞了，我们在最底层可以做的是把本身点击的UI对象的默认字典属性和最上层页面的默认字典属性以及点击对象target上层UI对象的默认字典属性做统计，最上层的激活页面这个是可以在任何地方搞出来的，回头我可以把类扩展放上来，在任何页面都可以拿到当前页面，前一个页面以及页面属于第几层。底层在响应默认点击事件之前处理我们的统计逻辑，接下来就是怎么把属性赋值，这个时候就需要我们去切面当前页面里做model赋值的方法然后同时把想要统计的属性赋值到当前页面的默认字典属性里，如果这是cell上的button那么赋值cell的时候就可以切面。</p>
+<p>总的来说就是寻找UI对象赋值点，然后切面为UI对象添加统计属性，我们runtime加到所有UI对象上隐藏的默认字典属性字段专门承接关联信息，底层只做读取整合，业务层切面赋值。</p>
+<p>这个时候就会发现数据对象与UI对象绑定协议的制定会直接决定实现的复杂度。</p>
+<h4 id="后序"><a href="#后序" class="headerlink" title="后序"></a>后序</h4><p>业务层的统计我个人认为原则上尽量后端做这个事，毕竟要保证统计数据的正确性，其实减少前端统计很重要，毕竟现在web（pc网页），wap（手机网页），小程序，安卓，ios一牵扯业务逻辑统计非常需要统一校准，不然数据绝对超乎你的想象。</p>
+<h1 id="归纳统计解耦思路"><a href="#归纳统计解耦思路" class="headerlink" title="归纳统计解耦思路"></a>归纳统计解耦思路</h1><p>统计放到其他端其实解耦思路也是大致相同。。。下面总结：<br>1.找底层触发的事件点<br>2.业务层找赋值点<br>3.使用AOP的思路对上面的地方进行插入我们的统计逻辑</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/08/02/IOS 切面统计事件解耦/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-IOS 百行代码切面日志" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/22/IOS 百行代码切面日志/">IOS 百行代码切面日志</a>
+    </h1>
+  
+
+        
+        <a href="/2017/03/22/IOS 百行代码切面日志/" class="archive-article-date">
+  	<time datetime="2017-03-21T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="AOPLogger"><a href="#AOPLogger" class="headerlink" title="AOPLogger"></a>AOPLogger</h1><h3 id="切面日志作用"><a href="#切面日志作用" class="headerlink" title="切面日志作用"></a>切面日志作用</h3><p>说到日志，切面的实现最大的好处也就是分离出来，单独开发，包括埋点，记录输出log都可以在不影响项目内逻辑的情况下完成，形成完全的一个独立模块。</p>
+<h4 id="这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。"><a href="#这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。" class="headerlink" title="这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。"></a>这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。</h4><p>在实现上用了Aspects这个库，主要就是hook方法，用它主要是对一些例外情况处理不错，自己写简单实现其实就只写写方法交换剩下的就不管了。。。</p>
+<p>下面说一下.h<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line">#import &lt;Foundation/Foundation.h&gt;</div><div class="line"></div><div class="line">extern NSString * const AOPLoggerMethod;//要统计的日志方法Key</div><div class="line">extern NSString * const AOPLoggerLogInfo;//要统计的日志信息Key</div><div class="line">extern NSString * const AOPLoggerPositionAfter;//方法执行后统计日志</div><div class="line">extern NSString * const AOPLoggerPositionBefore;//方法执行前统计日志</div><div class="line">extern NSString * const AOPLoggerPositionType;//执行日志统计的类型Key</div><div class="line"></div><div class="line">@protocol AOPLoggerGetConfigInfoProtocol &lt;NSObject&gt;</div><div class="line"></div><div class="line">@required</div><div class="line"></div><div class="line">/**</div><div class="line">创建类扩展如果使用此协议必须实现此方法</div><div class="line">此方法返回统计的配置信息，可以从网络取也可以从本地取</div><div class="line">@return 统计配置字典</div><div class="line">*/</div><div class="line">-(NSDictionary*)al_getConfigInfo;</div><div class="line"></div><div class="line">@end</div><div class="line">@protocol AOPLoggerBLLProtocol &lt;NSObject&gt;</div><div class="line"></div><div class="line">@required</div><div class="line"></div><div class="line">/**</div><div class="line">创建类扩展如果使用此协议必须实现此方法</div><div class="line">此方法主要来处理切面方法后的log信息处理可以存本地也可以使用其他任意第三方输出</div><div class="line">@param log 配置文件里定义的AOPLoggerLogInfo信息</div><div class="line">@param originAOP AspectInfo的方法信息，第三方库Aspect返回的切面方法的所有信息</div><div class="line">*/</div><div class="line">-(void)al_logger:(id)log originAOP:(id)originAOP;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@interface AOPLogger : NSObject</div><div class="line"></div><div class="line"></div><div class="line">/**</div><div class="line">开始读取日志Plist配置文件</div><div class="line">*/</div><div class="line">+(void)startAOPLoggerWithPlist;</div><div class="line"></div><div class="line">/**</div><div class="line">统计日志的调用方法</div><div class="line">（如果不想增加开机时间可以采取每个模块创建一个日志统计类适时调用，在该类里提供一个初始化方法，内部调用此即可）</div><div class="line">@param classString 类名</div><div class="line">@param methodString 方法名</div><div class="line">@param log 相当于AOPLoggerLogInfo信息</div><div class="line">*/</div><div class="line">+(void)AOPLoggerWithClassString:(NSString*)classString methodString:(NSString*)methodString log:(id)log;</div><div class="line"></div><div class="line">/**</div><div class="line">统计日志的调用方法</div><div class="line">（如果不想增加开机时间可以采取每个模块创建一个日志统计类适时调用，在该类里提供一个初始化方法，内部调用此即可）</div><div class="line">@param classString 类名</div><div class="line">@param methodString 方法名</div><div class="line">@param log 相当于AOPLoggerLogInfo信息</div><div class="line">@param logPosition 日志统计时位置，可放在方法运行前或运行后（默认运行后执行日志统计）</div><div class="line">*/</div><div class="line">+(void)AOPLoggerWithClassString:(NSString *)classString methodString:(NSString *)methodString log:(id)log logPosition:(NSString*)logPosition;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure></p>
+<p>这里提供了两种方式一种直接读取自定义的Plist，一种就是调用类方法，而即使调用类方法，也是单独建一个类，某个模块的日志类负责记录，传入类名方法名统计信息即可，而plist得形式在初期还好，后期统计曾多可就真的太扯了毕竟要在初始化的时候加载遍历执行<br><img src="http://upload-images.jianshu.io/upload_images/3994053-46f6bef1c87511f6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="QQ20170306-012628.png"></p>
+<h1 id="定制扩展"><a href="#定制扩展" class="headerlink" title="定制扩展"></a>定制扩展</h1><p>由于每个项目想要做的事情或逻辑都会有不同，这里就可以根据我的协议实现对应的方法，来完成自己的业务需求<br>如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">import &quot;AOPLogger+Custom.h&quot;</div><div class="line">#import &quot;Aspects.h&quot;</div><div class="line">#import &lt;objc/runtime.h&gt;</div><div class="line"></div><div class="line">@implementation AOPLogger (Custom)</div><div class="line"></div><div class="line">-(void)al_logger:(id)log originAOP:(id)originAOP&#123;</div><div class="line">if ([log isKindOfClass:[NSString class]]) &#123;</div><div class="line">NSLog(@&quot;event:%@&quot;,log);</div><div class="line">&#125;</div><div class="line">if ([log isKindOfClass:[NSDictionary class]]) &#123;</div><div class="line">NSLog(@&quot;eventName:%@\neventLabel:%@\neventTime:%@&quot;,log[@&quot;EventName&quot;],log[@&quot;EventLabel&quot;],[log[@&quot;EventTime&quot;] boolValue]?[NSDate date]:@&quot;不用获取&quot;);</div><div class="line">&#125;</div><div class="line">if (originAOP&amp;&amp;[originAOP conformsToProtocol:objc_getProtocol(&quot;AspectInfo&quot;)]) &#123;</div><div class="line">id&lt;AspectInfo&gt; aspectInfo=originAOP;</div><div class="line">NSLog(@&quot;originClass:%@\noriginSel:%@&quot;,NSStringFromClass([aspectInfo.originalInvocation.target class]),NSStringFromSelector(aspectInfo.originalInvocation.selector));</div><div class="line"></div><div class="line">for (NSInteger i=0; i&lt;aspectInfo.arguments.count; i++) &#123;</div><div class="line">NSLog(@&quot;argument:%@&quot;,aspectInfo.arguments[i]);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure></p>
+<p>这里只是做了简单的NSLog操作，而当某个业务模块下需要不同处理的时候，不妨就直接hook这个方法添加逻辑，用法完全靠个人想像吧，其实用起来经常能处理很多神奇的逻辑，里面的originAOP如果用过Aspects这个库的话可能会很快明白为什么要选这个库不是自己写了，因为它的这块封装可以让我拿到对应方法执行完后返回的值，当然你得指定这个log是在原方法执行完成后执行，同理如果放在执行前执行log我们通过这个对象还可以拿到方法传递的参数。</p>
+<p>再看.m的源码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div></pre></td><td class="code"><pre><div class="line">#import &quot;AOPLogger.h&quot;</div><div class="line">#import &quot;Aspects.h&quot;</div><div class="line">#import &lt;objc/runtime.h&gt;</div><div class="line"></div><div class="line">NSString * const AOPLoggerMethod=@&quot;AOPLoggerMethod&quot;;</div><div class="line">NSString * const AOPLoggerLogInfo=@&quot;AOPLoggerLogInfo&quot;;</div><div class="line">NSString * const AOPLoggerPositionAfter=@&quot;AOPLoggerPositionAfter&quot;;</div><div class="line">NSString * const AOPLoggerPositionBefore=@&quot;AOPLoggerPositionBefore&quot;;</div><div class="line">NSString * const AOPLoggerPositionType=@&quot;AOPLoggerPositionType&quot;;</div><div class="line"></div><div class="line">@implementation AOPLogger</div><div class="line"></div><div class="line">+ (AOPLogger *)sharedAOPLogger &#123;</div><div class="line">static AOPLogger *sharedAOPLogger = nil;</div><div class="line">static dispatch_once_t onceToken;</div><div class="line">dispatch_once(&amp;onceToken, ^&#123;</div><div class="line">sharedAOPLogger = [[self alloc] init];</div><div class="line">&#125;);</div><div class="line">return sharedAOPLogger;</div><div class="line">&#125;</div><div class="line"></div><div class="line">+(void)startAOPLoggerWithPlist&#123;</div><div class="line">NSDictionary *loggerConfigInfo=nil;</div><div class="line">if ([[AOPLogger sharedAOPLogger] conformsToProtocol:objc_getProtocol(&quot;AOPLoggerGetConfigInfoProtocol&quot;)]) &#123;</div><div class="line">loggerConfigInfo=[(AOPLogger&lt;AOPLoggerGetConfigInfoProtocol&gt;*)[AOPLogger sharedAOPLogger] al_getConfigInfo];</div><div class="line">&#125;</div><div class="line">else&#123;</div><div class="line">loggerConfigInfo=[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@&quot;AOPLoggerConfig&quot; ofType:@&quot;plist&quot;]];</div><div class="line">&#125;</div><div class="line"></div><div class="line">for (NSString *className in loggerConfigInfo) &#123;</div><div class="line">for (NSDictionary *eventInfo in loggerConfigInfo[className]) &#123;</div><div class="line">Class clazz = NSClassFromString(className);</div><div class="line">SEL selector = NSSelectorFromString(eventInfo[AOPLoggerMethod]);</div><div class="line">AspectOptions positionOptions=AspectPositionAfter;</div><div class="line">if ([loggerConfigInfo[AOPLoggerPositionType] isEqualToString:AOPLoggerPositionAfter]) &#123;</div><div class="line">positionOptions=AspectPositionAfter;</div><div class="line">&#125;</div><div class="line">if ([loggerConfigInfo[AOPLoggerPositionType] isEqualToString:AOPLoggerPositionBefore]) &#123;</div><div class="line">positionOptions=AspectPositionBefore;</div><div class="line">&#125;</div><div class="line"></div><div class="line">[clazz aspect_hookSelector:selector</div><div class="line">withOptions:AspectPositionAfter</div><div class="line">usingBlock:^(id&lt;AspectInfo&gt; aspectInfo) &#123;</div><div class="line">id log=eventInfo[AOPLoggerLogInfo];</div><div class="line"></div><div class="line">if ([[AOPLogger sharedAOPLogger] conformsToProtocol:objc_getProtocol(&quot;AOPLoggerBLLProtocol&quot;)]) &#123;</div><div class="line">[(AOPLogger&lt;AOPLoggerBLLProtocol&gt;*)[AOPLogger sharedAOPLogger] al_logger:log originAOP:aspectInfo];</div><div class="line">&#125;</div><div class="line">else&#123;</div><div class="line">if ([log isKindOfClass:[NSString class]]) &#123;</div><div class="line">NSLog(@&quot;AOPLogger:%@&quot;,log);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">&#125; error:NULL];</div><div class="line"></div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">+(void)AOPLoggerWithClassString:(NSString *)classString methodString:(NSString *)methodString log:(id)log&#123;</div><div class="line">[self AOPLoggerWithClassString:classString methodString:methodString log:log logPosition:nil];</div><div class="line">&#125;</div><div class="line"></div><div class="line">+(void)AOPLoggerWithClassString:(NSString *)classString methodString:(NSString *)methodString log:(id)log logPosition:(NSString*)logPosition&#123;</div><div class="line">Class clazz = NSClassFromString(classString);</div><div class="line">SEL selector = NSSelectorFromString(methodString);</div><div class="line">AspectOptions positionOptions=AspectPositionAfter;</div><div class="line">if ([logPosition isEqualToString:AOPLoggerPositionAfter]) &#123;</div><div class="line">positionOptions=AspectPositionAfter;</div><div class="line">&#125;</div><div class="line">if ([logPosition isEqualToString:AOPLoggerPositionBefore]) &#123;</div><div class="line">positionOptions=AspectPositionBefore;</div><div class="line">&#125;</div><div class="line"></div><div class="line">[clazz aspect_hookSelector:selector</div><div class="line">withOptions:positionOptions</div><div class="line">usingBlock:^(id&lt;AspectInfo&gt; aspectInfo) &#123;</div><div class="line">if ([[AOPLogger sharedAOPLogger] conformsToProtocol:objc_getProtocol(&quot;AOPLoggerBLLProtocol&quot;)]) &#123;</div><div class="line">[(AOPLogger&lt;AOPLoggerBLLProtocol&gt;*)[AOPLogger sharedAOPLogger] al_logger:log originAOP:aspectInfo];</div><div class="line">&#125;</div><div class="line">else&#123;</div><div class="line">if ([log isKindOfClass:[NSString class]]) &#123;</div><div class="line">NSLog(@&quot;AOPLogger:%@&quot;,log);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">&#125; error:NULL];</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>核心处理.m直接不到百行，主要逻辑就是 单例初始化， 读取plist并格式化出执行的类 ·方法·log信息，最后就是利用AOP,切面hook对应方法插入我们统计逻辑。</p>
+<p>有了这个库完全可以日志动态话统计，前提你要做好热更新或使用plist形式。</p>
+<p>源码地址：<a href="https://github.com/heroims/AOPLogger" target="_blank" rel="external">https://github.com/heroims/AOPLogger</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/22/IOS 百行代码切面日志/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-IOS 网络服务层自动化详解" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/02/IOS 网络服务层自动化详解/">IOS 网络服务层自动化详解</a>
+    </h1>
+  
+
+        
+        <a href="/2017/03/02/IOS 网络服务层自动化详解/" class="archive-article-date">
+  	<time datetime="2017-03-01T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>之前的文章<a href="http://www.jianshu.com/p/7a3a387584c6" target="_blank" rel="external">http://www.jianshu.com/p/7a3a387584c6</a> 最后提到了网络服务层自动化，今天在详细说说。之前封装了ServerAPI，这套框架本身其实相当于定义了一套规范的。<br>自动化的概念还是放最后，先讲清楚这框架，到了后面自动化概念自然而然就出来了。</p>
+<p>#ServerAPI 分析与网络服务层构建<br>框架本身构成主要有4部分</p>
+<h3 id="ServerAPI"><a href="#ServerAPI" class="headerlink" title="ServerAPI"></a>ServerAPI</h3><p>主要对后台的API接口做对应描述，相当于网络请求的配置文件Model，定义了请求地址，重试次数，超时时间，返回数据类型，解析数据类型，上传方式等等，，除了常用描述还封装了常用方法算是个标准的胖Model<br>常用方法例如，请求地址这里也是拆分成host ，path ，pathParameter，parameter，内部封装了组合逻辑，下面4个属性<br>host：<a href="http://xxxx/" target="_blank" rel="external">http://xxxx/</a><br>path：module/{xxxmudleID}<br>pathParameter：xxxmudleID:xxxx<br>parameter：key:value<br>可以拼成<a href="http://xxxx/module/xxxmudleID?key=value" target="_blank" rel="external">http://xxxx/module/xxxmudleID?key=value</a> 这个url，还有自动为每一次请求生成唯一ID，对请求打Tag方便归类，包括发起请求这也提供了方法，不过实现当然不在这，毕竟他只负责描述</p>
+<h3 id="ServerAPIManager"><a href="#ServerAPIManager" class="headerlink" title="ServerAPIManager"></a>ServerAPIManager</h3><p>主要负责管理请求和根据api发起请求，框架内他只是一个管理者逻辑，对发起的请求做归类管理，而发起请求包括缓存逻辑这里通过Category来实现，而具体要实现哪些，由最后面的协议类定义，这样框架本身不去对网络层实现，缓存层实现做干涉，方便更自由的定制化，例如网络层AFN，ASI，还是其他语言都跟框架本身无关，所以这里框架本身只是一个壳，移植性较高，同样的思想拿到其他平台依然适用</p>
+<h3 id="ServerResult"><a href="#ServerResult" class="headerlink" title="ServerResult"></a>ServerResult</h3><p>主要把返回的数据用通用型实体表示，包括发起的api，发起请求的request对象，返回的源数据，返回的格式化数据，返回的错误，状态等，由于牵扯到数据格式化，所以这里依然是通过Category实现对应方法，方便扩展</p>
+<p>ps：不支持扩展的语言，继承也可以</p>
+<h3 id="ServerAPIProtocol"><a href="#ServerAPIProtocol" class="headerlink" title="ServerAPIProtocol"></a>ServerAPIProtocol</h3><p>主要负责定义要在Category里实现的方法，这里我直接放源码，注释还算全，关键内容不多，这就是描述要实现哪些才能让框架跑起来，具体方法放那里具体怎么用每个人有每个人不同的想法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div></pre></td><td class="code"><pre><div class="line">//通过Category对ServerAPI实现对应的协议</div><div class="line"></div><div class="line">@class ServerAPI;</div><div class="line"></div><div class="line">typedef void  (^sap_requestFailHandle)(ServerResult *result, NSError* errInfo);</div><div class="line">typedef void  (^sap_requestSuccessHandle)(ServerResult *result);</div><div class="line"></div><div class="line">#pragma mark - 必须实现的协议</div><div class="line">@protocol ServerAPIManagerRequestProtocol &lt;NSObject&gt;</div><div class="line"></div><div class="line">@required</div><div class="line"></div><div class="line">/**</div><div class="line">发起请求逻辑实现 方便用AFN，ASI或自己写</div><div class="line">@param api 请求描述的ServerAPI</div><div class="line">@param completion 请求回调</div><div class="line">@param progressHandle 请求进度</div><div class="line">*/</div><div class="line">-(void)requestDataWithAPI:(ServerAPI*)api completion:(sap_requestCompletion)completion progressHandle:(sap_progressHandle)progressHandle;</div><div class="line"></div><div class="line">/**</div><div class="line">取消一个请求</div><div class="line">@param api 请求描述的ServerAPI</div><div class="line">*/</div><div class="line">-(void)cancelRequestWithAPI:(ServerAPI*)api;</div><div class="line"></div><div class="line">@optional</div><div class="line"></div><div class="line">/**</div><div class="line">发起请求逻辑实现 方便用AFN，ASI或自己写</div><div class="line">@param api 请求描述的ServerAPI</div><div class="line">@param successHandle 请求成功回调</div><div class="line">@param failHandle 请求失败回调</div><div class="line">@param progressHandle 请求进度</div><div class="line">*/</div><div class="line">-(void)requestDataWithAPI:(ServerAPI*)api successHandle:(sap_requestSuccessHandle)successHandle failHandle:(sap_requestFailHandle)failHandle progressHandle:(sap_progressHandle)progressHandle;</div><div class="line"></div><div class="line"></div><div class="line">/**</div><div class="line">根据requestID取消一个请求</div><div class="line">@param requestID 请求唯一ID</div><div class="line">*/</div><div class="line">-(void)cancelRequestWithRequestID:(NSString*)requestID;</div><div class="line"></div><div class="line">/**</div><div class="line">根据requestsTag取消某一类表示的请求</div><div class="line">@param requestsTag 请求分类标识</div><div class="line">*/</div><div class="line">-(void)cancelRequestWithRequestsTag:(NSString*)requestsTag;</div><div class="line"></div><div class="line">/**</div><div class="line">根据requestID数组取消相关请求</div><div class="line">@param requestList requestID的数组</div><div class="line">*/</div><div class="line">-(void)cancelRequestWithRequestIDList:(NSArray*)requestList;</div><div class="line"></div><div class="line">/**</div><div class="line">根据ServerAPI数组取消相关请求</div><div class="line">@param requestList ServerAPI的数组</div><div class="line">*/</div><div class="line">-(void)cancelRequestWithAPIList:(NSArray*)requestList;</div><div class="line"></div><div class="line">/**</div><div class="line">取消最后一个请求</div><div class="line">*/</div><div class="line">-(void)cancelLastRequest;</div><div class="line"></div><div class="line">/**</div><div class="line">取消第一个请求</div><div class="line">*/</div><div class="line">-(void)cancelFirstRequest;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@protocol ServerAPIResponseProtocol &lt;NSObject&gt;</div><div class="line"></div><div class="line">@required</div><div class="line"></div><div class="line">/**</div><div class="line">请求结束时间   最好设置时放到responseFormatWithData方法内</div><div class="line">@return 请求结束时间</div><div class="line">*/</div><div class="line">-(NSDate *)endDate;</div><div class="line"></div><div class="line">/**</div><div class="line">数据格式化处理</div><div class="line">@param data 数据源</div><div class="line">@param error 错误源</div><div class="line">@param completion 请求回调</div><div class="line">@param cacheData 缓存数据</div><div class="line">*/</div><div class="line">-(void)responseFormatWithData:(id)data error:(NSError*)error completion:(sap_requestCompletion)completion cacheData:(id)cacheData;</div><div class="line">@optional</div><div class="line"></div><div class="line">/**</div><div class="line">数据格式化后的处理 用于对ServerAPI实现Category加入部分业务逻辑</div><div class="line">@param result 格式化数据</div><div class="line">*/</div><div class="line">-(void)responseCustomDoInCategoryWithResult:(ServerResult*)result;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">#pragma mark - 可选协议</div><div class="line">@protocol ServerAPIManagerCacheProtocol &lt;NSObject&gt;</div><div class="line"></div><div class="line">@optional</div><div class="line"></div><div class="line">/**</div><div class="line">拉取缓存数据</div><div class="line">@param api 请求描述的ServerAPI</div><div class="line">@param completion 请求回调</div><div class="line">@param error 错误信息</div><div class="line">@return 缓存有无</div><div class="line">*/</div><div class="line">-(BOOL)fetchDataCacheWithAPI:(ServerAPI*)api completion:(sap_requestCompletion)completion error:(NSError*)error;</div><div class="line"></div><div class="line">/**</div><div class="line">拉取缓存数据</div><div class="line">@param api 请求描述的ServerAPI</div><div class="line">@param successHandle 请求成功回调</div><div class="line">@param failHandle 请求失败回调</div><div class="line">@param error 错误信息</div><div class="line">@return 缓存有无</div><div class="line">*/</div><div class="line">-(BOOL)fetchDataCacheWithAPI:(ServerAPI*)api successHandle:(sap_requestCompletion)successHandle failHandle:(sap_requestFailHandle)failHandle error:(NSError*)error;</div><div class="line"></div><div class="line">/**</div><div class="line">保存缓存</div><div class="line">@param api 请求描述的ServerAPI</div><div class="line">*/</div><div class="line">-(void)saveDataCacheWithResult:(ServerAPI*)api;</div><div class="line">@end</div><div class="line"></div><div class="line">/**</div><div class="line">与ServerAPIRequstProtocol的协议有重叠主要用于内部封装逻辑</div><div class="line">*/</div><div class="line">@protocol ServerAPIRequstOptionalProtocol &lt;NSObject&gt;</div><div class="line"></div><div class="line">@optional</div><div class="line">-(void)requestDataWithSuccessHandle:(sap_requestCompletion)successHandle failHandle:(sap_requestFailHandle)failHandle;</div><div class="line"></div><div class="line">+(ServerAPI*)newRequestDataWithSuccessHandle:(sap_requestSuccessHandle)successHandle failHandle:(sap_requestFailHandle)failHandle;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">/**</div><div class="line">与ServerAPIManagerRequestProtocol的协议有重叠主要用于内部封装逻辑</div><div class="line">*/</div><div class="line">@protocol ServerAPIManagerRequestOptionalProtocol &lt;NSObject&gt;</div><div class="line"></div><div class="line">@optional</div><div class="line">-(void)requestDataWithAPI:(ServerAPI*)api completion:(sap_requestCompletion)completion progressHandle:(sap_progressHandle)progressHandle;</div><div class="line"></div><div class="line">-(void)requestDataWithAPI:(ServerAPI*)api successHandle:(sap_requestSuccessHandle)successHandle failHandle:(sap_requestFailHandle)failHandle;</div><div class="line"></div><div class="line">-(void)cancelRequestWithAPI:(ServerAPI*)api;</div><div class="line">-(void)cancelRequestWithRequestID:(NSString*)requestID;</div><div class="line">-(void)cancelRequestWithRequestsTag:(NSString*)requestsTag;</div><div class="line">-(void)cancelRequestWithRequestIDList:(NSArray*)requestList;</div><div class="line">-(void)cancelRequestWithAPIList:(NSArray*)requestList;</div><div class="line">-(void)cancelLastRequest;</div><div class="line">-(void)cancelFirstRequest;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure></p>
+<p>源码地址：<a href="https://github.com/heroims/ServerAPI/" target="_blank" rel="external">https://github.com/heroims/ServerAPI/</a></p>
+<p>#ServerAPI使用<br>下面说说怎么用，按这种模式填充完自己定制的方法实现后，既可以当做离散型API用也会可以当做集约型API用，还可以直接用URL<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">//离散型API使用  一个请求是一个API类，用NSClassFromString主要为了省头文件引用懒得加头文件。。。           </div><div class="line">[NSClassFromString(@&quot;DemoAPI&quot;) newRequestDataWithCompletion:^(ServerResult *result, NSError *errInfo) &#123;</div><div class="line"></div><div class="line">&#125; requestParameters:nil requestTag:NSStringFromClass([self class])];</div><div class="line"></div><div class="line">ServerAPI *discreteApi=[[NSClassFromString(@&quot;DemoAPI&quot;) alloc] init];</div><div class="line">discreteApi.requestParameters=nil;</div><div class="line">discreteApi.requestTag=NSStringFromClass([self class]);</div><div class="line">[discreteApi requestDataWithCompletion:^(ServerResult *result, NSError *errInfo) &#123;</div><div class="line"></div><div class="line">&#125;];</div><div class="line"></div><div class="line">//集约型API使用  可以直接类扩展加静态方法设置，可以自行类扩展个更简洁通用的方法这里只距离</div><div class="line">ServerAPI *intensiveAPI=[[ServerAPI alloc] init];</div><div class="line">intensiveAPI.requestHost=@&quot;http://xxx.xxx.xxx&quot;;</div><div class="line">intensiveAPI.requestPath=@&quot;xxx&quot;;</div><div class="line">intensiveAPI.requestParameters=nil;</div><div class="line">intensiveAPI.requestTag=NSStringFromClass([self class]);</div><div class="line">intensiveAPI.accessType=APIAccessType_Get;</div><div class="line">intensiveAPI.resultFormat=APIResultFormat_JSON;</div><div class="line">intensiveAPI.timeOut=30;</div><div class="line">intensiveAPI.retryTimes=2;</div><div class="line">[intensiveAPI requestDataWithCompletion:^(ServerResult *result, NSError *errInfo) &#123;</div><div class="line"></div><div class="line">&#125;];</div><div class="line"></div><div class="line">//直接请求Url</div><div class="line">ServerAPI *urlAPI=[[ServerAPI alloc] init];</div><div class="line">urlAPI.requestURL=@&quot;http://xxx.xxx.xxx&quot;;</div><div class="line">urlAPI.requestTag=NSStringFromClass([self class]);</div><div class="line">[urlAPI requestDataWithCompletion:^(ServerResult *result, NSError *errInfo) &#123;</div><div class="line"></div><div class="line">&#125;];</div></pre></td></tr></table></figure></p>
+<h1 id="ServerAPI自动化产出（离散型API好处）"><a href="#ServerAPI自动化产出（离散型API好处）" class="headerlink" title="ServerAPI自动化产出（离散型API好处）"></a>ServerAPI自动化产出（离散型API好处）</h1><p>当采用了离散型API时，调用的时候通常只需要初始化对应的API，传入后台要的参数，至此数据返回，一个请求完成。<br>通过继承ServerAPI，return 描述的固定值一个对应的API类就创建完成，然后回到之前的文章，如果服务端写的代码工整或有地方统一定义直接可以自动导出一套API的所有描述文件，也就是各各XXXAPI，哪怕代码不工整，API文档总该有吧，有点格式就可以读出来自动生成API，如果还没有，，，，好吧，那就帮他们规范化所以有了下面我用Swift写的工具 。</p>
+<h4 id="ServerAPICreator"><a href="#ServerAPICreator" class="headerlink" title="ServerAPICreator"></a>ServerAPICreator</h4><p><a href="https://github.com/heroims/ServerAPICreator" target="_blank" rel="external">https://github.com/heroims/ServerAPICreator</a><br>功能很简单，就是对API接口的描述，填完自动生成wiki.md和一堆XXXAPI.h,XXXAPI.m文件。<br>这种东西就是定制化比较高的东西了，所以代码也就看看吧，拿来直接用是不可能的，怎样都要改改，但思路相信看到这的人基本都有了</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3994053-254e821d28eb7c80.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="687474703a2f2f6865726f696d732e6769746875622e696f2f53657276657241504943726561746f722f32414530344336422d364233422d343738332d393537322d4143423746333632314641432e706e67.png"></p>
+<h3 id="联想"><a href="#联想" class="headerlink" title="联想"></a>联想</h3><p>按照这种设计架构的方式很多层面的东西都会渐渐的用描述解决，开发一套东西需要的是脚本描述。核心引擎好了，想想人工智能是不是不断积累数据，产出脚本描述然后不断的自动写代码给自己打patch（随便一说扯扯淡）。。。。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/02/IOS 网络服务层自动化详解/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-IOS本地化:国际化项目配置" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/15/IOS本地化:国际化项目配置/">IOS百行代码全局语言本地化/国际化</a>
+    </h1>
+  
+
+        
+        <a href="/2017/02/15/IOS本地化:国际化项目配置/" class="archive-article-date">
+  	<time datetime="2017-02-14T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="IOS百行代码全局语言本地化-国际化"><a href="#IOS百行代码全局语言本地化-国际化" class="headerlink" title="IOS百行代码全局语言本地化/国际化"></a>IOS百行代码全局语言本地化/国际化</h1><p>废话不多说先把基本配置搞定图文一起来</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3994053-006976bd750f8324.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="3618569F-C518-4582-8580-9DC73F1E8B2E.png"><br>这里点个“+”直接就o了<br>剩下的就是创建strings文件也就是语言映射文件</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3994053-6172f40aabb17548.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="32E018FA-1E4C-4127-BD87-0AE0B0B1641D.png"></p>
+<p>划线的就是创建时候该点击的InfoPlist.strings就是定义CFBundleDisplayName来确定app的名字<br>Localizable.strings则是正经的语言映射表了<br>xib，storyboard和image也是一个套路看划线那点击就ok了<br><img src="http://upload-images.jianshu.io/upload_images/3994053-f2f6768c6d73d371.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="6DCE952A-4868-4652-AAB5-59C36DF129D5.png"></p>
+<h1 id="百行代码全局Hook完成本地化"><a href="#百行代码全局Hook完成本地化" class="headerlink" title="百行代码全局Hook完成本地化"></a>百行代码全局Hook完成本地化</h1><p>废话不多说先放代码在解释<br><a href="https://github.com/heroims/LocalizedEngine" target="_blank" rel="external">https://github.com/heroims/LocalizedEngine</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div></pre></td><td class="code"><pre><div class="line">#import &quot;LocalizedEngine.h&quot;</div><div class="line">#import &lt;objc/runtime.h&gt;</div><div class="line">#import &lt;UIKit/UIKit.h&gt;</div><div class="line"></div><div class="line">#define LocalizedString(string) NSLocalizedString(string, nil)</div><div class="line"></div><div class="line">@interface NSObject (LocalizedEngineSwizzling)</div><div class="line"></div><div class="line">@end</div><div class="line">@implementation NSObject (LocalizedEngineSwizzling)</div><div class="line"></div><div class="line">+ (BOOL)les_swizzleMethod:(SEL)origSel withMethod:(SEL)altSel &#123;</div><div class="line">Method origMethod = class_getInstanceMethod(self, origSel);</div><div class="line">Method altMethod = class_getInstanceMethod(self, altSel);</div><div class="line">if (!origMethod || !altMethod) &#123;</div><div class="line">return NO;</div><div class="line">&#125;</div><div class="line">class_addMethod(self,</div><div class="line">origSel,</div><div class="line">class_getMethodImplementation(self, origSel),</div><div class="line">method_getTypeEncoding(origMethod));</div><div class="line">class_addMethod(self,</div><div class="line">altSel,</div><div class="line">class_getMethodImplementation(self, altSel),</div><div class="line">method_getTypeEncoding(altMethod));</div><div class="line">method_exchangeImplementations(class_getInstanceMethod(self, origSel),</div><div class="line">class_getInstanceMethod(self, altSel));</div><div class="line">return YES;</div><div class="line">&#125;</div><div class="line"></div><div class="line">+ (BOOL)les_swizzleClassMethod:(SEL)origSel withMethod:(SEL)altSel &#123;</div><div class="line">return [object_getClass((id)self) les_swizzleMethod:origSel withMethod:altSel];</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@interface NSString (LocalizedEngine)</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation NSString(LocalizedEngine)</div><div class="line"></div><div class="line">-(CGRect)le_boundingRectWithSize:(CGSize)size options:(NSStringDrawingOptions)options attributes:(nullable NSDictionary&lt;NSString *, id&gt; *)attributes context:(nullable NSStringDrawingContext *)context&#123;</div><div class="line">return [LocalizedString(self) le_boundingRectWithSize:size options:options attributes:attributes context:context];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (CGSize)le_sizeWithAttributes:(nullable NSDictionary&lt;NSString *, id&gt; *)attrs&#123;</div><div class="line">return [LocalizedString(self) le_sizeWithAttributes:attrs];</div><div class="line">&#125;</div><div class="line">@end</div><div class="line"></div><div class="line">@interface UILabel (LocalizedEngine)</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation UILabel(LocalizedEngine)</div><div class="line"></div><div class="line">-(void)le_setText:(NSString *)text&#123;</div><div class="line">[self le_setText:LocalizedString(text)];</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@interface UITabBarItem (LocalizedEngine)</div><div class="line"></div><div class="line">@end</div><div class="line">@implementation UITabBarItem (LocalizedEngine)</div><div class="line"></div><div class="line">-(void)le_setTitle:(NSString *)title&#123;</div><div class="line">[self le_setTitle:LocalizedString(title)];</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@interface UIViewController (LocalizedEngine)</div><div class="line"></div><div class="line">@end</div><div class="line">@implementation UIViewController (LocalizedEngine)</div><div class="line"></div><div class="line">-(void)le_setTitle:(NSString *)title&#123;</div><div class="line">[self le_setTitle:LocalizedString(title)];</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@interface UIButton (LocalizedEngine)</div><div class="line"></div><div class="line">@end</div><div class="line">@implementation UIButton (LocalizedEngine)</div><div class="line"></div><div class="line">-(void)le_setTitle:(NSString *)title forState:(UIControlState)state&#123;</div><div class="line">[self le_setTitle:LocalizedString(title) forState:state];</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@implementation LocalizedEngine</div><div class="line"></div><div class="line">+(void)startEngine&#123;</div><div class="line">[[UILabel class] les_swizzleMethod:@selector(setText:) withMethod:@selector(le_setText:)];</div><div class="line">[[UITabBarItem class] les_swizzleMethod:@selector(setTitle:) withMethod:@selector(le_setTitle:)];</div><div class="line">[[UIViewController class] les_swizzleMethod:@selector(setTitle:) withMethod:@selector(le_setTitle:)];</div><div class="line">[[UIButton class] les_swizzleMethod:@selector(setTitle:forState:) withMethod:@selector(le_setTitle:forState:)];</div><div class="line">[[NSString class] les_swizzleMethod:@selector(boundingRectWithSize:options:attributes:context:) withMethod:@selector(le_boundingRectWithSize:options:attributes:context:)];</div><div class="line">[[NSString class] les_swizzleMethod:@selector(sizeWithAttributes:) withMethod:@selector(le_sizeWithAttributes:)];</div><div class="line"></div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure></p>
+<p>调用只需要一句话<br>[LocalizedEngine startEngine];<br>其实只对UILabel做一次全局的文本就都被替换了，另一方面就是NSString对可变宽高的处理，这两个就已经解决了大部分需求，只不过后来发现系统控件在传递文本时做了布局的自适应，所以就有了UITabBarItem UIButton UIViewController的扩展，<br>根据自己APP情况适当调整即可，包括NSAttributedString 细化出来这些估计也不会超过200行，上边放出的是初版，.m总共100行冒头，轻轻松松省去慢慢找位置加，有人找你做本地化，从此只需要做好string对照表即可，让人按格式给你。<br>这只是利用AOP这种面向切面开发的思想解决问题的实例，同样的道理，风格扩展，日志，crash防御都能很好的独立且省事的完成。<br>后续还将放一篇AOPLogger的讲讲</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/02/15/IOS本地化:国际化项目配置/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-IOS组件化与工程管理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
