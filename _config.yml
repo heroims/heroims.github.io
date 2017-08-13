@@ -77,8 +77,8 @@ theme: yilia
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
-  type: git
-  repo: git@github.com:heroims/hexoBlog.git
+  type: github
+  repo: https://github.com/heroims/hexoBlog.git
   branch: master
 
 jsonContent:
