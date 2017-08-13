@@ -6,14 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Heroims的博客</title>
+  <title>IOS组件化与工程管理 | Heroims的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Heroims的博客">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="谈及组件化其实网上也有不少文章了，但我个人认为不结合工程管理去单讲组件化恐怕很难让人理解概念，而去实践的时候也只是照猫画虎。 工程管理组件化的实现很重要的一个组成部分应该是工程拆分，这里我的方案是采取git管理项目pod管理依赖很常见很普通的方法。理想的状态每一个模块都是独立的，可以单独拿出来测试，发布，也就是每一个子模块其实都是一个git仓库，这里紧接着就是子仓库和主项目的关系问题，上边说到了g">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IOS组件化与工程管理">
+<meta property="og:url" content="http://yoursite.com/2017/02/05/IOS组件化与工程管理/index.html">
 <meta property="og:site_name" content="Heroims的博客">
+<meta property="og:description" content="谈及组件化其实网上也有不少文章了，但我个人认为不结合工程管理去单讲组件化恐怕很难让人理解概念，而去实践的时候也只是照猫画虎。 工程管理组件化的实现很重要的一个组成部分应该是工程拆分，这里我的方案是采取git管理项目pod管理依赖很常见很普通的方法。理想的状态每一个模块都是独立的，可以单独拿出来测试，发布，也就是每一个子模块其实都是一个git仓库，这里紧接着就是子仓库和主项目的关系问题，上边说到了g">
+<meta property="og:updated_time" content="2017-08-13T18:16:39.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Heroims的博客">
+<meta name="twitter:title" content="IOS组件化与工程管理">
+<meta name="twitter:description" content="谈及组件化其实网上也有不少文章了，但我个人认为不结合工程管理去单讲组件化恐怕很难让人理解概念，而去实践的时候也只是照猫画虎。 工程管理组件化的实现很重要的一个组成部分应该是工程拆分，这里我的方案是采取git管理项目pod管理依赖很常见很普通的方法。理想的状态每一个模块都是独立的，可以单独拿出来测试，发布，也就是每一个子模块其实都是一个git仓库，这里紧接着就是子仓库和主项目的关系问题，上边说到了g">
   
     <link rel="alternative" href="/atom.xml" title="Heroims的博客" type="application/atom+xml">
   
@@ -139,16 +143,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-IOS组件化与工程管理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-IOS组件化与工程管理" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/05/IOS组件化与工程管理/">IOS组件化与工程管理</a>
+    <h1 class="article-title" itemprop="name">
+      IOS组件化与工程管理
     </h1>
   
 
@@ -183,16 +185,75 @@
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/05/IOS组件化与工程管理/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2017/02/05/IOS组件化与工程管理/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2017/02/01/移动端Model层与Server服务层自动化/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">移动端Model层与Server服务层自动化</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -212,366 +273,12 @@
 
 
 
-
   
-    <article id="post-移动端Model层与Server服务层自动化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/01/移动端Model层与Server服务层自动化/">移动端Model层与Server服务层自动化</a>
-    </h1>
   
 
-        
-        <a href="/2017/02/01/移动端Model层与Server服务层自动化/" class="archive-article-date">
-  	<time datetime="2017-01-31T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Model层自动化"><a href="#Model层自动化" class="headerlink" title="Model层自动化"></a>Model层自动化</h1><h3 id="前言（纯属捎带扯一下，后端大咖勿看）"><a href="#前言（纯属捎带扯一下，后端大咖勿看）" class="headerlink" title="前言（纯属捎带扯一下，后端大咖勿看）"></a>前言（纯属捎带扯一下，后端大咖勿看）</h3><p>谈到Model层自动化的产出我们就来从最初的地方开始讲，数据库！<br>无论你是用啥写服务器如果还手写Model那真的只能说你够low我服！不过如果是手写Model自动生成数据库那另说，总的来说就是要么从数据库转实体出来，要么从实体转数据库这才有点意思。<br>上边只是开玩笑下面正题，很多时候大家都无奈没办法不能说low不low，其中奥妙各有体会，通常有点规模的团队都是先定义表然后就出Model了</p>
-<h3 id="后端的Model层"><a href="#后端的Model层" class="headerlink" title="后端的Model层"></a>后端的Model层</h3><p>后端数据库和实体互转的方案都不用Google，百度就能出来一大推，有直接读库生成的，也有从实体转sql生成库的，更有提前定义协议然后开始出对应模块对应语言的实体及sql</p>
-<h3 id="移动端的Model层"><a href="#移动端的Model层" class="headerlink" title="移动端的Model层"></a>移动端的Model层</h3><p>先继续谈会后台Model，这里要说的只是最好有一个提前定义的过程，这样一方面规范开发流程提前想好怎样建库合理，一方面有利于跨平台跨语言的开发，有了提前定义的协议，Model和枚举的各平台自动生成就方便了很多，写个简单的小程序即可，类型也就那几类。关键真的是一劳永逸，省去了大家互相校对的过程。<br>自动化生成移动端乃至前端用的Model层说白了就是做个类型映射，细说的话基本就是分为两类，一类直接就着后端现有项目读Model层的文件，然后做个类型的映射直接导出移动端需要的类，另一类也就是设计数据库时先定义Model的协议，然后根据协议自动生成各个平台需要的实体，而协议定义通常用序列化后的数据如xml(极力抵制，结构复杂)，json，pb，sql文件都能干这事。</p>
-<h3 id="Model自动化实现"><a href="#Model自动化实现" class="headerlink" title="Model自动化实现"></a>Model自动化实现</h3><p>上面说到了xml，json，pb，sql文件都能干这件事，但其中最容易就是json，github上搜个json class基本就能有一大片总有你想要的语言，但json的局限在于也就能转换一下model，当然通过特殊定义中间转换，枚举啥的也能搞定，在这我推荐pb，首先它就是专门用来定义协议的，枚举实体不用说都能搞定，包括默认值设置也能写出来，而且是谷歌出品本身是im通讯协议，被它序列化的数据在上面说的里面算是最小的，而另一方面关于转码参考<a href="https://github.com/google/protobuf/blob/master/docs/third_party.md" target="_blank" rel="external">https://github.com/google/protobuf/blob/master/docs/third_party.md</a> ，直接开放了各个语言的转换方法，当然你根本用不到它里面写的那么复杂，它的里面实体可是直接带pb转换model方法的，如果不是开发im根本用不到，要删部分源码实现自己的需要也行，。。。（下面讲一下正经方法）</p>
-<h4 id="Protobuf-Convert转码"><a href="#Protobuf-Convert转码" class="headerlink" title="Protobuf Convert转码"></a>Protobuf Convert转码</h4><p>下面放代码片段（反馈的人多放全的，之所以不想放还有个原因是这边实现有点粗）<br>这里以Python为例，只是因为安装执行方便所以选它<br>转成OC的例子，之所以选OC因为我就是个搞IOS的。。。写起来各个公司需求不同每次都要改改改。。。也就是这个原因懒得放全的了，因为用的人说到底还是需要手动改成自己想要的，没有通用的。。。</p>
-<pre><code class="python"><span class="comment">#头文件引用</span>
-<span class="keyword">import</span> os
-
-<span class="keyword">from</span> optparse <span class="keyword">import</span> OptionParser
-<span class="comment">#pb转成方便处理的对象</span>
-<span class="keyword">from</span> protoDef <span class="keyword">import</span> *
-<span class="comment">#读取pb的</span>
-<span class="keyword">from</span> protoReader <span class="keyword">import</span> ProtoReader <span class="keyword">as</span> reader
-<span class="comment">#上边两个就不放源码了，感兴趣的人多再说，毕竟上边的实现只是读pb逻辑大家估计都有自己的好办法</span>
-
-ENUM_TYPE = <span class="string">'NSInteger'</span>
-<span class="comment">#基础类型映射</span>
-typeMap = {
-<span class="string">'int64'</span>: <span class="string">'NSNumber'</span>,
-<span class="string">'int32'</span>: <span class="string">'NSNumber'</span>,
-<span class="string">'string'</span>: <span class="string">'NSString'</span>,
-<span class="string">'bool'</span>: <span class="string">'NSNumber'</span>,
-<span class="string">'float'</span>: <span class="string">'NSNumber'</span>,
-<span class="string">'double'</span>: <span class="string">'NSNumber'</span>,
-}
-<span class="comment">#默认值映射</span>
-defaultMap = {
-<span class="string">'int64'</span>: <span class="string">'@(%s)'</span>,
-<span class="string">'int32'</span>: <span class="string">'@(%s)'</span>,
-<span class="string">'string'</span>: <span class="string">'@"%s"'</span>,
-<span class="string">'bool'</span>: <span class="string">'@(%s)'</span>,
-<span class="string">'float'</span>: <span class="string">'@(%s)'</span>,
-<span class="string">'double'</span>: <span class="string">'@(%s)'</span>,
-}
-
-<span class="function"><span class="keyword">def</span> <span class="title">_convertType</span><span class="params">(pClz)</span>:</span>
-<span class="keyword">if</span> typeMap.has_key(pClz):
-<span class="keyword">return</span> typeMap[pClz]
-<span class="keyword">return</span> pClz
-
-<span class="function"><span class="keyword">def</span> <span class="title">_convertDefault</span><span class="params">(pClz)</span>:</span>
-<span class="keyword">if</span> defaultMap.has_key(pClz):
-<span class="keyword">return</span> defaultMap[pClz]
-<span class="keyword">return</span> <span class="string">'nil'</span>
-<span class="comment">#写文件方法（就是一点点输出oc的方法）</span>
-<span class="function"><span class="keyword">def</span> <span class="title">_writeLine</span><span class="params">(outf, line = <span class="string">''</span>)</span>:</span>
-outf.write(line + <span class="string">'\n'</span>)
-
-<span class="class"><span class="keyword">class</span> <span class="title">IOSWriter</span>:</span>
-<span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, outDir, proto)</span>:</span>
-self.outDir = outDir
-self.proto = proto
-
-<span class="function"><span class="keyword">def</span> <span class="title">__writeMsg</span><span class="params">(self, msg)</span>:</span>
-<span class="keyword">if</span> isDeprecated(msg.comment):
-<span class="keyword">return</span>
-
-self.__writeMsgH(msg)<span class="comment">#生成.h</span>
-self.__writeMsgM(msg)<span class="comment">#生成.m</span>
-
-<span class="comment">#为对应类添加前缀做为命名空间（oc没命名空间。。。）</span>
-<span class="function"><span class="keyword">def</span> <span class="title">__makeMsgName</span><span class="params">(self, msg)</span>:</span>
-<span class="keyword">if</span> msg.protoPkg == <span class="string">'不想加前缀的条件'</span>:
-<span class="keyword">return</span> msg.name
-<span class="keyword">return</span> msg.protoPkg.upper() + msg.name
-
-<span class="function"><span class="keyword">def</span> <span class="title">__writeMsgH</span><span class="params">(self, msg)</span>:</span>
-msgName = self.__makeMsgName(msg)
-path = os.path.join(self.outDir, msg.name)
-
-<span class="comment"># .h</span>
-outf = file(path + <span class="string">'.h'</span>, <span class="string">'w'</span>)
-_writeLine(outf, <span class="string">'/*\n * generated by proto-pygen, NEVER CHANGE!!\n * source file: %s\n */\n'</span> % self.proto.filePath)
-<span class="comment"># comment</span>
-_writeLine(outf, <span class="string">'/**\n * %s\n */'</span> % msg.comment)
-<span class="comment"># import</span>
-_writeLine(outf, <span class="string">'#import &lt;Foundation/Foundation.h&gt;'</span>)
-importSet = set()
-<span class="keyword">for</span> field <span class="keyword">in</span> msg.fields:
-<span class="keyword">if</span> isDeprecated(field.comment):
-<span class="keyword">continue</span>
-<span class="keyword">if</span> self.proto.hasMsg(field.clz) <span class="keyword">and</span> field.clz <span class="keyword">not</span> <span class="keyword">in</span> importSet:
-importSet.add(field.clz)
-importMsg = self.proto.getMsg(field.clz)
-importName = self.__makeMsgName(importMsg)
-<span class="keyword">if</span> self.__atClass(field):
-_writeLine(outf, <span class="string">'@class %s;'</span> % importName)
-<span class="keyword">else</span>:
-_writeLine(outf, <span class="string">'#import "%s.h"'</span> % importName)
-_writeLine(outf)
-<span class="comment"># declare</span>
-_writeLine(outf, <span class="string">'@interface %s : NSObject'</span> % msgName)
-<span class="comment"># field</span>
-<span class="keyword">for</span> field <span class="keyword">in</span> msg.fields:
-<span class="keyword">if</span> isDeprecated(field.comment):
-<span class="keyword">continue</span>
-<span class="keyword">if</span> field.comment:
-_writeLine(outf, <span class="string">'/**\n * %s\n */'</span> % field.comment)
-<span class="keyword">if</span> field.repeated:
-<span class="keyword">if</span> field.repeated <span class="keyword">and</span> <span class="keyword">not</span> typeMap.has_key(field.clz):
-fieldMsg = self.proto.getMsg(field.clz)
-fieldType = self.__makeMsgName(fieldMsg)
-_writeLine(outf, <span class="string">'@property(nonatomic, strong) NSMutableArray &lt;%s*&gt;* %s;'</span> % (field.name, fieldType))
-<span class="keyword">else</span>
-_writeLine(outf, <span class="string">'@property(nonatomic, strong) NSMutableArray * %s;'</span> % field.name)
-<span class="keyword">elif</span> self.proto.hasMsg(field.clz):
-fieldMsg = self.proto.getMsg(field.clz)
-fieldType = self.__makeMsgName(fieldMsg)
-<span class="keyword">if</span> fieldMsg.kind == Proto.PROTO_MSG:
-_writeLine(outf, <span class="string">'@property(nonatomic, strong) %s * %s;'</span> % (fieldType, field.name))
-<span class="keyword">elif</span> fieldMsg.kind == Proto.PROTO_ENUM:
-_writeLine(outf, <span class="string">'@property(nonatomic, assign) %s %s;'</span> % (fieldType, field.name))
-<span class="keyword">else</span>:
-clz = _convertType(field.clz)
-_writeLine(outf, <span class="string">'@property(nonatomic, strong) %s * %s;'</span> % (clz, field.name))
-<span class="comment"># end</span>
-_writeLine(outf, <span class="string">'\n@end'</span>)
-outf.close()
-
-<span class="function"><span class="keyword">def</span> <span class="title">__atClass</span><span class="params">(self, field)</span>:</span>
-<span class="keyword">return</span> <span class="string">'@class'</span> <span class="keyword">in</span> field.comment
-
-<span class="function"><span class="keyword">def</span> <span class="title">__writeMsgM</span><span class="params">(self, msg)</span>:</span>
-msgName = self.__makeMsgName(msg)
-path = os.path.join(self.outDir, msgName)
-<span class="comment"># .m</span>
-outf = file(path + <span class="string">'.m'</span>, <span class="string">'w'</span>)
-_writeLine(outf, <span class="string">'/*\n * generated by proto-pygen, NEVER CHANGE!!\n * source file: %s\n */\n'</span> % self.proto.filePath)
-<span class="comment"># import</span>
-_writeLine(outf, <span class="string">'#import "%s.h"'</span> % msgName)
-<span class="keyword">for</span> field <span class="keyword">in</span> msg.fields:
-<span class="keyword">if</span> self.proto.hasMsg(field.clz) <span class="keyword">and</span> self.__atClass(field):
-importMsg = self.proto.getMsg(field.clz)
-importName = self.__makeMsgName(importMsg)
-_writeLine(outf, <span class="string">'#import "%s.h"'</span> % importName)
-_writeLine(outf, <span class="string">"\n@implementation %s"</span> % msgName)
-_writeLine(outf)
-<span class="comment"># repeated</span>
-kvlist = [] <span class="comment">#数组内实体类 数组</span>
-dvlist = [] <span class="comment">#默认值 数组</span>
-<span class="keyword">for</span> field <span class="keyword">in</span> msg.fields:
-<span class="keyword">if</span> isDeprecated(field.comment):
-<span class="keyword">continue</span>
-<span class="keyword">if</span> typeMap.has_key(field.clz) <span class="keyword">and</span> field.default:
-default=_convertDefault(field.default)
-dvlist.append((field.name,default))
-<span class="keyword">if</span> field.repeated <span class="keyword">and</span> <span class="keyword">not</span> typeMap.has_key(field.clz):
-fieldMsg = self.proto.getMsg(field.clz)
-fieldType = self.__makeMsgName(fieldMsg)
-kvlist.append((field.name, fieldType))
-<span class="comment">#默认值设置</span>
-<span class="keyword">if</span> len(dvlist) &gt; <span class="number">0</span>:
-_writeLine(outf, <span class="string">"- (id)init {"</span>)
-_writeLine(outf, <span class="string">"   if(self=[super init]){ "</span>)
-<span class="keyword">for</span> i, (name, default) <span class="keyword">in</span> enumerate(dvlist):
-line = <span class="string">'''   _%s=%s'''</span> % (name, default)
-_writeLine(outf, line)
-_writeLine(outf, <span class="string">"   } "</span>)
-_writeLine(outf, <span class="string">"   return self;"</span>)
-_writeLine(outf, <span class="string">"} "</span>)
-
-<span class="comment">#用了YYModel转换所以有了这个方法</span>
-<span class="keyword">if</span> len(kvlist) &gt; <span class="number">0</span>:
-_writeLine(outf, <span class="string">"+ (NSDictionary *)modelContainerPropertyGenericClass {"</span>)
-_writeLine(outf, <span class="string">"  return @{"</span>)
-<span class="keyword">for</span> i, (name, clz) <span class="keyword">in</span> enumerate(kvlist):
-line = <span class="string">'''    @"%s" : [%s class]'''</span> % (name, clz)
-<span class="keyword">if</span> i &lt; len(kvlist) - <span class="number">1</span>:
-line = line + <span class="string">','</span>
-_writeLine(outf, line)
-_writeLine(outf, <span class="string">"  };"</span>)
-_writeLine(outf, <span class="string">"}"</span>)
-
-
-<span class="comment"># end</span>
-_writeLine(outf, <span class="string">'\n@end'</span>)
-outf.close()
-
-<span class="comment">#生成枚举，之所以有.h .m是为了搞枚举string</span>
-<span class="function"><span class="keyword">def</span> <span class="title">__writeEnum</span><span class="params">(self, enum)</span>:</span>
-<span class="keyword">if</span> isDeprecated(enum.comment):
-<span class="keyword">return</span>
-self.__writeEnumH(enum)
-self.__writeEnumM(enum)
-
-<span class="function"><span class="keyword">def</span> <span class="title">__writeEnumH</span><span class="params">(self, enum)</span>:</span>
-enumName = self.__makeMsgName(enum)
-path = os.path.join(self.outDir, enumName)
-<span class="comment"># .h</span>
-outf = file(path + <span class="string">'.h'</span>, <span class="string">'w'</span>)
-_writeLine(outf, <span class="string">'/*\n * generated by proto-pygen, NEVER CHANGE!!\n * source file: %s\n */\n'</span> % self.proto.filePath)
-<span class="comment"># comment</span>
-_writeLine(outf, <span class="string">'/**\n * %s\n */'</span> % enum.comment)
-<span class="comment"># import</span>
-_writeLine(outf, <span class="string">'#import &lt;Foundation/Foundation.h&gt;'</span>)
-_writeLine(outf)
-<span class="comment"># declare</span>
-_writeLine(outf, <span class="string">'typedef enum {'</span>)
-<span class="comment"># field</span>
-fields = []
-<span class="keyword">for</span> field <span class="keyword">in</span> enum.fields:
-<span class="keyword">if</span> isDeprecated(field.comment):
-<span class="keyword">continue</span>
-fields.append(field)
-i = <span class="number">0</span>
-<span class="keyword">for</span> field <span class="keyword">in</span> fields:
-i += <span class="number">1</span>
-<span class="keyword">if</span> field.comment:
-_writeLine(outf, <span class="string">'/**\n * %s\n */'</span> % field.comment)
-<span class="keyword">if</span> i == len(fields):
-_writeLine(outf, <span class="string">'  %s = %s'</span> % (field.name, field.number))
-<span class="keyword">else</span>:
-_writeLine(outf, <span class="string">'  %s = %s,'</span> % (field.name, field.number))
-_writeLine(outf, <span class="string">'} %s;'</span> % enumName)
-_writeLine(outf)
-_writeLine(outf, <span class="string">'%s %sValueOf(NSString *text);'</span> % (enumName, enumName))
-_writeLine(outf, <span class="string">'NSString* %sDescription(%s value);'</span> % (enumName, enumName))
-
-outf.close()
-
-<span class="function"><span class="keyword">def</span> <span class="title">__writeEnumM</span><span class="params">(self, enum)</span>:</span>
-enumName = self.__makeMsgName(enum)
-path = os.path.join(self.outDir, enumName)
-<span class="comment"># .m</span>
-outf = file(path + <span class="string">'.m'</span>, <span class="string">'w'</span>)
-_writeLine(outf, <span class="string">'/*\n * generated by proto-pygen, NEVER CHANGE!!\n * source file: %s\n */\n'</span> % self.proto.filePath)
-<span class="comment"># import</span>
-_writeLine(outf, <span class="string">'#import "%s.h"'</span> % enumName)
-_writeLine(outf)
-<span class="comment"># valueOf</span>
-_writeLine(outf, <span class="string">'%s %sValueOf(NSString *text) {'</span> % (enumName, enumName))
-_writeLine(outf, <span class="string">'  if (text) {'</span>)
-fields = []
-<span class="keyword">for</span> field <span class="keyword">in</span> enum.fields:
-<span class="keyword">if</span> isDeprecated(field.comment):
-<span class="keyword">continue</span>
-fields.append(field)
-i = <span class="number">0</span>;
-<span class="keyword">for</span> field <span class="keyword">in</span> fields:
-<span class="keyword">if</span> i == <span class="number">0</span>:
-_writeLine(outf, <span class="string">'    if ([text isEqualToString:@"%s"])'</span> % field.name)
-<span class="keyword">else</span>:
-_writeLine(outf, <span class="string">'    else if ([text isEqualToString:@"%s"])'</span> % field.name)
-_writeLine(outf, <span class="string">'      return %s;'</span> % field.name)
-i += <span class="number">1</span>
-_writeLine(outf, <span class="string">'  }'</span>)
-_writeLine(outf, <span class="string">'  return -1;'</span>)
-_writeLine(outf, <span class="string">'}\n'</span>)
-<span class="comment"># description</span>
-_writeLine(outf, <span class="string">'NSString* %sDescription(%s value) {'</span> % (enumName, enumName))
-_writeLine(outf, <span class="string">'  switch (value) {'</span>)
-<span class="keyword">for</span> field <span class="keyword">in</span> fields:
-_writeLine(outf, <span class="string">'    case %s:'</span> % field.name)
-_writeLine(outf, <span class="string">'      return @"%s";'</span> % field.name)
-_writeLine(outf, <span class="string">'  }'</span>)
-_writeLine(outf, <span class="string">'  return @"";'</span>)
-_writeLine(outf, <span class="string">'}'</span>)
-
-outf.close()
-
-<span class="function"><span class="keyword">def</span> <span class="title">write</span><span class="params">(self)</span>:</span>
-<span class="keyword">for</span> msg <span class="keyword">in</span> self.proto.definedMsgs:
-<span class="keyword">if</span> msg.kind == Proto.PROTO_MSG:
-self.__writeMsg(msg)
-<span class="keyword">elif</span> msg.kind == Proto.PROTO_ENUM:
-self.__writeEnum(msg)
-
-<span class="comment">#写文件到本地</span>
-<span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:
-parser = OptionParser()
-parser.add_option(<span class="string">"-r"</span>, <span class="string">"--root"</span>, dest=<span class="string">"protoDir"</span>, help=<span class="string">"root proto dir"</span>, metavar=<span class="string">"DIR"</span>)
-parser.add_option(<span class="string">"-f"</span>, <span class="string">"--file"</span>, dest=<span class="string">"protoFile"</span>, help=<span class="string">"input proto file"</span>, metavar=<span class="string">"FILE"</span>)
-parser.add_option(<span class="string">"-o"</span>, <span class="string">"--out"</span>, dest=<span class="string">"out"</span>, help=<span class="string">"output dir"</span>, metavar=<span class="string">"DIR"</span>)
-
-options, args = parser.parse_args()
-
-<span class="keyword">if</span> <span class="keyword">not</span> options.protoDir:
-parser.print_help()
-parser.error(<span class="string">'no proto dir'</span>)
-<span class="keyword">if</span> <span class="keyword">not</span> options.protoFile:
-parser.print_help()
-parser.error(<span class="string">'no proto file'</span>)
-<span class="keyword">if</span> <span class="keyword">not</span> options.out:
-parser.print_help()
-parser.error(<span class="string">'no out dir'</span>)
-
-<span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(options.out):
-os.makedirs(options.out)
-
-proto = reader(options.protoDir, options.protoFile).read()
-IOSWriter(options.out, proto).write()
-</code></pre>
-<p>上边就是Protobuf 转Model的逻辑，有了这个前提，下边Server服务层的自动化就有了</p>
-<h4 id="Server服务层自动化"><a href="#Server服务层自动化" class="headerlink" title="Server服务层自动化"></a>Server服务层自动化</h4><p>这里可以引申一下基本上写功能时只要分成配置类和启动器这样，根据配置类就可以实现自动化了，这里就拿IOS我这的实现讲。<br>源码地址：<a href="https://github.com/heroims/ServerAPI" target="_blank" rel="external">https://github.com/heroims/ServerAPI</a><br>这里也只是简单说一下<br>ServerAPI 定义一个请求的地址，重试次数，返回数据转换模式<br>ServerAPIManager  根据ServerAPI发起请求<br>ServerAPIProtocol  定义需要实现的方法（为了扩展性高，这里定义必须实现的协议，具体需要定制的需求通过Category实现相关方法）<br>ServerResult  返回的通用型实体包含解析的字典，错误信息等</p>
-<p>总的思路就是ServerAPI来定义一个请求的具体内容参数，而ServerAPIManager负责发起请求返回数据，然后就只需要继承ServerAPI对不同请求具体参数直接返回具体的值即可，比如requestHost，resultFormat，retryTimes，timeOut，returnClass</p>
-<p>回到Protobuf这个就相当于定义request，但差别还是很大有了对一个API的描述，那么移动端包括后端，前端都可以通过这个描述来做对应的事情，只需要封装一个东西去处理描述，至此就完成了Server服务层的自动化，外加说一句后端的话为了性能可能更好的方案是根据描述生成代码吧，用代码写代码才是正道。。。。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/01/移动端Model层与Server服务层自动化/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
+
   
 
 
@@ -594,8 +301,8 @@ IOSWriter(options.out, proto).write()
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,

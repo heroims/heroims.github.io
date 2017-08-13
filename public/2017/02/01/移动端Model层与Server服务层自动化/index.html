@@ -6,14 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Heroims的博客</title>
+  <title>移动端Model层与Server服务层自动化 | Heroims的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Heroims的博客">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="Model层自动化前言（纯属捎带扯一下，后端大咖勿看）谈到Model层自动化的产出我们就来从最初的地方开始讲，数据库！无论你是用啥写服务器如果还手写Model那真的只能说你够low我服！不过如果是手写Model自动生成数据库那另说，总的来说就是要么从数据库转实体出来，要么从实体转数据库这才有点意思。上边只是开玩笑下面正题，很多时候大家都无奈没办法不能说low不low，其中奥妙各有体会，通常有点规模">
+<meta property="og:type" content="article">
+<meta property="og:title" content="移动端Model层与Server服务层自动化">
+<meta property="og:url" content="http://yoursite.com/2017/02/01/移动端Model层与Server服务层自动化/index.html">
 <meta property="og:site_name" content="Heroims的博客">
+<meta property="og:description" content="Model层自动化前言（纯属捎带扯一下，后端大咖勿看）谈到Model层自动化的产出我们就来从最初的地方开始讲，数据库！无论你是用啥写服务器如果还手写Model那真的只能说你够low我服！不过如果是手写Model自动生成数据库那另说，总的来说就是要么从数据库转实体出来，要么从实体转数据库这才有点意思。上边只是开玩笑下面正题，很多时候大家都无奈没办法不能说low不low，其中奥妙各有体会，通常有点规模">
+<meta property="og:updated_time" content="2017-08-13T18:14:08.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Heroims的博客">
+<meta name="twitter:title" content="移动端Model层与Server服务层自动化">
+<meta name="twitter:description" content="Model层自动化前言（纯属捎带扯一下，后端大咖勿看）谈到Model层自动化的产出我们就来从最初的地方开始讲，数据库！无论你是用啥写服务器如果还手写Model那真的只能说你够low我服！不过如果是手写Model自动生成数据库那另说，总的来说就是要么从数据库转实体出来，要么从实体转数据库这才有点意思。上边只是开玩笑下面正题，很多时候大家都无奈没办法不能说low不low，其中奥妙各有体会，通常有点规模">
   
     <link rel="alternative" href="/atom.xml" title="Heroims的博客" type="application/atom+xml">
   
@@ -139,89 +143,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-IOS组件化与工程管理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-移动端Model层与Server服务层自动化" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/05/IOS组件化与工程管理/">IOS组件化与工程管理</a>
-    </h1>
-  
-
-        
-        <a href="/2017/02/05/IOS组件化与工程管理/" class="archive-article-date">
-  	<time datetime="2017-02-04T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>谈及组件化其实网上也有不少文章了，但我个人认为不结合工程管理去单讲组件化恐怕很难让人理解概念，而去实践的时候也只是照猫画虎。</p>
-<h1 id="工程管理"><a href="#工程管理" class="headerlink" title="工程管理"></a>工程管理</h1><p>组件化的实现很重要的一个组成部分应该是工程拆分，这里我的方案是采取git管理项目pod管理依赖很常见很普通的方法。<br>理想的状态每一个模块都是独立的，可以单独拿出来测试，发布，也就是每一个子模块其实都是一个git仓库，这里紧接着就是子仓库和主项目的关系问题，上边说到了git和pod，还有一个submodule我喜欢用这个来做子仓库的管理上边为啥没提它呢？<br>因为submodule本身就是git自带的就是git的一部分，常用命令有<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"># 添加子仓库</div><div class="line">git submodule add 仓库地址 路径</div><div class="line">#初始化所有子仓库</div><div class="line">git submodule init</div><div class="line"># 更新子仓库</div><div class="line">git submodule update</div><div class="line"></div><div class="line"># 也可以初始化更新一起</div><div class="line">git submodule update --init</div></pre></td></tr></table></figure></p>
-<p>pod只是帮我把依赖关系理清直接本地pod，因为坑爹的开发阶段难免有互相block的情况，那边东西弄完了，但还没有做发布还不稳定，但另一边已经急着要看一眼整体调用的效果了。。。<br>当然这时候也可以让对面先打个beta的tag，那样可想而知最后会有多少没用的tag，另一方面就是bug联调恢复节点排查的时候，另一方估计只有一个方案就是回滚上一个tag中间哪的问题一点点打tag联调。<br>上边说的打tag也只是个例子，当然你可以改Podfile对应不同branch，但那也是要每次调都要改一下的，但我这种模式由于是本地pod所以podfile不用动了每次都去指向对应的项目，剩下的就是对子仓库随意切换branch甚至commit节点都可以，调ok了直接commit一下submodule指向的更改即可。然后另一方更新一下再pod update把依赖关系重新建立一下（如果没有添加或删除，甚至这步都不需要，本地pod引用目录我们submodule的本地文件夹里面有什么变化这边自动会变，添加删除是因为依赖关系发生变化了所以跟着需要重新建立）,当然理想情况回头有空单独整合一套submodule和pod的命令，submodule更新时判断有增删操作执行pod update其他情况不处理。</p>
-<p>这里紧接着就是公共库的处理以及怎么去建立主仓库与子仓库的依赖，我这里把基本思路给出，具体情况还是自己再改动，这里首先就是建立podspec来提供依赖建立<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">Pod::Spec.new do |s|</div><div class="line">s.name                  = &apos;MainWorkSpaceDemo&apos;</div><div class="line">s.version               = &apos;1.0.0&apos;</div><div class="line">s.summary               = &apos;A new container controller to slide  &apos;</div><div class="line">s.homepage              = &apos;github.com&apos;</div><div class="line">s.license               = &#123; :type =&gt; &apos;MIT&apos;, :file =&gt; &apos;README.md&apos; &#125;</div><div class="line">s.author                = &#123; &apos;heroims&apos; =&gt; &apos;heroims@163.com&apos; &#125;</div><div class="line">s.source                = &#123; :git =&gt; &apos;&apos;, :tag =&gt; &quot;#&#123;s.version&#125;&quot; &#125;</div><div class="line">s.platform              = :ios, &apos;5.0&apos;</div><div class="line">s.source_files          = &apos;ZYQRouter/*.&#123;h,m&#125;&apos;</div><div class="line">s.requires_arc          = true</div><div class="line">#公共仓库</div><div class="line">s.subspec &apos;BaseTool&apos; do |ss|</div><div class="line">ss.source_files = &apos;ZYQRouter/*.&#123;h,m&#125;&apos;</div><div class="line">end</div><div class="line">#模块1</div><div class="line">s.subspec &apos;Module1&apos; do |sss|</div><div class="line">sss.source_files = &apos;Module1/Module1Lib/*.&#123;h,m&#125;&apos;</div><div class="line">end</div><div class="line">#模块2</div><div class="line">s.subspec &apos;Module2&apos; do |ssss|</div><div class="line">ssss.source_files = &apos;Module2/Module2Lib/*.&#123;h,m&#125;&apos;</div><div class="line">end</div><div class="line"></div><div class="line">end</div></pre></td></tr></table></figure></p>
-<p>看见上边相比就明白了把，开发的时候最好要作为模块给人的东西放在一个目录下，当然不放也可以，这里就是为了方便<br>然后就是引用了,下面是module1工程的，只引用了一个公共库，真正开发的时候则会引用很多，然后build测试模块的app给测试，提供给主仓库的东西放在事先约定的目录下，其他的随便看心情，反正对别人没影响就是自己爽不爽<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">target &apos;Module1&apos; do</div><div class="line"># Uncomment the next line if you&apos;re using Swift or would like to use dynamic frameworks</div><div class="line"># use_frameworks!</div><div class="line"></div><div class="line"># Pods for Module1</div><div class="line">pod &apos;MainWorkSpaceDemo/BaseTool&apos;, :path =&gt; &apos;../MainWorkSpaceDemo.podspec&apos;</div><div class="line"></div><div class="line">target &apos;Module1Tests&apos; do</div><div class="line">inherit! :search_paths</div><div class="line"># Pods for testing</div><div class="line">end</div><div class="line"></div><div class="line">target &apos;Module1UITests&apos; do</div><div class="line">inherit! :search_paths</div><div class="line"># Pods for testing</div><div class="line">end</div><div class="line"></div><div class="line">end</div></pre></td></tr></table></figure></p>
-<p>就此基本的项目依赖思路构建就算讲完了，剩下的就是调用了，其实上边的东西你掌握好了，组件化就已经可以单用这种工程管理模式解决了<br>下面的就是大家能经常搜到的一些组件化的东西，在我看来剩下的只是锦上添花，工程管理好组件化才有真正意义。从开发的角度上不论开发什么用什么语言，组件化或者说模块化通用思路就是分离多个仓库然后自动化建立依赖关系，项目工程里互相调用适当的用反射的方法实现调用，基本上每一个小仓库就都能独立的运行了。<br>顺便放一下我的ZYQRouter：<a href="https://github.com/heroims/ZYQRouter" target="_blank" rel="external">https://github.com/heroims/ZYQRouter</a><br>里面的demo虽然没用submodule但基本可以阐述完整这套东西。<br>正式开始讲代码里的架构，ZYQRouter主要是方便各个模块之间的互相调用。之所以重复造轮子，其实只是自己项目需要，另外就是想完善这套组件化的实现。<br>这里ZYQRouter分为页面路由和方法路由，页面路由负责根据URL做各页面跳转甚至远程调度方法路由，方法路由则是提供target-action实例方法调用和invokeSelectorObjects反射调用静态方法，目的就是让各个模块开发过程中不引用对方的情况下也可独立按约定调用对方模块运行调试自己的相关内容，大家都开发完各个单元测试ok，集成到主项目里就可以基本跑通，当然现实是联调还是会通常出些小问题，但没什么大碍。</p>
-<h1 id="页面路由"><a href="#页面路由" class="headerlink" title="页面路由"></a>页面路由</h1><p>关于页面路由如下，用过蘑菇街Router的看这个会很亲切，我只是在它的基础上添加了重定向这个功能，这重定向的由来一个是动态更新页面跳转逻辑方便，另一个就是我们自己的需求客服系统里。。。。你会发现一个订单链接地址由客服发来，网页上用这链接用户打开的就是网页自己订单，客服打开就是客服系统该用户的订单，app上用户打开就是用户订单页面，于是救星就是重定向，把xxx.xxx.xxx/crm-order/orderid和xxx.xxx.xxx/order/orderid都重定向到applink://order/orderid，还有就是订单有大改动的时候<br>则是xxx.xxx.xxx/crm-order/orderid和applink://order/orderid重定向到xxx.xxx.xxx/order/orderid直接开网页用户订单，还有很多奇葩需求全靠重定向这救命稻草，所以这个重定向真的很实用。</p>
-<p>顺便再说下注册的事，因为我的Router里提供了target-action的调用所以上面说的远程调度target-action可以用一个url如applink://target-action/:target/:action?xxx=xxx完成，只用注册applink://target-action/:target/:action内部调用target-action方法。<br>而让所有部门全依照这一个逻辑规则产出链接简直天方夜谭，前端放在网页上的链接按这样估计一堆人吐槽，但仅仅ios部门之间按照这一规则跑还是可以的。<br>但当然有比较折中的方法，毕竟注册太多url也占地啊，这时候神奇的重定向就又可以上线救援了，如xxx.xxx.xxx/order?xxx=xxx这类直接重定向xxx.xxx.xxx/order到applink://target-action/ordertarget/orderaction这就好了，你注册的就可以少点但前提是你的target-action里处理的情况多。<br>另外写页面路由最好根据模块单独创建相应的类，比如Module1里可以单独的建个Module1PageFactory，有个方法-(void)openModule1VC1WithO1:(id)o1 o2:(id)o2 o3:(id)o3类似方法然后+(void)load里注册Router调用open的方法，这样开发阶段用方法路由，而在需要从外部进入时采用页面路由方式也就是URL方式</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">重定向 URLPattern 到对应的 newURLPattern </div><div class="line">@param URLPattern 原scheme</div><div class="line">@param newURLPattern 新scheme</div><div class="line">*/</div><div class="line">+ (void)redirectURLPattern:(NSString *)URLPattern toURLPattern:(NSString*)newURLPattern;</div><div class="line"></div><div class="line">/**</div><div class="line">*  注册 URLPattern 对应的 Handler，在 handler 中可以初始化 VC，然后对 VC 做各种操作</div><div class="line">*</div><div class="line">*  @param URLPattern 带上 scheme，如 applink://beauty/:id</div><div class="line">*  @param handler    该 block 会传一个字典，包含了注册的 URL 中对应的变量。</div><div class="line">*                    假如注册的 URL 为 applink://beauty/:id 那么，就会传一个 @&#123;@&quot;id&quot;: 4&#125; 这样的字典过来</div><div class="line">*/</div><div class="line">+ (void)registerURLPattern:(NSString *)URLPattern toHandler:(ZYQRouterHandler)handler;</div><div class="line"></div><div class="line">/**</div><div class="line">*  注册 URLPattern 对应的 ObjectHandler，需要返回一个 object 给调用方</div><div class="line">*</div><div class="line">*  @param URLPattern 带上 scheme，如 applink://beauty/:id</div><div class="line">*  @param handler    该 block 会传一个字典，包含了注册的 URL 中对应的变量。</div><div class="line">*                    假如注册的 URL 为 applink://beauty/:id 那么，就会传一个 @&#123;@&quot;id&quot;: 4&#125; 这样的字典过来</div><div class="line">*                    自带的 key 为 @&quot;url&quot; 和 @&quot;completion&quot; (如果有的话)</div><div class="line">*/</div><div class="line">+ (void)registerURLPattern:(NSString *)URLPattern toObjectHandler:(ZYQRouterObjectHandler)handler;</div><div class="line"></div><div class="line">/**</div><div class="line">*  取消注册某个 URL Pattern</div><div class="line">*</div><div class="line">*  @param URLPattern</div><div class="line">*/</div><div class="line">+ (void)deregisterURLPattern:(NSString *)URLPattern;</div><div class="line"></div><div class="line">/**</div><div class="line">*  打开此 URL</div><div class="line">*  会在已注册的 URL -&gt; Handler 中寻找，如果找到，则执行 Handler</div><div class="line">*</div><div class="line">*  @param URL 带 Scheme，如 applink://beauty/3</div><div class="line">*/</div><div class="line">+ (void)openURL:(NSString *)URL;</div><div class="line"></div><div class="line">/**</div><div class="line">*  打开此 URL，同时当操作完成时，执行额外的代码</div><div class="line">*</div><div class="line">*  @param URL        带 Scheme 的 URL，如 applink://beauty/4</div><div class="line">*  @param completion URL 处理完成后的 callback，完成的判定跟具体的业务相关</div><div class="line">*/</div><div class="line">+ (void)openURL:(NSString *)URL completion:(void (^)(id result))completion;</div><div class="line"></div><div class="line">/**</div><div class="line">*  打开此 URL，带上附加信息，同时当操作完成时，执行额外的代码</div><div class="line">*</div><div class="line">*  @param URL        带 Scheme 的 URL，如 applink://beauty/4</div><div class="line">*  @param parameters 附加参数</div><div class="line">*  @param completion URL 处理完成后的 callback，完成的判定跟具体的业务相关</div><div class="line">*/</div><div class="line">+ (void)openURL:(NSString *)URL withUserInfo:(NSDictionary *)userInfo completion:(void (^)(id result))completion;</div><div class="line"></div><div class="line">/**</div><div class="line">* 查找谁对某个 URL 感兴趣，如果有的话，返回一个 object</div><div class="line">*</div><div class="line">*  @param URL</div><div class="line">*/</div><div class="line">+ (id)objectForURL:(NSString *)URL;</div><div class="line"></div><div class="line">/**</div><div class="line">* 查找谁对某个 URL 感兴趣，如果有的话，返回一个 object</div><div class="line">*</div><div class="line">*  @param URL</div><div class="line">*  @param userInfo</div><div class="line">*/</div><div class="line">+ (id)objectForURL:(NSString *)URL withUserInfo:(NSDictionary *)userInfo;</div><div class="line"></div><div class="line">/**</div><div class="line">*  是否可以打开URL</div><div class="line">*</div><div class="line">*  @param URL</div><div class="line">*</div><div class="line">*  @return</div><div class="line">*/</div><div class="line">+ (BOOL)canOpenURL:(NSString *)URL;</div><div class="line"></div><div class="line">/**</div><div class="line">*  调用此方法来拼接 urlpattern 和 parameters</div><div class="line">*</div><div class="line">*  #define ROUTE_BEAUTY @&quot;beauty/:id&quot;</div><div class="line">*  [ZYQRouter generateURLWithPattern:ROUTE_BEAUTY, @[@13]];</div><div class="line">*</div><div class="line">*</div><div class="line">*  @param pattern    url pattern 比如 @&quot;beauty/:id&quot;</div><div class="line">*  @param parameters 一个数组，数量要跟 pattern 里的变量一致</div><div class="line">*</div><div class="line">*  @return</div><div class="line">*/</div><div class="line">+ (NSString *)generateURLWithPattern:(NSString *)pattern parameters:(NSArray *)parameters;</div></pre></td></tr></table></figure>
-<h1 id="方法路由"><a href="#方法路由" class="headerlink" title="方法路由"></a>方法路由</h1><p>关于方法路由如下,target-action模式就是自动根据class来alloc init初始化完target对象，然后@selector把那action方法调用了返回，而静态方法则是runtime搞定，日常需求基本满足，但还有点缺陷注释里已说明，由于invokeSelectorObjects根据className和selectorName调用静态方法所以封装成了C方法，另外就是这个不常用算是尝试。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">*</div><div class="line">*  调度工程内的组件方法</div><div class="line">*  [ZYQRouter performTarget:@&quot;xxxClass&quot; action:@&quot;xxxxActionWithObj1:obj2:obj3&quot; objects:obj1,obj2,obj3,nil]</div><div class="line">*  内部自动 alloc init 初始化对象</div><div class="line">*</div><div class="line">*  @param targetName    执行方法的类</div><div class="line">*  @param actionName    方法名</div><div class="line">*  @param object1,... 不定参数 不支持C基本类型</div><div class="line">*</div><div class="line">*  @return 方法回参</div><div class="line">*/</div><div class="line">+ (id)performTarget:(NSString*)targetName action:(NSString*)actionName objects:(id)object1,...;</div><div class="line"></div><div class="line">/**</div><div class="line">*</div><div class="line">*  调度工程内的组件方法</div><div class="line">*  [ZYQRouter performTarget:@&quot;xxxClass&quot; action:@&quot;xxxxActionWithObj1:obj2:obj3&quot; shouldCacheTaget:YES objects:obj1,obj2,obj3,nil]</div><div class="line">*  内部自动 alloc init 初始化对象</div><div class="line">*</div><div class="line">*  @param targetName    执行方法的类</div><div class="line">*  @param actionName    方法名</div><div class="line">*  @param shouldCacheTaget   设置target缓存</div><div class="line">*  @param object1,... 不定参数 不支持C基本类型</div><div class="line">*</div><div class="line">*  @return 方法回参</div><div class="line">*/</div><div class="line">+ (id)performTarget:(NSString*)targetName action:(NSString*)actionName shouldCacheTaget:(BOOL)shouldCacheTaget objects:(id)object1,...;</div><div class="line"></div><div class="line">/**</div><div class="line">*</div><div class="line">*  调度工程内的组件方法</div><div class="line">*  [ZYQRouter performTarget:@&quot;xxxClass&quot; action:@&quot;xxxxActionWithObj1:obj2:obj3&quot; shouldCacheTaget:YES objects:obj1,obj2,obj3,nil]</div><div class="line">*  内部自动 alloc init 初始化对象</div><div class="line">*</div><div class="line">*  @param targetName    执行方法的类</div><div class="line">*  @param actionName    方法名</div><div class="line">*  @param shouldCacheTaget   设置target缓存</div><div class="line">*  @param objectsArr   参数数组 不支持C基本类型</div><div class="line">*</div><div class="line">*  @return 方法回参</div><div class="line">*/</div><div class="line">+ (id)performTarget:(NSString*)targetName action:(NSString*)actionName shouldCacheTaget:(BOOL)shouldCacheTaget objectsArr:(NSArray*)objectsArr;</div><div class="line"></div><div class="line">/**</div><div class="line">*</div><div class="line">*  添加未找到Target 或 Action 逻辑</div><div class="line">*</div><div class="line">*  @param notFoundHandler    未找到方法回调</div><div class="line">*  @param targetName    类名</div><div class="line">*</div><div class="line">*  @return</div><div class="line">*/</div><div class="line">+ (void)addNotFoundHandler:(ZYQNotFoundTargetActionHandler)notFoundHandler targetName:(NSString*)targetName;</div><div class="line"></div><div class="line">/**</div><div class="line">*  删除Target缓存</div><div class="line">*</div><div class="line">*  @return</div><div class="line">*/</div><div class="line">+ (void)removeTargetsCacheWithTargetName:(NSString*)targetName;</div><div class="line">+ (void)removeTargetsCacheWithTargetNames:(NSArray*)targetNames;</div><div class="line">+ (void)removeAllTargetsCache;</div><div class="line"></div><div class="line">/**</div><div class="line">不定参静态方法调用 （最多支持7个，原因不定参方法传给不定参方法实在没啥好办法。。。。暂时如此）</div><div class="line">id result=(__bridge id)zyq_invokeSelectorObjects(@&quot;Class&quot;, @&quot;actionWithObj1:obj2:obj3&quot;,obj1,obj2,obj3,nil);</div><div class="line"></div><div class="line">c类型转换配合__bridge_transfer __bridge</div><div class="line">利用IMP返回值只是指针，不支持C基本类型</div><div class="line"></div><div class="line">@param className 类名</div><div class="line">@param selectorName,... 方法名，不定参数</div><div class="line">@return 返回值</div><div class="line">*/</div><div class="line">void * zyq_invokeSelectorObjects(NSString *className,NSString* selectorName,...);</div></pre></td></tr></table></figure></p>
-<p>最后就是页面路由和方法路由遇到找不到的处理方案了，主要思路就是不crash、好判断，页面路由就判断一下是网页的就跳转url不是就报个提示算了，方法路由return nil吧。。这里仁者见仁智者见智，反正可以自己定制，差不多就讲到这吧。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/05/IOS组件化与工程管理/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-移动端Model层与Server服务层自动化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/01/移动端Model层与Server服务层自动化/">移动端Model层与Server服务层自动化</a>
+    <h1 class="article-title" itemprop="name">
+      移动端Model层与Server服务层自动化
     </h1>
   
 
@@ -541,16 +470,79 @@ IOSWriter(options.out, proto).write()
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/01/移动端Model层与Server服务层自动化/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2017/02/01/移动端Model层与Server服务层自动化/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2017/02/05/IOS组件化与工程管理/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          IOS组件化与工程管理
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -570,8 +562,12 @@ IOSWriter(options.out, proto).write()
 
 
 
+  
+  
+  
 
   
+
   
 
 
@@ -594,8 +590,8 @@ IOSWriter(options.out, proto).write()
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
