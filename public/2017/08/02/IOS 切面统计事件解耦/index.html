@@ -9,13 +9,14 @@
   <title>IOS 切面统计事件解耦 | Heroims的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="统计这个事情可以说是个巨无语的系统，当然不把他独立出来也就不是什么问题了，只是一堆牛皮癣似得代码穿插在项目各个地方，毕竟真正应用到一个app里的统计都跟业务有着很强的绑定关系，脱离业务的统计数据基本没什么大用，先吐槽一波再开始正文。。。。 基础封装先从用第三方的来说，基本上就只是需要包个壳就ok了，建个manager，初始化sdk一封装，加几个常用统计方法基本ok。常见的方法就是传个event名再">
+<meta name="keywords" content="IOS,切面,AOP,日志,AOP解耦,架构,统计">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IOS 切面统计事件解耦">
 <meta property="og:url" content="http://yoursite.com/2017/08/02/IOS 切面统计事件解耦/index.html">
 <meta property="og:site_name" content="Heroims的博客">
 <meta property="og:description" content="统计这个事情可以说是个巨无语的系统，当然不把他独立出来也就不是什么问题了，只是一堆牛皮癣似得代码穿插在项目各个地方，毕竟真正应用到一个app里的统计都跟业务有着很强的绑定关系，脱离业务的统计数据基本没什么大用，先吐槽一波再开始正文。。。。 基础封装先从用第三方的来说，基本上就只是需要包个壳就ok了，建个manager，初始化sdk一封装，加几个常用统计方法基本ok。常见的方法就是传个event名再">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994053-18807a49c709e49a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2017-08-13T20:29:28.000Z">
+<meta property="og:updated_time" content="2017-08-14T02:31:31.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IOS 切面统计事件解耦">
 <meta name="twitter:description" content="统计这个事情可以说是个巨无语的系统，当然不把他独立出来也就不是什么问题了，只是一堆牛皮癣似得代码穿插在项目各个地方，毕竟真正应用到一个app里的统计都跟业务有着很强的绑定关系，脱离业务的统计数据基本没什么大用，先吐槽一波再开始正文。。。。 基础封装先从用第三方的来说，基本上就只是需要包个壳就ok了，建个manager，初始化sdk一封装，加几个常用统计方法基本ok。常见的方法就是传个event名再">
@@ -203,6 +204,41 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">切面</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AOP</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">日志</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">AOP解耦</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">统计</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -288,6 +324,19 @@
             </div>
         </div>
         
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#基础封装"><span class="toc-number">1.</span> <span class="toc-text">基础封装</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#切面封装"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">切面封装</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#通用统计"><span class="toc-number">2.</span> <span class="toc-text">通用统计</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#App生命周期统计"><span class="toc-number">2.0.0.1.</span> <span class="toc-text">App生命周期统计</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#点击事件（不包括手势）"><span class="toc-number">2.0.0.2.</span> <span class="toc-text">点击事件（不包括手势）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#手势统计"><span class="toc-number">2.0.0.3.</span> <span class="toc-text">手势统计</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#页面统计"><span class="toc-number">2.0.0.4.</span> <span class="toc-text">页面统计</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#业务统计"><span class="toc-number">3.</span> <span class="toc-text">业务统计</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#无参数方法统计"><span class="toc-number">3.0.0.1.</span> <span class="toc-text">无参数方法统计</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方法内逻辑处理统计"><span class="toc-number">3.0.0.2.</span> <span class="toc-text">方法内逻辑处理统计</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#前后逻辑关联统计"><span class="toc-number">3.0.0.3.</span> <span class="toc-text">前后逻辑关联统计</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#后序"><span class="toc-number">3.0.0.4.</span> <span class="toc-text">后序</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#归纳统计解耦思路"><span class="toc-number">4.</span> <span class="toc-text">归纳统计解耦思路</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
         
     </div>
 </aside>
@@ -391,6 +440,74 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
             <input type="checkbox" q-on="click:toggleTag(e)" q-attr="checked:showTags">
           </label>
           <ul class="article-tag-list" q-show="showTags">
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">切面</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">统计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">本地化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+              </li>
             
             <div class="clearfix"></div>
           </ul>

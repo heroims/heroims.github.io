@@ -9,13 +9,14 @@
   <title>IOS 网络服务层自动化详解 | Heroims的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="前言之前的文章http://www.jianshu.com/p/7a3a387584c6 最后提到了网络服务层自动化，今天在详细说说。之前封装了ServerAPI，这套框架本身其实相当于定义了一套规范的。自动化的概念还是放最后，先讲清楚这框架，到了后面自动化概念自然而然就出来了。 #ServerAPI 分析与网络服务层构建框架本身构成主要有4部分 ServerAPI主要对后台的API接口做对应描述">
+<meta name="keywords" content="IOS,网络层,自动化,架构设计">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IOS 网络服务层自动化详解">
 <meta property="og:url" content="http://yoursite.com/2017/03/02/IOS 网络服务层自动化详解/index.html">
 <meta property="og:site_name" content="Heroims的博客">
 <meta property="og:description" content="前言之前的文章http://www.jianshu.com/p/7a3a387584c6 最后提到了网络服务层自动化，今天在详细说说。之前封装了ServerAPI，这套框架本身其实相当于定义了一套规范的。自动化的概念还是放最后，先讲清楚这框架，到了后面自动化概念自然而然就出来了。 #ServerAPI 分析与网络服务层构建框架本身构成主要有4部分 ServerAPI主要对后台的API接口做对应描述">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994053-254e821d28eb7c80.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2017-08-13T20:29:55.000Z">
+<meta property="og:updated_time" content="2017-08-14T02:32:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IOS 网络服务层自动化详解">
 <meta name="twitter:description" content="前言之前的文章http://www.jianshu.com/p/7a3a387584c6 最后提到了网络服务层自动化，今天在详细说说。之前封装了ServerAPI，这套框架本身其实相当于定义了一套规范的。自动化的概念还是放最后，先讲清楚这框架，到了后面自动化概念自然而然就出来了。 #ServerAPI 分析与网络服务层构建框架本身构成主要有4部分 ServerAPI主要对后台的API接口做对应描述">
@@ -186,6 +187,29 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">网络层</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">自动化</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">架构设计</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -260,7 +284,7 @@
     </a>
   
   
-    <a href="/2017/02/15/IOS本地化:国际化项目配置/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2017/02/15/IOS百行代码全局语言本地化:国际化/" id="article-nav-older" class="article-nav-link-wrap">
       <div class="article-nav-title">IOS百行代码全局语言本地化/国际化</div>
       <i class="icon-circle-right"></i>
     </a>
@@ -280,6 +304,19 @@
             </div>
         </div>
         
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ServerAPI"><span class="toc-number">1.0.1.</span> <span class="toc-text">ServerAPI</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ServerAPIManager"><span class="toc-number">1.0.2.</span> <span class="toc-text">ServerAPIManager</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ServerResult"><span class="toc-number">1.0.3.</span> <span class="toc-text">ServerResult</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ServerAPIProtocol"><span class="toc-number">1.0.4.</span> <span class="toc-text">ServerAPIProtocol</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ServerAPI自动化产出（离散型API好处）"><span class="toc-number">2.</span> <span class="toc-text">ServerAPI自动化产出（离散型API好处）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ServerAPICreator"><span class="toc-number">2.0.0.1.</span> <span class="toc-text">ServerAPICreator</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#联想"><span class="toc-number">2.0.1.</span> <span class="toc-text">联想</span></a></li></ol></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
         
     </div>
 </aside>
@@ -383,6 +420,74 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
             <input type="checkbox" q-on="click:toggleTag(e)" q-attr="checked:showTags">
           </label>
           <ul class="article-tag-list" q-show="showTags">
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">切面</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">统计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">本地化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+              </li>
             
             <div class="clearfix"></div>
           </ul>

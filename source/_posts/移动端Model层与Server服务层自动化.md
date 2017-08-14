@@ -2,6 +2,11 @@
 title: 移动端Model层与Server服务层自动化
 date: 2017-02-01 02:09:05
 tags:
+    - 网络层
+    - 自动化
+    - 架构设计
+    - Model层
+    - IOS
 ---
 
 # Model层自动化

@@ -9,12 +9,13 @@
   <title>移动端Model层与Server服务层自动化 | Heroims的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="Model层自动化前言（纯属捎带扯一下，后端大咖勿看）谈到Model层自动化的产出我们就来从最初的地方开始讲，数据库！无论你是用啥写服务器如果还手写Model那真的只能说你够low我服！不过如果是手写Model自动生成数据库那另说，总的来说就是要么从数据库转实体出来，要么从实体转数据库这才有点意思。上边只是开玩笑下面正题，很多时候大家都无奈没办法不能说low不low，其中奥妙各有体会，通常有点规模">
+<meta name="keywords" content="IOS,网络层,自动化,架构设计,Model层">
 <meta property="og:type" content="article">
 <meta property="og:title" content="移动端Model层与Server服务层自动化">
 <meta property="og:url" content="http://yoursite.com/2017/02/01/移动端Model层与Server服务层自动化/index.html">
 <meta property="og:site_name" content="Heroims的博客">
 <meta property="og:description" content="Model层自动化前言（纯属捎带扯一下，后端大咖勿看）谈到Model层自动化的产出我们就来从最初的地方开始讲，数据库！无论你是用啥写服务器如果还手写Model那真的只能说你够low我服！不过如果是手写Model自动生成数据库那另说，总的来说就是要么从数据库转实体出来，要么从实体转数据库这才有点意思。上边只是开玩笑下面正题，很多时候大家都无奈没办法不能说low不low，其中奥妙各有体会，通常有点规模">
-<meta property="og:updated_time" content="2017-08-13T20:28:06.000Z">
+<meta property="og:updated_time" content="2017-08-14T02:32:58.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="移动端Model层与Server服务层自动化">
 <meta name="twitter:description" content="Model层自动化前言（纯属捎带扯一下，后端大咖勿看）谈到Model层自动化的产出我们就来从最初的地方开始讲，数据库！无论你是用啥写服务器如果还手写Model那真的只能说你够low我服！不过如果是手写Model自动生成数据库那另说，总的来说就是要么从数据库转实体出来，要么从实体转数据库这才有点意思。上边只是开玩笑下面正题，很多时候大家都无奈没办法不能说low不low，其中奥妙各有体会，通常有点规模">
@@ -467,6 +468,33 @@ IOSWriter(options.out, proto).write()
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">网络层</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">自动化</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">架构设计</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Model层</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -556,6 +584,19 @@ IOSWriter(options.out, proto).write()
             </div>
         </div>
         
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Model层自动化"><span class="toc-number">1.</span> <span class="toc-text">Model层自动化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#前言（纯属捎带扯一下，后端大咖勿看）"><span class="toc-number">1.0.1.</span> <span class="toc-text">前言（纯属捎带扯一下，后端大咖勿看）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#后端的Model层"><span class="toc-number">1.0.2.</span> <span class="toc-text">后端的Model层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#移动端的Model层"><span class="toc-number">1.0.3.</span> <span class="toc-text">移动端的Model层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Model自动化实现"><span class="toc-number">1.0.4.</span> <span class="toc-text">Model自动化实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Protobuf-Convert转码"><span class="toc-number">1.0.4.1.</span> <span class="toc-text">Protobuf Convert转码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Server服务层自动化"><span class="toc-number">1.0.4.2.</span> <span class="toc-text">Server服务层自动化</span></a></li></ol></li></ol></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
         
     </div>
 </aside>
@@ -659,6 +700,74 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
             <input type="checkbox" q-on="click:toggleTag(e)" q-attr="checked:showTags">
           </label>
           <ul class="article-tag-list" q-show="showTags">
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">切面</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">统计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">本地化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+              </li>
             
             <div class="clearfix"></div>
           </ul>
