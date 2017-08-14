@@ -97,8 +97,8 @@ style:
   # 头像上面的背景颜色
   header: '#4d4d4d'
   # 右滑板块背景
-  slider: 'linear-gradient(200deg,#ffff00,#0000ff)'
-
+  slider: 'linear-gradient(200deg,#a0cfe4,#000000)'
+##002fff,#a0a000
 # slider的设置
 slider:
   # 是否默认展开tags板块
