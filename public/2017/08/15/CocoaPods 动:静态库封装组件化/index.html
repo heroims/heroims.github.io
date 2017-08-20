@@ -6,20 +6,28 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Hello World | Hexo</title>
+  <title>CocoaPods 动/静态库封装组件化 | Heroims的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+  <meta name="description" content="动/静态库混用pods的动静态库混用，相信大多数人一想到就会头皮发麻，体会过的应该都懂，那种无助感。。。。 问题大型项目里来个尝试性swift过渡，首先就是pod加use_frameworks!来支持pod动态库，接着就是一大片的不支持动态库pod提示error，源码上看不dependency依赖静态库pod其实是不会有问题的，如果你的pod全是源码型也不会有任何问题！ ps:其实我感觉这是bu">
+<meta name="keywords" content="组件化,CocoaPods,动&#x2F;静态库,IOS,工程管理">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://yoursite.com/2017/08/13/hello-world/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
-<meta property="og:updated_time" content="2017-08-13T14:59:25.000Z">
+<meta property="og:title" content="CocoaPods 动&#x2F;静态库封装组件化">
+<meta property="og:url" content="http://yoursite.com/2017/08/15/CocoaPods 动:静态库封装组件化/index.html">
+<meta property="og:site_name" content="Heroims的博客">
+<meta property="og:description" content="动/静态库混用pods的动静态库混用，相信大多数人一想到就会头皮发麻，体会过的应该都懂，那种无助感。。。。 问题大型项目里来个尝试性swift过渡，首先就是pod加use_frameworks!来支持pod动态库，接着就是一大片的不支持动态库pod提示error，源码上看不dependency依赖静态库pod其实是不会有问题的，如果你的pod全是源码型也不会有任何问题！ ps:其实我感觉这是bu">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994053-1fd000b267fa2f10.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994053-b83bb9df3c448f43.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994053-1e7f9f22cfc89904.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994053-f6b8369f75849747.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994053-79ea56d0ef0438f4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994053-4cdcb0ac2b4b4918.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-08-20T16:53:35.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta name="twitter:title" content="CocoaPods 动&#x2F;静态库封装组件化">
+<meta name="twitter:description" content="动/静态库混用pods的动静态库混用，相信大多数人一想到就会头皮发麻，体会过的应该都懂，那种无助感。。。。 问题大型项目里来个尝试性swift过渡，首先就是pod加use_frameworks!来支持pod动态库，接着就是一大片的不支持动态库pod提示error，源码上看不dependency依赖静态库pod其实是不会有问题的，如果你的pod全是源码型也不会有任何问题！ ps:其实我感觉这是bu">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3994053-1fd000b267fa2f10.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
-    <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="Heroims的博客" type="application/atom+xml">
   
   
     <link rel="icon" href="/favicon.png">
@@ -28,7 +36,7 @@
   <style type="text/css">
   
     #container.show {
-      background: linear-gradient(200deg,#a0cfe4,#e8c37e);
+      background: linear-gradient(200deg,#a0cfe4,#000000);
     }
   </style>
   
@@ -46,10 +54,10 @@
 <div class="intrude-less">
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
-			<img src="" class="js-avatar">
+			<img src="https://avatars3.githubusercontent.com/u/1631701?v=4&amp;s=460" class="js-avatar">
 		</a>
 		<hgroup>
-		  <h1 class="header-author"><a href="/">John Doe</a></h1>
+		  <h1 class="header-author"><a href="/">Heroims</a></h1>
 		</hgroup>
 		
 
@@ -57,8 +65,6 @@
 			<ul>
 			
 				<li><a href="/">主页</a></li>
-	        
-				<li><a href="/tags/随笔/">随笔</a></li>
 	        
 			</ul>
 		</nav>
@@ -80,13 +86,13 @@
 		<nav class="header-nav">
 			<div class="social">
 				
-					<a class="github" target="_blank" href="#" title="github"><i class="icon-github"></i></a>
+					<a class="github" target="_blank" href="https://github.com/heroims" title="github"><i class="icon-github"></i></a>
 		        
-					<a class="weibo" target="_blank" href="#" title="weibo"><i class="icon-weibo"></i></a>
+					<a class="jianshu" target="_blank" href="http://www.jianshu.com/u/8ece68b113e5" title="jianshu"><i class="icon-jianshu"></i></a>
 		        
-					<a class="rss" target="_blank" href="#" title="rss"><i class="icon-rss"></i></a>
+					<a class="mail" target="_blank" href="mailto:heroims@163.com" title="mail"><i class="icon-mail"></i></a>
 		        
-					<a class="zhihu" target="_blank" href="#" title="zhihu"><i class="icon-zhihu"></i></a>
+					<a class="linkedin" target="_blank" href="https://www.linkedin.com/in/%E6%98%93%E5%A5%87-%E8%B5%B5-8aa943aa/?ppe=1" title="linkedin"><i class="icon-linkedin"></i></a>
 		        
 			</div>
 		</nav>
@@ -104,15 +110,13 @@
 	<div class="intrude-less">
 		<header id="header" class="inner">
 			<div class="profilepic">
-				<img src="" class="js-avatar">
+				<img src="https://avatars3.githubusercontent.com/u/1631701?v=4&amp;s=460" class="js-avatar">
 			</div>
 			<hgroup>
-			  <h1 class="header-author js-header-author">John Doe</h1>
+			  <h1 class="header-author js-header-author">Heroims</h1>
 			</hgroup>
 			
 			
-			
-				
 			
 				
 			
@@ -121,13 +125,13 @@
 			<nav class="header-nav">
 				<div class="social">
 					
-						<a class="github" target="_blank" href="#" title="github"><i class="icon-github"></i></a>
+						<a class="github" target="_blank" href="https://github.com/heroims" title="github"><i class="icon-github"></i></a>
 			        
-						<a class="weibo" target="_blank" href="#" title="weibo"><i class="icon-weibo"></i></a>
+						<a class="jianshu" target="_blank" href="http://www.jianshu.com/u/8ece68b113e5" title="jianshu"><i class="icon-jianshu"></i></a>
 			        
-						<a class="rss" target="_blank" href="#" title="rss"><i class="icon-rss"></i></a>
+						<a class="mail" target="_blank" href="mailto:heroims@163.com" title="mail"><i class="icon-mail"></i></a>
 			        
-						<a class="zhihu" target="_blank" href="#" title="zhihu"><i class="icon-zhihu"></i></a>
+						<a class="linkedin" target="_blank" href="https://www.linkedin.com/in/%E6%98%93%E5%A5%87-%E8%B5%B5-8aa943aa/?ppe=1" title="linkedin"><i class="icon-linkedin"></i></a>
 			        
 				</div>
 			</nav>
@@ -136,9 +140,7 @@
 				<ul style="width: 50%">
 				
 				
-					<li style="width: 50%"><a href="/">主页</a></li>
-		        
-					<li style="width: 50%"><a href="/tags/随笔/">随笔</a></li>
+					<li style="width: 100%"><a href="/">主页</a></li>
 		        
 				</ul>
 			</nav>
@@ -153,64 +155,81 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-hello-world" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-CocoaPods 动:静态库封装组件化" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      Hello World
+      CocoaPods 动/静态库封装组件化
     </h1>
   
 
         
-        <a href="/2017/08/13/hello-world/" class="archive-article-date">
-  	<time datetime="2017-08-13T14:59:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-13</time>
+        <a href="/2017/08/15/CocoaPods 动:静态库封装组件化/" class="archive-article-date">
+  	<time datetime="2017-08-15T15:07:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-15</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+        <p><img src="http://upload-images.jianshu.io/upload_images/3994053-1fd000b267fa2f10.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="DingTalk20170818200900.png"></p>
+<h1 id="动-静态库混用"><a href="#动-静态库混用" class="headerlink" title="动/静态库混用"></a>动/静态库混用</h1><p>pods的动静态库混用，相信大多数人一想到就会头皮发麻，体会过的应该都懂，那种无助感。。。。</p>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>大型项目里来个尝试性swift过渡，首先就是pod加use_frameworks!来支持pod动态库，接着就是一大片的不支持动态库pod提示error，源码上看不dependency依赖静态库pod其实是不会有问题的，如果你的pod全是源码型也不会有任何问题！</p>
+<p>ps:其实我感觉这是bug。。。压根就不是啥问题</p>
+<p>正常的pod当静态库用的时候vendored_library，vendored_frameworks两个属性搞定一切。。。</p>
+<h3 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h3><h4 id="未来"><a href="#未来" class="headerlink" title="未来"></a>未来</h4><p>虽说是未来，但我估计也就只有几个月的事吧，CocoaPods马上就要可以加动静态库标签了！长期关注pods源码的估计不以为然，上个月就定下来1.4.0发布，然而现在是1.3.1。。。。。<br>那老哥们PR了好久<a href="https://github.com/CocoaPods/Core/pull/386" target="_blank" rel="external">https://github.com/CocoaPods/Core/pull/386</a><br>看源码写的用法每个pod是可以定义static_framework:true属性,这样其实对简单的小项目半点作用都没有，但大型项目简直是救世的存在！承接上边的问题，对指定pod加静态库标签瞬间解决！<br><a id="more"></a></p>
+<h4 id="现在"><a href="#现在" class="headerlink" title="现在"></a>现在</h4><p>接着扯一下现在的解决方案，首先我们针对的就是pod提供framework和.a的情况，核心问题其实是自己怎么建立对framework和.a的支持。<br>把dependency一些静态库的pod拍平就是现在的解决方法，自己建pod，保证一层支持framework和.a,另外如果实在自己的pod里dependency的静态库pod，这个时候比较好的选择是建立subspec，直接subspec里面封装对静态库的支持。<br>这里支持的时候要分为3类，先放一个友盟分享的例子：<br>友盟的framework 和.a都是静态库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">Pod::Spec.new do |s|</div><div class="line">s.name                  = &apos;XXXThirdPartSocial&apos;</div><div class="line">s.version               = &apos;1.0&apos;</div><div class="line">s.summary               = &apos;第三方社交模块&apos;</div><div class="line">s.homepage              = &apos;xxx.xxx.xxx&apos;</div><div class="line">s.license               = &#123; :type =&gt; &apos;MIT&apos;&#125;</div><div class="line">s.author                = &#123; &apos;xxx&apos; =&gt; &apos;xxx@163.com&apos; &#125;</div><div class="line">s.source                = &#123; :git =&gt; &apos;xxx.xxx.xxx&apos;, :tag =&gt; &quot;#&#123;s.version&#125;&quot; &#125;</div><div class="line">s.platform              = :ios, &apos;7.0&apos;</div><div class="line">s.source_files          = &apos;&apos;</div><div class="line">s.requires_arc          = true</div><div class="line">#s.ios.dependency  	&apos;UMengUShare/Social/ReducedQQ&apos;</div><div class="line">#s.ios.dependency  	&apos;UMengUShare/Social/ReducedWeChat&apos;</div><div class="line">#s.ios.dependency  	&apos;UMengUShare/Social/ReducedSina&apos;</div><div class="line">s.subspec &apos;XXXThirdPartSocialVendor&apos; do |sss|</div><div class="line">sss.source_files            = &apos;&apos;</div><div class="line">sss.resource                = &apos;UMSocialSDK/UMSocialSDKPromptResources.bundle&apos;</div><div class="line">sss.ios.vendored_frameworks = &apos;UMSocialSDK/UMSocialCore.framework&apos;,&apos;UMSocialSDK/UMSocialNetwork.framework&apos;</div><div class="line">sss.ios.vendored_library    = &apos;SocialLibraries/QQ/libSocialQQ.a&apos;,&apos;SocialLibraries/Sina/libSocialSina.a&apos;,&apos;SocialLibraries/WeChat/libSocialWeChat.a&apos;</div><div class="line">sss.ios.public_header_files   = &apos;SocialLibraries/**/*.&#123;h&#125;&apos;</div><div class="line">sss.ios.library  = &apos;sqlite3&apos;</div><div class="line">end</div><div class="line">end</div></pre></td></tr></table></figure></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3994053-b83bb9df3c448f43.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="DingTalk20170817182046.png"></p>
+<h5 id="动态库Pods封装-a"><a href="#动态库Pods封装-a" class="headerlink" title="动态库Pods封装.a"></a>动态库Pods封装.a</h5><p>对.a封装的时候vendored_library属性对应.a，然后看看依赖啥系统库在library，frameworks里加上，最后就是.h,如果你不想暴露的话public_header_files 里加完就不用管了，如果想要暴露给别人调用，只能source_files里再加一遍.h。<br>上面例子中XXXThirdPartSocialVendor里的source_files为空，但其实.a里的东西你是可以调用的，原因是友盟在他的framework里的头文件引用了.a的头文件，间接让.a的.h公开,这问题在我看来感觉是个bug。。。<br>所以不想在source_files里再写一遍的也可以建个.h引用一遍所有.a的头文件，最后source_files写你自己的.h,但这只是保证我到处可以通过引用自己的头文件实现方法调用，并不能单个引用对应.a的头文件</p>
+<h5 id="动态库Pods封装静态Framework"><a href="#动态库Pods封装静态Framework" class="headerlink" title="动态库Pods封装静态Framework"></a>动态库Pods封装静态Framework</h5><p>对静态的Framework封装的时候可以说是最舒服的了，vendored_frameworks加上去基本就万事大吉了，至于依赖啥系统库加library，frameworks这件事，亲测有的时候并不需要！</p>
+<h5 id="动态库Pods封装动态Framework"><a href="#动态库Pods封装动态Framework" class="headerlink" title="动态库Pods封装动态Framework"></a>动态库Pods封装动态Framework</h5><p>对于动态的Framework封装，我不说估计大家也基本能猜到吧！这就是最难受的，具体情况具体分析，不同情形下用不同套路，就算不用pod也让你很不爽，这里我拿环信客服SDK来讲！<br><img src="http://upload-images.jianshu.io/upload_images/3994053-1e7f9f22cfc89904.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="DingTalk20170817183749.png"><br>不用pod你要手动把这SDK拖到上边Embedded Binaries位置头文件才能引用，这个是苹果现在引用动态Framework的套路。。。好烦！<br>下面讲一下pod怎么搞，如果单纯framework做pod，首先public_header_files要指定xxx.framework/Headers/{<em>.h}不然你头文件找不到，其次source_files里看具体编译情况决定加不加xxx.framework/Headers/{</em>.h}，然后就是比较普通的地方vendored_frameworks指定好完事大吉！source_files这个加了的时候还有一个前提就是Framework内引用全是””不能&lt;&gt;，所以大部分情况source_files不加<br>另一种混合使用感觉这才是最常见的<br><img src="http://upload-images.jianshu.io/upload_images/3994053-f6b8369f75849747.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="DingTalk20170818125422.png"><br>这时候不要指定Framework的public_header_files，写一个自己的头文件引用类，把想公开可以调用的在这里#import <xxx.framework xxx.h="">,只能间接把那些搞出去，起作用的只有vendored_frameworks</xxx.framework></p>
+<h4 id="动态库Pods封装资源文件的调用"><a href="#动态库Pods封装资源文件的调用" class="headerlink" title="动态库Pods封装资源文件的调用"></a>动态库Pods封装资源文件的调用</h4><p>高能预警！超级天坑降临！<br>当你use_frameworks!这么一下你如果自定义的pod有关于resource或resource_bundle的话应该会发现真正的末日降临了，之前的资源全读不出来了！<br><img src="http://upload-images.jianshu.io/upload_images/3994053-79ea56d0ef0438f4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="DingTalk20170818141324.png"><br>一张图片告诉你发生了什么，pod构建动态库的时候你的资源文件都在Framework里！<br>现在的选择变成：要么资源文件放外面单独加，要么改代码。。。。就问你坑不坑？<br>放外面单独加我这就不说了太简单，代码写的话其实也要看本身代码的结构什么样，如果像我举例中的SDK基本没救，没有统一的地方获取NSBundle,也没对bundle名称做统一，更没对UIImage设置加扩展！<br>下面简单说下调用方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">NSString * bundleName=@&quot;Frameworks/xxx.framework/xxx.bundle&quot;;</div><div class="line"></div><div class="line">NSString * bundlePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: bundleName];</div><div class="line"></div><div class="line">NSBundle *bundle= [NSBundle bundleWithPath:bundlePath];</div><div class="line"></div><div class="line">//本地化（拖入.lproj 文件夹即可）</div><div class="line">NSString *localizedString=[bundle  localizedStringForKey:@&quot;localizedStringKey&quot; value:@&quot;&quot; table:nil]</div><div class="line"></div><div class="line">//图片获取</div><div class="line">NSString *bundleImageName=[bundleName  stringByAppendingString:@&quot;myIcon&quot;];</div><div class="line"></div><div class="line">UIImage *tmpImage=[UIImage imageNamed: bundleImageName];</div></pre></td></tr></table></figure></p>
+<p>根据上面代码可以找个单例提供bundleName字段，在模块初始化的时候，先判断xxx.bundle有没有，没有的情况bundleName设置成Frameworks/xxx.framework/xxx.bundle，如果没有bundle而是单纯的资源文件，指定到framework目录里就可以随便用了。</p>
+<p>只有这样你的pod才算是支持了CocoaPods 动/静态库,也才算是真正的组件化，而且拆包看.app也会感觉优雅很多，分类明确！</p>
+<h1 id="CocoaPods-组件化常识普及"><a href="#CocoaPods-组件化常识普及" class="headerlink" title="CocoaPods 组件化常识普及"></a>CocoaPods 组件化常识普及</h1><h3 id="模块开发"><a href="#模块开发" class="headerlink" title="模块开发"></a>模块开发</h3><p>在模块开发时可以podfile里指定本地路径，.podspec引入工程内但不要加到target里。这样改podspec方便，而且只是修改文件的话可以随时看到pod的真实效果。<br>上面说的并不是最好的方式，bug fix可能还不错，真开发一大块没有的东西还是先开发最后写podspec为上策！<br><img src="http://upload-images.jianshu.io/upload_images/3994053-4cdcb0ac2b4b4918.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="DingTalk20170818182404.png"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pod &apos;xxxModule&apos;,:path =&gt; &apos;../xxxModule.podspec&apos;</div></pre></td></tr></table></figure></p>
+<h3 id="指定Spec-Repo"><a href="#指定Spec-Repo" class="headerlink" title="指定Spec Repo"></a>指定Spec Repo</h3><p>在不指定Spec Repo的情况事实是如下面类似写podfile文件,的确也可以更新，但pod内如果有dependency就不行除非你在外部也pod了你dependency的库。。。如此一来你的podfile就比较臃肿看起来，当然的确是可以凑活用的！<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pod &apos;xxxxx&apos;,:git =&gt; &apos;ssh://git@git.xxxx.cn/xxxxx.git&apos;,branch:&apos;master&apos;</div></pre></td></tr></table></figure></p>
+<p>其实完全可以在podfile最上面写上<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">source &apos;ssh://xxx.com/my/Specs.git&apos;</div></pre></td></tr></table></figure></p>
+<p>你只需要把官网的Specs弄下来传到你自己的服务器上，至于怎么上传.podspec文件，可以看下面：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">#设置一次我们自己的远程仓库源，类似git remote的概念，REPO_NAME仓库源名，SOURCE_URL仓库源远程地址</div><div class="line">pod repo add REPO_NAME SOURCE_URL</div><div class="line"></div><div class="line">#上传.podspec文件到自己的本地命名好的那个仓库源</div><div class="line">pod repo push REPO_NAME SPEC_NAME.podspec</div></pre></td></tr></table></figure></p>
+<p>不过没事的时候要合并一下<a href="https://github.com/CocoaPods/Specs，不然你的外部引用可就跟不上时代的潮流了！" target="_blank" rel="external">https://github.com/CocoaPods/Specs，不然你的外部引用可就跟不上时代的潮流了！</a></p>
+<p>弄懂上面那些基本上已经够做好工程管理的组件化了！</p>
 
       
 
-      
-        <div class="page-reward">
-          <a href="javascript:;" class="page-reward-btn tooltip-top">
-            <div class="tooltip tooltip-east">
-            <span class="tooltip-item">
-              赏
-            </span>
-            <span class="tooltip-content">
-              <span class="tooltip-text">
-                <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
-                  <div class="reward-box">
-                    
-                    
-                  </div>
-                </span>
-              </span>
-            </span>
-          </div>
-          </a>
-        </div>
       
     </div>
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">组件化</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CocoaPods</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">动/静态库</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">工程管理</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -261,7 +280,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2017/08/13/hello-world/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2017/08/15/CocoaPods 动:静态库封装组件化/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -273,6 +292,16 @@
 </article>
 
   
+<nav id="article-nav">
+  
+  
+    <a href="/2017/08/02/IOS 切面统计事件解耦/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">IOS 切面统计事件解耦</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -286,6 +315,19 @@
             </div>
         </div>
         
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#动-静态库混用"><span class="toc-number">1.</span> <span class="toc-text">动/静态库混用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#问题"><span class="toc-number">1.0.1.</span> <span class="toc-text">问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解决"><span class="toc-number">1.0.2.</span> <span class="toc-text">解决</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#未来"><span class="toc-number">1.0.2.1.</span> <span class="toc-text">未来</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#现在"><span class="toc-number">1.0.2.2.</span> <span class="toc-text">现在</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#动态库Pods封装-a"><span class="toc-number">1.0.2.2.1.</span> <span class="toc-text">动态库Pods封装.a</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#动态库Pods封装静态Framework"><span class="toc-number">1.0.2.2.2.</span> <span class="toc-text">动态库Pods封装静态Framework</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#动态库Pods封装动态Framework"><span class="toc-number">1.0.2.2.3.</span> <span class="toc-text">动态库Pods封装动态Framework</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#动态库Pods封装资源文件的调用"><span class="toc-number">1.0.2.3.</span> <span class="toc-text">动态库Pods封装资源文件的调用</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CocoaPods-组件化常识普及"><span class="toc-number">2.</span> <span class="toc-text">CocoaPods 组件化常识普及</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#模块开发"><span class="toc-number">2.0.1.</span> <span class="toc-text">模块开发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#指定Spec-Repo"><span class="toc-number">2.0.2.</span> <span class="toc-text">指定Spec Repo</span></a></li></ol></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
         
     </div>
 </aside>
@@ -308,7 +350,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2017 John Doe
+    		&copy; 2017 Heroims
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -329,7 +371,7 @@
 		toc_hide_index: true,
 		root: "/",
 		innerArchive: true,
-		showTags: false
+		showTags: true
 	}
 </script>
 
@@ -389,6 +431,78 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
             <input type="checkbox" q-on="click:toggleTag(e)" q-attr="checked:showTags">
           </label>
           <ul class="article-tag-list" q-show="showTags">
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">切面</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">统计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+              </li>
             
             <div class="clearfix"></div>
           </ul>
@@ -439,27 +553,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
         <ul class="search-ul">
           
             <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接1</a>
+              <a href="http://www.jianshu.com/u/8ece68b113e5" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>简书</a>
             </li>
           
             <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接2</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接3</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接4</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接5</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接6</a>
+              <a href="http://heroims.github.io/MyWeblog/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>无聊练手网页</a>
             </li>
           
         </ul>
@@ -470,7 +568,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
     
     	<section class="tools-section tools-section-me" q-show="aboutme">
   	  	
-  	  		<div class="aboutme-wrap" id="js-aboutme">很惭愧&lt;br&gt;&lt;br&gt;只做了一点微小的工作&lt;br&gt;谢谢大家</div>
+  	  		<div class="aboutme-wrap" id="js-aboutme">现阶段很想进个bat&lt;br&gt;&lt;br&gt;有能推荐的希望推荐下&lt;br&gt;谢谢大家</div>
   	  	
     	</section>
     

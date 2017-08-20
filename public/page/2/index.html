@@ -6,11 +6,11 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2017/8 | Heroims的博客</title>
+  <title>Heroims的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta property="og:type" content="website">
 <meta property="og:title" content="Heroims的博客">
-<meta property="og:url" content="http://yoursite.com/archives/2017/08/index.html">
+<meta property="og:url" content="http://yoursite.com/page/2/index.html">
 <meta property="og:site_name" content="Heroims的博客">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Heroims的博客">
@@ -145,34 +145,41 @@
           <div id="js-content" class="content-ll">
             
   
-  
+    <article id="post-IOS组件化与工程管理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/08/15/CocoaPods 动:静态库封装组件化/" class="archive-article-date">
-  	<time datetime="2017-08-15T15:07:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-15</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/08/15/CocoaPods 动:静态库封装组件化/">CocoaPods 动/静态库封装组件化</a>
+      <a class="article-title" href="/2017/02/05/IOS组件化与工程管理/">IOS组件化与工程管理</a>
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2017/02/05/IOS组件化与工程管理/" class="archive-article-date">
+  	<time datetime="2017-02-04T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>谈及组件化其实网上也有不少文章了，但我个人认为不结合工程管理去单讲组件化恐怕很难让人理解概念，而去实践的时候也只是照猫画虎。</p>
+<h1 id="工程管理"><a href="#工程管理" class="headerlink" title="工程管理"></a>工程管理</h1><p>组件化的实现很重要的一个组成部分应该是工程拆分，这里我的方案是采取git管理项目pod管理依赖很常见很普通的方法。<br>理想的状态每一个模块都是独立的，可以单独拿出来测试，发布，也就是每一个子模块其实都是一个git仓库，这里紧接着就是子仓库和主项目的关系问题，上边说到了git和pod，还有一个submodule我喜欢用这个来做子仓库的管理上边为啥没提它呢？<br>因为submodule本身就是git自带的就是git的一部分，常用命令有<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"># 添加子仓库</div><div class="line">git submodule add 仓库地址 路径</div><div class="line">#初始化所有子仓库</div><div class="line">git submodule init</div><div class="line"># 更新子仓库</div><div class="line">git submodule update</div><div class="line"></div><div class="line"># 也可以初始化更新一起</div><div class="line">git submodule update --init</div></pre></td></tr></table></figure></p>
+<p>pod只是帮我把依赖关系理清直接本地pod，因为坑爹的开发阶段难免有互相block的情况，那边东西弄完了，但还没有做发布还不稳定，但另一边已经急着要看一眼整体调用的效果了。。。<br>当然这时候也可以让对面先打个beta的tag，那样可想而知最后会有多少没用的tag，另一方面就是bug联调恢复节点排查的时候，另一方估计只有一个方案就是回滚上一个tag中间哪的问题一点点打tag联调。<br>上边说的打tag也只是个例子，当然你可以改Podfile对应不同branch，但那也是要每次调都要改一下的，但我这种模式由于是本地pod所以podfile不用动了每次都去指向对应的项目，剩下的就是对子仓库随意切换branch甚至commit节点都可以，调ok了直接commit一下submodule指向的更改即可。然后另一方更新一下再pod update把依赖关系重新建立一下（如果没有添加或删除，甚至这步都不需要，本地pod引用目录我们submodule的本地文件夹里面有什么变化这边自动会变，添加删除是因为依赖关系发生变化了所以跟着需要重新建立）,当然理想情况回头有空单独整合一套submodule和pod的命令，submodule更新时判断有增删操作执行pod update其他情况不处理。</p>
+<p>这里紧接着就是公共库的处理以及怎么去建立主仓库与子仓库的依赖，我这里把基本思路给出，具体情况还是自己再改动，这里首先就是建立podspec来提供依赖建立<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">Pod::Spec.new do |s|</div><div class="line">s.name                  = &apos;MainWorkSpaceDemo&apos;</div><div class="line">s.version               = &apos;1.0.0&apos;</div><div class="line">s.summary               = &apos;A new container controller to slide  &apos;</div><div class="line">s.homepage              = &apos;github.com&apos;</div><div class="line">s.license               = &#123; :type =&gt; &apos;MIT&apos;, :file =&gt; &apos;README.md&apos; &#125;</div><div class="line">s.author                = &#123; &apos;heroims&apos; =&gt; &apos;heroims@163.com&apos; &#125;</div><div class="line">s.source                = &#123; :git =&gt; &apos;&apos;, :tag =&gt; &quot;#&#123;s.version&#125;&quot; &#125;</div><div class="line">s.platform              = :ios, &apos;5.0&apos;</div><div class="line">s.source_files          = &apos;ZYQRouter/*.&#123;h,m&#125;&apos;</div><div class="line">s.requires_arc          = true</div><div class="line">#公共仓库</div><div class="line">s.subspec &apos;BaseTool&apos; do |ss|</div><div class="line">ss.source_files = &apos;ZYQRouter/*.&#123;h,m&#125;&apos;</div><div class="line">end</div><div class="line">#模块1</div><div class="line">s.subspec &apos;Module1&apos; do |sss|</div><div class="line">sss.source_files = &apos;Module1/Module1Lib/*.&#123;h,m&#125;&apos;</div><div class="line">end</div><div class="line">#模块2</div><div class="line">s.subspec &apos;Module2&apos; do |ssss|</div><div class="line">ssss.source_files = &apos;Module2/Module2Lib/*.&#123;h,m&#125;&apos;</div><div class="line">end</div><div class="line"></div><div class="line">end</div></pre></td></tr></table></figure></p>
+<p>看见上边相比就明白了把，开发的时候最好要作为模块给人的东西放在一个目录下，当然不放也可以，这里就是为了方便<br>然后就是引用了,下面是module1工程的，只引用了一个公共库，真正开发的时候则会引用很多，然后build测试模块的app给测试，提供给主仓库的东西放在事先约定的目录下，其他的随便看心情，反正对别人没影响就是自己爽不爽<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">target &apos;Module1&apos; do</div><div class="line"># Uncomment the next line if you&apos;re using Swift or would like to use dynamic frameworks</div><div class="line"># use_frameworks!</div><div class="line"></div><div class="line"># Pods for Module1</div><div class="line">pod &apos;MainWorkSpaceDemo/BaseTool&apos;, :path =&gt; &apos;../MainWorkSpaceDemo.podspec&apos;</div><div class="line"></div><div class="line">target &apos;Module1Tests&apos; do</div><div class="line">inherit! :search_paths</div><div class="line"># Pods for testing</div><div class="line">end</div><div class="line"></div><div class="line">target &apos;Module1UITests&apos; do</div><div class="line">inherit! :search_paths</div><div class="line"># Pods for testing</div><div class="line">end</div><div class="line"></div><div class="line">end</div></pre></td></tr></table></figure></p>
+        
+          <a class="article-more-a" href="/2017/02/05/IOS组件化与工程管理/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -182,15 +189,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CocoaPods</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">动/静态库</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">架构设计</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -200,33 +203,75 @@
 		</ul>
 	</div>
 
-          
+      
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/02/05/IOS组件化与工程管理/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/08/02/IOS 切面统计事件解耦/" class="archive-article-date">
-  	<time datetime="2017-08-01T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-02</time>
-</a>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-移动端Model层与Server服务层自动化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
     <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/08/02/IOS 切面统计事件解耦/">IOS 切面统计事件解耦</a>
+      <a class="article-title" href="/2017/02/01/移动端Model层与Server服务层自动化/">移动端Model层与Server服务层自动化</a>
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2017/02/01/移动端Model层与Server服务层自动化/" class="archive-article-date">
+  	<time datetime="2017-01-31T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Model层自动化"><a href="#Model层自动化" class="headerlink" title="Model层自动化"></a>Model层自动化</h1><h3 id="前言（纯属捎带扯一下，后端大咖勿看）"><a href="#前言（纯属捎带扯一下，后端大咖勿看）" class="headerlink" title="前言（纯属捎带扯一下，后端大咖勿看）"></a>前言（纯属捎带扯一下，后端大咖勿看）</h3><p>谈到Model层自动化的产出我们就来从最初的地方开始讲，数据库！<br>无论你是用啥写服务器如果还手写Model那真的只能说你够low我服！不过如果是手写Model自动生成数据库那另说，总的来说就是要么从数据库转实体出来，要么从实体转数据库这才有点意思。<br>上边只是开玩笑下面正题，很多时候大家都无奈没办法不能说low不low，其中奥妙各有体会，通常有点规模的团队都是先定义表然后就出Model了</p>
+<h3 id="后端的Model层"><a href="#后端的Model层" class="headerlink" title="后端的Model层"></a>后端的Model层</h3><p>后端数据库和实体互转的方案都不用Google，百度就能出来一大推，有直接读库生成的，也有从实体转sql生成库的，更有提前定义协议然后开始出对应模块对应语言的实体及sql</p>
+<h3 id="移动端的Model层"><a href="#移动端的Model层" class="headerlink" title="移动端的Model层"></a>移动端的Model层</h3><p>先继续谈会后台Model，这里要说的只是最好有一个提前定义的过程，这样一方面规范开发流程提前想好怎样建库合理，一方面有利于跨平台跨语言的开发，有了提前定义的协议，Model和枚举的各平台自动生成就方便了很多，写个简单的小程序即可，类型也就那几类。关键真的是一劳永逸，省去了大家互相校对的过程。<br>自动化生成移动端乃至前端用的Model层说白了就是做个类型映射，细说的话基本就是分为两类，一类直接就着后端现有项目读Model层的文件，然后做个类型的映射直接导出移动端需要的类，另一类也就是设计数据库时先定义Model的协议，然后根据协议自动生成各个平台需要的实体，而协议定义通常用序列化后的数据如xml(极力抵制，结构复杂)，json，pb，sql文件都能干这事。</p>
+<h3 id="Model自动化实现"><a href="#Model自动化实现" class="headerlink" title="Model自动化实现"></a>Model自动化实现</h3><p>上面说到了xml，json，pb，sql文件都能干这件事，但其中最容易就是json，github上搜个json class基本就能有一大片总有你想要的语言，但json的局限在于也就能转换一下model，当然通过特殊定义中间转换，枚举啥的也能搞定，在这我推荐pb，首先它就是专门用来定义协议的，枚举实体不用说都能搞定，包括默认值设置也能写出来，而且是谷歌出品本身是im通讯协议，被它序列化的数据在上面说的里面算是最小的，而另一方面关于转码参考<a href="https://github.com/google/protobuf/blob/master/docs/third_party.md" target="_blank" rel="external">https://github.com/google/protobuf/blob/master/docs/third_party.md</a> ，直接开放了各个语言的转换方法，当然你根本用不到它里面写的那么复杂，它的里面实体可是直接带pb转换model方法的，如果不是开发im根本用不到，要删部分源码实现自己的需要也行，。。。（下面讲一下正经方法）</p>
+<h4 id="Protobuf-Convert转码"><a href="#Protobuf-Convert转码" class="headerlink" title="Protobuf Convert转码"></a>Protobuf Convert转码</h4><p>下面放代码片段（反馈的人多放全的，之所以不想放还有个原因是这边实现有点粗）<br>这里以Python为例，只是因为安装执行方便所以选它<br>转成OC的例子，之所以选OC因为我就是个搞IOS的。。。写起来各个公司需求不同每次都要改改改。。。也就是这个原因懒得放全的了，因为用的人说到底还是需要手动改成自己想要的，没有通用的。。。<br>
+        
+          <a class="article-more-a" href="/2017/02/01/移动端Model层与Server服务层自动化/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -236,45 +281,63 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">切面</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">网络层</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AOP</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">自动化</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">日志</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">架构设计</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">AOP解耦</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">统计</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Model层</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/02/01/移动端Model层与Server服务层自动化/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
-  
-  
-    </div></section>
-  
 
-    
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    </nav>
+  
 
 
           </div>
@@ -296,9 +359,9 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: false,
+		isHome: true,
 		isPost: false,
-		isArchive: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
