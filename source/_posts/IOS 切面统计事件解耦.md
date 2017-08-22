@@ -24,19 +24,42 @@ ps:有个壳才敢放开手折腾优化
 切面统计其实可以看我之前的[IOS 百行代码切面日志](http://www.jianshu.com/p/a9219e618ca2)，整个完成的就是切面的封装，看过的基本应该了解这套逻辑切面的时候不关心切面方法的参数的话会非常好用。
 如果业务关联强的情况，虽然也能处理但要针对那些业务作出对应的逻辑，导致切面封装里夹杂很多特殊逻辑,下面的方法内部要对originAOP拆分取所有参，甚至要复制部分业务层逻辑过来最后完成一个统计。
 ```
--(void)al_logger:(id)log originAOP:(id)originAOP
+@interface NSObject (AOPLogger)
+
+/**
+替换或添加类方法，即使替换过也会替换，注意想单次替换使用dispatch_once保证，如果方法从未声明过则会添加失败
+
+@param originalSelector 原方法
+@param swizzledSelector 替换方法
+@param error 错误信息
+*/
++(void)al_hookOrAddWithOriginClassSeletor:(SEL)originalSelector swizzledSelector:(SEL)swizzledSelector error:(NSError**)error;
+
+
+/**
+替换或添加实例方法，即使替换过也会替换，注意想单次替换使用dispatch_once保证，如果方法从未声明过则会添加失败
+
+@param originalSelector 原方法
+@param swizzledSelector 替换方法
+@param error 错误信息
+*/
++(void)al_hookOrAddWithOriginSeletor:(SEL)originalSelector swizzledSelector:(SEL)swizzledSelector error:(NSError**)error;
+
+@end
 ```
+<!-- more -->
+
 所以我个人建议这里就封装些简单的少参甚至无参的统计，然后基本上简单的通用统计和业务统计建个类或者plist，列一下要切面的类和方法就完成了。
 
 凡事都有特例，如果本身方法内多个参数完成一次统计就不多，那我之前的百行系列就已经足够你解耦了。
 
-ps:郑重声明AOP用Aspects不支持切面静态库，回头有空可以改改，Aspects用class_replaceMethod实现的，用method_exchangeImplementations其实是可以的对IMP置换。
+ps:郑重声明AOP用Aspects不支持切面静态方法，回头有空肯定是要改的，Aspects用class_replaceMethod实现的，没有取isa的过程，用method_exchangeImplementations对IMP置换其实是可以实现的，回头我重写一个关于swizzing的库就换掉Aspects。
 
 # 通用统计
 通用统计就是可以脱离业务完全抽离的部分，这部分其实可以设计部分业务承接，比如通用点击事件可以把点击的UI对象扩展出一个字典的属性值，如此对于通用统计来说只是看看有没有某个属性有的话就扔到统计里，和业务层没有关联，但后面带来的好处很大！这个最后说。
 #### App生命周期统计
 应用生命周期的统计随便建个类，监听下面的通知就ok了，当然这个类就不能销毁了，比较懒得做法直接AOPLogger 类扩展一下init里监听，因为我本身的类里连init方法都没重写。
-<!-- more -->
+
 UIApplicationDidFinishLaunchingNotification （通知名称） --->   application:didFinishLaunchingWithOptions:(委托方法）：在应用程序启动后直接进行应用程序级编码的主要方式。
 
 UIApplicationWillResignActiveNotification(通知名称）--->applicationWillResignActive:（委托方法）：用户按下主屏幕按钮调用 ，不要在此方法中假设将进入后台状态，只是一种临时变化，最终将恢复到活动状态

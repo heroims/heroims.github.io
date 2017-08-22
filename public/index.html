@@ -269,7 +269,7 @@
 <h4 id="切面封装"><a href="#切面封装" class="headerlink" title="切面封装"></a>切面封装</h4><p>切面统计其实可以看我之前的<a href="http://www.jianshu.com/p/a9219e618ca2" target="_blank" rel="external">IOS 百行代码切面日志</a>，整个完成的就是切面的封装，看过的基本应该了解这套逻辑切面的时候不关心切面方法的参数的话会非常好用。<br>如果业务关联强的情况，虽然也能处理但要针对那些业务作出对应的逻辑，导致切面封装里夹杂很多特殊逻辑,下面的方法内部要对originAOP拆分取所有参，甚至要复制部分业务层逻辑过来最后完成一个统计。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">-(void)al_logger:(id)log originAOP:(id)originAOP</div></pre></td></tr></table></figure></p>
 <p>所以我个人建议这里就封装些简单的少参甚至无参的统计，然后基本上简单的通用统计和业务统计建个类或者plist，列一下要切面的类和方法就完成了。</p>
 <p>凡事都有特例，如果本身方法内多个参数完成一次统计就不多，那我之前的百行系列就已经足够你解耦了。</p>
-<p>ps:郑重声明AOP 至少我现在还没发现IOS里怎么实现切面静态方法（类方法）</p>
+<p>ps:郑重声明AOP用Aspects不支持切面静态库，回头有空可以改改，Aspects用class_replaceMethod实现的，用method_exchangeImplementations其实是可以的对IMP置换。</p>
 <h1 id="通用统计"><a href="#通用统计" class="headerlink" title="通用统计"></a>通用统计</h1><p>通用统计就是可以脱离业务完全抽离的部分，这部分其实可以设计部分业务承接，比如通用点击事件可以把点击的UI对象扩展出一个字典的属性值，如此对于通用统计来说只是看看有没有某个属性有的话就扔到统计里，和业务层没有关联，但后面带来的好处很大！这个最后说。</p>
 <h4 id="App生命周期统计"><a href="#App生命周期统计" class="headerlink" title="App生命周期统计"></a>App生命周期统计</h4><p>应用生命周期的统计随便建个类，监听下面的通知就ok了，当然这个类就不能销毁了，比较懒得做法直接AOPLogger 类扩展一下init里监听，因为我本身的类里连init方法都没重写。<br>
         
