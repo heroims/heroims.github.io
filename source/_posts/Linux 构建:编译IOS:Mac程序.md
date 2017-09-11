@@ -25,6 +25,7 @@ tags:
 ![Untitled.png](http://upload-images.jianshu.io/upload_images/3994053-fad34baa2afc46ac.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 # 安装配置
+<!-- more -->
 ## 准备工作
 ruby （为了支持CocoaPods）
 [clang](http://releases.llvm.org/download.html) 4.0或以上（为了支持IOS10，如果你准备的sdk版本不高，那就无所谓了，关键是对应上）
