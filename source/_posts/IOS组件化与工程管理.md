@@ -275,3 +275,28 @@ c类型转换配合__bridge_transfer __bridge
 void * zyq_invokeSelectorObjects(NSString *className,NSString* selectorName,...);
 ```
 最后就是页面路由和方法路由遇到找不到的处理方案了，主要思路就是不crash、好判断，页面路由就判断一下是网页的就跳转url不是就报个提示算了，方法路由return nil吧。。这里仁者见仁智者见智，反正可以自己定制，差不多就讲到这吧。
+
+# 事件链路由
+``` Objective-C
+/**
+响应链传递路由
+
+用于解决多级嵌套UI对象的上级事件响应，省去delegate protocol逐级传递，跨级传递
+
+@param eventName 事件名
+@param userInfo 扩展信息
+*/
+-(void)zyq_routerEventWithName:(NSString *)eventName userInfo:(id)userInfo;
+```
+这个主要解决多层级UI对象嵌套的时候，事件传递繁琐，通过Event完成对事件定义，一级级传递到响应者的过程在开发中就可以省略了。
+只需要如下使用的时候在发起和接受地方写好处理即可！
+
+``` Objective-C
+//调用
+[self.nextResponder zyq_routerEventWithName:eventName userInfo:userInfo];
+
+//承接
+- (void)zyq_routerEventWithName:(NSString *)eventName userInfo:(NSDictionary *)userInfo {
+//判断eventName做出对应逻辑
+}
+```

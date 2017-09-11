@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="Heroims的博客">
 <meta property="og:description" content="统计这个事情可以说是个巨无语的系统，当然不把他独立出来也就不是什么问题了，只是一堆牛皮癣似得代码穿插在项目各个地方，毕竟真正应用到一个app里的统计都跟业务有着很强的绑定关系，脱离业务的统计数据基本没什么大用，先吐槽一波再开始正文。。。。 基础封装先从用第三方的来说，基本上就只是需要包个壳就ok了，建个manager，初始化sdk一封装，加几个常用统计方法基本ok。常见的方法就是传个event名再">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994053-18807a49c709e49a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2017-08-22T03:34:03.000Z">
+<meta property="og:updated_time" content="2017-08-22T04:39:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IOS 切面统计事件解耦">
 <meta name="twitter:description" content="统计这个事情可以说是个巨无语的系统，当然不把他独立出来也就不是什么问题了，只是一堆牛皮癣似得代码穿插在项目各个地方，毕竟真正应用到一个app里的统计都跟业务有着很强的绑定关系，脱离业务的统计数据基本没什么大用，先吐槽一波再开始正文。。。。 基础封装先从用第三方的来说，基本上就只是需要包个壳就ok了，建个manager，初始化sdk一封装，加几个常用统计方法基本ok。常见的方法就是传个event名再">
@@ -174,12 +174,14 @@
 <h1 id="基础封装"><a href="#基础封装" class="headerlink" title="基础封装"></a>基础封装</h1><p>先从用第三方的来说，基本上就只是需要包个壳就ok了，建个manager，初始化sdk一封装，加几个常用统计方法基本ok。常见的方法就是传个event名再加个properties传扩展字典，用户登录状态绑定注销，通用字段增删改，基本上这就满足了大部分需求。。。</p>
 <p>如果是纯自己手写，上面说的壳放着，剩下的仿照sdk来，基本功能要实现异步队列记录往本地写数据，定期上传，处理好读写关系是关键，这里不多说不是这篇重点。</p>
 <p>ps:有个壳才敢放开手折腾优化</p>
-<h4 id="切面封装"><a href="#切面封装" class="headerlink" title="切面封装"></a>切面封装</h4><p>切面统计其实可以看我之前的<a href="http://www.jianshu.com/p/a9219e618ca2" target="_blank" rel="external">IOS 百行代码切面日志</a>，整个完成的就是切面的封装，看过的基本应该了解这套逻辑切面的时候不关心切面方法的参数的话会非常好用。<br>如果业务关联强的情况，虽然也能处理但要针对那些业务作出对应的逻辑，导致切面封装里夹杂很多特殊逻辑,下面的方法内部要对originAOP拆分取所有参，甚至要复制部分业务层逻辑过来最后完成一个统计。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">-(void)al_logger:(id)log originAOP:(id)originAOP</div></pre></td></tr></table></figure></p>
+<h4 id="切面封装"><a href="#切面封装" class="headerlink" title="切面封装"></a>切面封装</h4><p>切面统计其实可以看我之前的<a href="http://www.jianshu.com/p/a9219e618ca2" target="_blank" rel="external">IOS 百行代码切面日志</a>，整个完成的就是切面的封装，看过的基本应该了解这套逻辑切面的时候不关心切面方法的参数的话会非常好用。<br>如果业务关联强的情况，虽然也能处理但要针对那些业务作出对应的逻辑，导致切面封装里夹杂很多特殊逻辑,下面的方法内部要对originAOP拆分取所有参，甚至要复制部分业务层逻辑过来最后完成一个统计。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">@interface NSObject (AOPLogger)</div><div class="line"></div><div class="line">/**</div><div class="line">替换或添加类方法，即使替换过也会替换，注意想单次替换使用dispatch_once保证，如果方法从未声明过则会添加失败</div><div class="line"></div><div class="line">@param originalSelector 原方法</div><div class="line">@param swizzledSelector 替换方法</div><div class="line">@param error 错误信息</div><div class="line">*/</div><div class="line">+(void)al_hookOrAddWithOriginClassSeletor:(SEL)originalSelector swizzledSelector:(SEL)swizzledSelector error:(NSError**)error;</div><div class="line"></div><div class="line"></div><div class="line">/**</div><div class="line">替换或添加实例方法，即使替换过也会替换，注意想单次替换使用dispatch_once保证，如果方法从未声明过则会添加失败</div><div class="line"></div><div class="line">@param originalSelector 原方法</div><div class="line">@param swizzledSelector 替换方法</div><div class="line">@param error 错误信息</div><div class="line">*/</div><div class="line">+(void)al_hookOrAddWithOriginSeletor:(SEL)originalSelector swizzledSelector:(SEL)swizzledSelector error:(NSError**)error;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure></p>
+<a id="more"></a>
 <p>所以我个人建议这里就封装些简单的少参甚至无参的统计，然后基本上简单的通用统计和业务统计建个类或者plist，列一下要切面的类和方法就完成了。</p>
 <p>凡事都有特例，如果本身方法内多个参数完成一次统计就不多，那我之前的百行系列就已经足够你解耦了。</p>
-<p>ps:郑重声明AOP用Aspects不支持切面静态库，回头有空可以改改，Aspects用class_replaceMethod实现的，用method_exchangeImplementations其实是可以的对IMP置换。</p>
+<p>ps:郑重声明AOP用Aspects不支持切面静态方法，回头有空肯定是要改的，Aspects用class_replaceMethod实现的，没有取isa的过程，用method_exchangeImplementations对IMP置换其实是可以实现的，回头我重写一个关于swizzing的库就换掉Aspects。</p>
 <h1 id="通用统计"><a href="#通用统计" class="headerlink" title="通用统计"></a>通用统计</h1><p>通用统计就是可以脱离业务完全抽离的部分，这部分其实可以设计部分业务承接，比如通用点击事件可以把点击的UI对象扩展出一个字典的属性值，如此对于通用统计来说只是看看有没有某个属性有的话就扔到统计里，和业务层没有关联，但后面带来的好处很大！这个最后说。</p>
-<h4 id="App生命周期统计"><a href="#App生命周期统计" class="headerlink" title="App生命周期统计"></a>App生命周期统计</h4><p>应用生命周期的统计随便建个类，监听下面的通知就ok了，当然这个类就不能销毁了，比较懒得做法直接AOPLogger 类扩展一下init里监听，因为我本身的类里连init方法都没重写。<br><a id="more"></a><br>UIApplicationDidFinishLaunchingNotification （通知名称） —&gt;   application:didFinishLaunchingWithOptions:(委托方法）：在应用程序启动后直接进行应用程序级编码的主要方式。</p>
+<h4 id="App生命周期统计"><a href="#App生命周期统计" class="headerlink" title="App生命周期统计"></a>App生命周期统计</h4><p>应用生命周期的统计随便建个类，监听下面的通知就ok了，当然这个类就不能销毁了，比较懒得做法直接AOPLogger 类扩展一下init里监听，因为我本身的类里连init方法都没重写。</p>
+<p>UIApplicationDidFinishLaunchingNotification （通知名称） —&gt;   application:didFinishLaunchingWithOptions:(委托方法）：在应用程序启动后直接进行应用程序级编码的主要方式。</p>
 <p>UIApplicationWillResignActiveNotification(通知名称）—&gt;applicationWillResignActive:（委托方法）：用户按下主屏幕按钮调用 ，不要在此方法中假设将进入后台状态，只是一种临时变化，最终将恢复到活动状态</p>
 <p>UIApplicationDidBecomActiveNotification（通知名称） —-&gt;applicationDidBecomeActive:(委托方法）：应用程序按下主屏幕按钮后想要将应用程序切换到前台时调用，应用程序启动时也会调用，可以在其中添加一些应用程序初始化代码</p>
 <p>UIApplicationDidEnterBackgroundNotification(通知名称）—–&gt;applicationDidEnterBackground:（委托方法）：应用程序在此方法中释放所有可在以后重新创建的资源，保存所有用户数据，关闭网络连接等。如果需要，也可以在这里请求在后台运行更长时间。如果在这里花费了太长时间（超过5秒），系统将断定应用程序的行为异常并终止他。</p>
@@ -455,18 +457,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">IOS</a>
               </li>
              
@@ -495,6 +485,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
               </li>
              
@@ -516,10 +522,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
               </li>
              
               <li class="article-tag-list-item">
