@@ -244,7 +244,7 @@ if (![[[NSUserDefaults standardUserDefaults] objectForKey:@"firstInstall"] boolV
 if (checkConnect) {
 [self startValidateNetworkAuthorization:^(CTCellularDataRestrictedState state) {
 if (state != kCTCellularDataRestricted) {
-//蜂窝关闭
+//首次打开app，未连接wifi移动网络正常，即有网情况蜂窝关闭，需提示用户开启蜂窝网络
 }
 }];
 }

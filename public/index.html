@@ -213,21 +213,9 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">CNContactStore*contactStore = [[CNContactStore alloc] init];</div><div class="line"></div><div class="line">[contactStore requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted,NSError*_Nullable error) &#123;</div><div class="line">if (granted)&#123;// 用户同意授权</div><div class="line"></div><div class="line">&#125;</div><div class="line">else &#123;// 用户拒绝授权</div><div class="line"></div><div class="line">&#125;</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
 </li>
 </ul>
-<h1 id="蜂窝网络授权"><a href="#蜂窝网络授权" class="headerlink" title="蜂窝网络授权"></a>蜂窝网络授权</h1><h3 id="目前无解，可能以后也无解"><a href="#目前无解，可能以后也无解" class="headerlink" title="目前无解，可能以后也无解"></a>目前无解，可能以后也无解</h3><p>仅可以判断首次安装是不是蜂窝网络没开或没授权</p>
-<p>引用以下头文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">#import &lt;SystemConfiguration/CaptiveNetwork.h&gt;</div><div class="line">#import &lt;SystemConfiguration/SCNetworkReachability.h&gt;</div><div class="line">#import &lt;CoreTelephony/CTTelephonyNetworkInfo.h&gt;</div><div class="line">#import &lt;CoreTelephony/CTCellularData.h&gt;</div><div class="line">#import &lt;netinet/in.h&gt;</div></pre></td></tr></table></figure></p>
-<ul>
-<li><p>判断</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div></pre></td><td class="code"><pre><div class="line">//info不为nil，则当前链接wifi</div><div class="line">- (NSDictionary *)fetchSSIDInfo &#123;</div><div class="line">NSArray *ifs = (__bridge_transfer NSArray *)CNCopySupportedInterfaces();</div><div class="line">if (!ifs) &#123;</div><div class="line">return nil;</div><div class="line">&#125;</div><div class="line"></div><div class="line">NSDictionary *info = nil;</div><div class="line">for (NSString *ifnam in ifs) &#123;</div><div class="line">info = (__bridge_transfer NSDictionary *)CNCopyCurrentNetworkInfo((__bridge CFStringRef)ifnam);</div><div class="line">if (info &amp;&amp; [info count]) &#123; break; &#125;</div><div class="line">&#125;</div><div class="line">return info;</div><div class="line">&#125;</div><div class="line"></div><div class="line">//返回CTRadioAccessTechnologyGPRS时说明是2g，网络情况复杂就当无网</div><div class="line">- (NSString *)fetchMobileInfo &#123;</div><div class="line">CTTelephonyNetworkInfo *info = [[CTTelephonyNetworkInfo alloc] init];</div><div class="line">return  info.currentRadioAccessTechnology;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (BOOL)checkNetworkConnect &#123;</div><div class="line">// 创建零地址，0.0.0.0的地址表示查询本机的网络连接状态</div><div class="line">struct sockaddr_in zeroAddress;//sockaddr_in是与sockaddr等价的数据结构</div><div class="line">bzero(&amp;zeroAddress, sizeof(zeroAddress));</div><div class="line">zeroAddress.sin_len = sizeof(zeroAddress);</div><div class="line">zeroAddress.sin_family = AF_INET;//sin_family是地址家族，一般都是“AF_xxx”的形式。通常大多用的是都是AF_INET,代表TCP/IP协议族</div><div class="line"></div><div class="line">/**</div><div class="line">*  SCNetworkReachabilityRef: 用来保存创建测试连接返回的引用</div><div class="line">*</div><div class="line">*  SCNetworkReachabilityCreateWithAddress: 根据传入的地址测试连接.</div><div class="line">*  第一个参数可以为NULL或kCFAllocatorDefault</div><div class="line">*  第二个参数为需要测试连接的IP地址,当为0.0.0.0时则可以查询本机的网络连接状态.</div><div class="line">*  同时返回一个引用必须在用完后释放.</div><div class="line">*  PS: SCNetworkReachabilityCreateWithName: 这个是根据传入的网址测试连接,</div><div class="line">*  第二个参数比如为&quot;www.apple.com&quot;,其他和上一个一样.</div><div class="line">*</div><div class="line">*  SCNetworkReachabilityGetFlags: 这个函数用来获得测试连接的状态,</div><div class="line">*  第一个参数为之前建立的测试连接的引用,</div><div class="line">*  第二个参数用来保存获得的状态,</div><div class="line">*  如果能获得状态则返回TRUE，否则返回FALSE</div><div class="line">*</div><div class="line">*/</div><div class="line">SCNetworkReachabilityRef defaultRouteReachability = SCNetworkReachabilityCreateWithAddress(NULL, (struct sockaddr *)&amp;zeroAddress); //创建测试连接的引用：</div><div class="line">SCNetworkReachabilityFlags flags;</div><div class="line"></div><div class="line">BOOL didRetrieveFlags = SCNetworkReachabilityGetFlags(defaultRouteReachability, &amp;flags);</div><div class="line">CFRelease(defaultRouteReachability);</div><div class="line">if (didRetrieveFlags &amp;&amp; flags == 0) &#123;</div><div class="line">//当前是没有打开网络情况进入,可能是关闭蜂窝/无线或进入飞行模式</div><div class="line">return NO;</div><div class="line">&#125;</div><div class="line">return YES;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)startValidateNetworkAuthorization:(void(^)(CTCellularDataRestrictedState state))block &#123;</div><div class="line">CTCellularData *cellularData = [[CTCellularData alloc]init];</div><div class="line">cellularData.cellularDataRestrictionDidUpdateNotifier =  ^(CTCellularDataRestrictedState state)&#123;</div><div class="line">block(state);</div><div class="line">//获取联网状态</div><div class="line">switch (state) &#123;</div><div class="line">case kCTCellularDataRestricted:</div><div class="line"></div><div class="line">break;</div><div class="line">case kCTCellularDataNotRestricted:</div><div class="line"></div><div class="line">break;</div><div class="line">case kCTCellularDataRestrictedStateUnknown:</div><div class="line"></div><div class="line">break;</div><div class="line">default:</div><div class="line">break;</div><div class="line">&#125;;</div><div class="line">&#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>调用</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">BOOL checkConnect=YES;</div><div class="line">BOOL isConnectWifi=[self fetchSSIDInfo];</div><div class="line">BOOL isGPRS=[[self fetchMobileInfo] isEqualToString:CTRadioAccessTechnologyGPRS];</div><div class="line">BOOL isConnectNetwork=[self checkNetworkConnect];</div><div class="line">if (!isConnectWifi) &#123;</div><div class="line">checkConnect=NO;</div><div class="line">&#125;</div><div class="line">if (isGPRS) &#123;</div><div class="line">checkConnect=NO;</div><div class="line">&#125;</div><div class="line">if (!isConnectNetwork) &#123;</div><div class="line">checkConnect=NO;</div><div class="line">&#125;</div><div class="line"></div><div class="line">if (![[[NSUserDefaults standardUserDefaults] objectForKey:@&quot;firstInstall&quot;] boolValue]) &#123;</div><div class="line">[[NSUserDefaults standardUserDefaults] setObject:@(YES) forKey:@&quot;firstInstall&quot;];</div><div class="line">if (checkConnect) &#123;</div><div class="line">[self startValidateNetworkAuthorization:^(CTCellularDataRestrictedState state) &#123;</div><div class="line">if (state != kCTCellularDataRestricted) &#123;</div><div class="line">//蜂窝关闭</div><div class="line">&#125;</div><div class="line">&#125;];</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h1 id="其他授权"><a href="#其他授权" class="headerlink" title="其他授权"></a>其他授权</h1><ul>
-<li>plist<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">蓝牙</div><div class="line">NSBluetoothPeripheralUsageDescription</div><div class="line">媒体资料库</div><div class="line">NSAppleMusicUsageDescription</div><div class="line">音乐</div><div class="line">kTCCServiceMediaLibrary</div><div class="line">Siri</div><div class="line">NSSiriUsageDescription</div><div class="line">语音识别</div><div class="line">NSSpeechRecognitionUsageDescription</div><div class="line">日历</div><div class="line">NSCalendarsUsageDescription</div><div class="line">健康分享</div><div class="line">NSHealthShareUsageDescription</div><div class="line">健康更新</div><div class="line">NSHealthUpdateUsageDescription</div><div class="line">运动与健康</div><div class="line">NSMotionUsageDescription</div><div class="line">提醒事项</div><div class="line">NSRemindersUsageDescription</div><div class="line">FaceID</div><div class="line">NSFaceIDUsageDescription</div><div class="line">智能家居</div><div class="line">NSHomeKitUsageDescription</div><div class="line">运动</div><div class="line">NSMotionUsageDescription</div><div class="line">NFC</div><div class="line">NFCReaderUsageDescription</div><div class="line">视频认证</div><div class="line">NSVideoSubscriberAccountUsageDescription</div></pre></td></tr></table></figure>
-</li>
-</ul>
-
+        
+          <a class="article-more-a" href="/2017/09/29/IOS-各类获取授权处理/#more">more >></a>
+        
       
 
       
@@ -461,10 +449,6 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">架构设计</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">构建</a>
         		</li>
       		 
@@ -474,6 +458,10 @@
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">架构设计</a>
         		</li>
       		
 		</ul>
@@ -867,7 +855,47 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">切面</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">构建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -891,10 +919,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">网络层</a>
               </li>
              
@@ -903,43 +927,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Model层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">构建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">编译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
             
             <div class="clearfix"></div>
