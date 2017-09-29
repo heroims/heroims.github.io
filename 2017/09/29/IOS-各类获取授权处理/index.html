@@ -15,7 +15,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/09/29/IOS-各类获取授权处理/index.html">
 <meta property="og:site_name" content="Heroims的博客">
 <meta property="og:description" content="地理位置授权需要引用#import &amp;lt;CoreLocation/CoreLocation.h&amp;gt;  plist 12345678始终允许访问位置NSLocationAlwaysUsageDescription位置NSLocationUsageDescription在使用期间访问位置NSLocationWhenInUseUsageDescription始终允许访问位置并且在使用期间访问位置">
-<meta property="og:updated_time" content="2017-09-29T11:54:01.000Z">
+<meta property="og:updated_time" content="2017-09-29T11:57:12.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IOS 各类获取授权常用处理">
 <meta name="twitter:description" content="地理位置授权需要引用#import &amp;lt;CoreLocation/CoreLocation.h&amp;gt;  plist 12345678始终允许访问位置NSLocationAlwaysUsageDescription位置NSLocationUsageDescription在使用期间访问位置NSLocationWhenInUseUsageDescription始终允许访问位置并且在使用期间访问位置">
@@ -216,6 +216,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">CNContactStore*contactStore = [[CNContactStore alloc] init];</div><div class="line"></div><div class="line">[contactStore requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted,NSError*_Nullable error) &#123;</div><div class="line">if (granted)&#123;// 用户同意授权</div><div class="line"></div><div class="line">&#125;</div><div class="line">else &#123;// 用户拒绝授权</div><div class="line"></div><div class="line">&#125;</div><div class="line">&#125;];</div></pre></td></tr></table></figure>
 </li>
 </ul>
+<a id="more"></a>
 <h1 id="蜂窝网络授权"><a href="#蜂窝网络授权" class="headerlink" title="蜂窝网络授权"></a>蜂窝网络授权</h1><h3 id="目前无解，可能以后也无解"><a href="#目前无解，可能以后也无解" class="headerlink" title="目前无解，可能以后也无解"></a>目前无解，可能以后也无解</h3><p>仅可以判断首次安装是不是蜂窝网络没开或没授权</p>
 <p>引用以下头文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">#import &lt;SystemConfiguration/CaptiveNetwork.h&gt;</div><div class="line">#import &lt;SystemConfiguration/SCNetworkReachability.h&gt;</div><div class="line">#import &lt;CoreTelephony/CTTelephonyNetworkInfo.h&gt;</div><div class="line">#import &lt;CoreTelephony/CTCellularData.h&gt;</div><div class="line">#import &lt;netinet/in.h&gt;</div></pre></td></tr></table></figure></p>
 <ul>
@@ -544,7 +545,47 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">切面</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">构建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -568,10 +609,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">网络层</a>
               </li>
              
@@ -580,43 +617,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Model层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">构建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">编译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
             
             <div class="clearfix"></div>
