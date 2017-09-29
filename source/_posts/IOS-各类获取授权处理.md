@@ -227,7 +227,7 @@ break;
 ```
 BOOL checkConnect=YES;
 BOOL isConnectWifi=[self fetchSSIDInfo];
-BOOL isGPRS=[[self fetchMobileInfo] isEqualToString:CTRadioAccessTechnologyGPRS];
+BOOL isGPRS=[[self fetchMobileInfo] isEqualToString:CTRadioAccessTechnologyGPRS]||[[self fetchMobileInfo] isEqualToString:CTRadioAccessTechnologyEdge];
 BOOL isConnectNetwork=[self checkNetworkConnect];
 if (!isConnectWifi) {
 checkConnect=NO;
