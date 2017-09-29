@@ -9,14 +9,14 @@
   <title>Linux 构建/编译IOS/Mac程序 | Heroims的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="前言理论上这是一个很好的想法，但真正落实到实践，简直坑的不要不要的！笔者最终在CentOS上实在搞不动了，只在Ubuntu上弄了，关键CentOS是公司环境也不敢太造次。 整个东西写出来主要是让自己记住坑太多，不是实在想不开没事干，千万不要再搞。 思路来源https://github.com/facebook/xcbuild/issues/37 目的做这个事情起初只是因为我司不提供Mac机器来做自">
-<meta name="keywords" content="IOS,架构设计,构建,编译,Linux">
+<meta name="keywords" content="IOS,构建,编译,Linux,架构设计">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux 构建&#x2F;编译IOS&#x2F;Mac程序">
 <meta property="og:url" content="http://yoursite.com/2017/09/10/Linux 构建:编译IOS:Mac程序/index.html">
 <meta property="og:site_name" content="Heroims的博客">
 <meta property="og:description" content="前言理论上这是一个很好的想法，但真正落实到实践，简直坑的不要不要的！笔者最终在CentOS上实在搞不动了，只在Ubuntu上弄了，关键CentOS是公司环境也不敢太造次。 整个东西写出来主要是让自己记住坑太多，不是实在想不开没事干，千万不要再搞。 思路来源https://github.com/facebook/xcbuild/issues/37 目的做这个事情起初只是因为我司不提供Mac机器来做自">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994053-fad34baa2afc46ac.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2017-09-11T18:26:22.000Z">
+<meta property="og:updated_time" content="2017-09-11T18:34:11.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux 构建&#x2F;编译IOS&#x2F;Mac程序">
 <meta name="twitter:description" content="前言理论上这是一个很好的想法，但真正落实到实践，简直坑的不要不要的！笔者最终在CentOS上实在搞不动了，只在Ubuntu上弄了，关键CentOS是公司环境也不敢太造次。 整个东西写出来主要是让自己记住坑太多，不是实在想不开没事干，千万不要再搞。 思路来源https://github.com/facebook/xcbuild/issues/37 目的做这个事情起初只是因为我司不提供Mac机器来做自">
@@ -177,7 +177,8 @@
 <p>现实是恐怕就CocoaPods构建是比较稳定100%没问题，编译这个完全不敢说ok。。。所以有条件的话还是建议用有台Mac专门来干这些事，不然实在太麻烦，哪怕ssh到一台同事电脑悄悄开个账户搞都比在linux上搞靠谱！</p>
 <p>如图实现，没mac和有mac简直就是天壤之别的恶心差距！</p>
 <p><img src="http://upload-images.jianshu.io/upload_images/3994053-fad34baa2afc46ac.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Untitled.png"></p>
-<h1 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h1><h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>ruby （为了支持CocoaPods）<br><a href="http://releases.llvm.org/download.html" target="_blank" rel="external">clang</a> 4.0或以上（为了支持IOS10，如果你准备的sdk版本不高，那就无所谓了，关键是对应上）<br><a href="https://opensource.apple.com/tarballs/clang/" target="_blank" rel="external">Apple clang</a>(用他的话妥妥的手动apt-get拯救不了你)<br><a href="https://github.com/tpoechtrager/cctools-port.git" target="_blank" rel="external">cctools-port</a> 生成ios工具链（ios-toolchain）回头替换掉Xcode里的<br><a href="https://github.com/ninja-build/ninja.git" target="_blank" rel="external">ninja</a><br><a href="https://github.com/facebook/xcbuild.git" target="_blank" rel="external">xcbuild</a><br>Xcode（确切的说其实只要三个文件夹但我很不放心用了整个）</p>
+<h1 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h1><a id="more"></a>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>ruby （为了支持CocoaPods）<br><a href="http://releases.llvm.org/download.html" target="_blank" rel="external">clang</a> 4.0或以上（为了支持IOS10，如果你准备的sdk版本不高，那就无所谓了，关键是对应上）<br><a href="https://opensource.apple.com/tarballs/clang/" target="_blank" rel="external">Apple clang</a>(用他的话妥妥的手动apt-get拯救不了你)<br><a href="https://github.com/tpoechtrager/cctools-port.git" target="_blank" rel="external">cctools-port</a> 生成ios工具链（ios-toolchain）回头替换掉Xcode里的<br><a href="https://github.com/ninja-build/ninja.git" target="_blank" rel="external">ninja</a><br><a href="https://github.com/facebook/xcbuild.git" target="_blank" rel="external">xcbuild</a><br>Xcode（确切的说其实只要三个文件夹但我很不放心用了整个）</p>
 <h2 id="CocoaPods-安装"><a href="#CocoaPods-安装" class="headerlink" title="CocoaPods 安装"></a>CocoaPods 安装</h2><p>这里不得不提CocoaPods兼容性真心不错<br>CentOS<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo yum install ruby</div><div class="line">sudo gem install cocoapods</div></pre></td></tr></table></figure></p>
 <p>Ubuntu<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install ruby</div><div class="line">sudo gem install cocoapods</div></pre></td></tr></table></figure></p>
 <p>就是如此简单！已经时可用状态了！</p>
@@ -226,10 +227,6 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">架构设计</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">构建</a>
         		</li>
       		 
@@ -239,6 +236,10 @@
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">架构设计</a>
         		</li>
       		
 		</ul>
@@ -467,35 +468,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">切面</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">构建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">编译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -519,11 +492,39 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">构建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">网络层</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">自动化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
               </li>
              
               <li class="article-tag-list-item">
