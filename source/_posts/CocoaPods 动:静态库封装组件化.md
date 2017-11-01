@@ -8,7 +8,7 @@ tags:
     - CocoaPods
     - 动/静态库
 ---
-![DingTalk20170818200900.png](http://upload-images.jianshu.io/upload_images/3994053-1fd000b267fa2f10.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![DingTalk20170818200900.png](/assets/blogImage/3994053-1fd000b267fa2f10.png)
 # 动/静态库混用
 pods的动静态库混用，相信大多数人一想到就会头皮发麻，体会过的应该都懂，那种无助感。。。。
 ### 问题
@@ -53,7 +53,7 @@ sss.ios.library  = 'sqlite3'
 end
 end
 ```
-![DingTalk20170817182046.png](http://upload-images.jianshu.io/upload_images/3994053-b83bb9df3c448f43.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![DingTalk20170817182046.png](/assets/blogImage/3994053-b83bb9df3c448f43.png)
 ##### 动态库Pods封装.a
 对.a封装的时候vendored_library属性对应.a，然后看看依赖啥系统库在library，frameworks里加上，最后就是.h,如果你不想暴露的话public_header_files 里加完就不用管了，如果想要暴露给别人调用，只能source_files里再加一遍.h。
 上面例子中XXXThirdPartSocialVendor里的source_files为空，但其实.a里的东西你是可以调用的，原因是友盟在他的framework里的头文件引用了.a的头文件，间接让.a的.h公开,这问题在我看来感觉是个bug。。。
@@ -62,16 +62,16 @@ end
 对静态的Framework封装的时候可以说是最舒服的了，vendored_frameworks加上去基本就万事大吉了，至于依赖啥系统库加library，frameworks这件事，亲测有的时候并不需要！
 ##### 动态库Pods封装动态Framework
 对于动态的Framework封装，我不说估计大家也基本能猜到吧！这就是最难受的，具体情况具体分析，不同情形下用不同套路，就算不用pod也让你很不爽，这里我拿环信客服SDK来讲！
-![DingTalk20170817183749.png](http://upload-images.jianshu.io/upload_images/3994053-1e7f9f22cfc89904.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![DingTalk20170817183749.png](/assets/blogImage/3994053-1e7f9f22cfc89904.png)
 不用pod你要手动把这SDK拖到上边Embedded Binaries位置头文件才能引用，这个是苹果现在引用动态Framework的套路。。。好烦！
 下面讲一下pod怎么搞，如果单纯framework做pod，首先public_header_files要指定xxx.framework/Headers/{*.h}不然你头文件找不到，其次source_files里看具体编译情况决定加不加xxx.framework/Headers/{*.h}，然后就是比较普通的地方vendored_frameworks指定好完事大吉！source_files这个加了的时候还有一个前提就是Framework内引用全是""不能<>，所以大部分情况source_files不加
 另一种混合使用感觉这才是最常见的
-![DingTalk20170818125422.png](http://upload-images.jianshu.io/upload_images/3994053-f6b8369f75849747.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![DingTalk20170818125422.png](/assets/blogImage/3994053-f6b8369f75849747.png)
 这时候不要指定Framework的public_header_files，写一个自己的头文件引用类，把想公开可以调用的在这里#import <xxx.framework/xxx.h>,只能间接把那些搞出去，起作用的只有vendored_frameworks
 #### 动态库Pods封装资源文件的调用
 高能预警！超级天坑降临！
 当你use_frameworks!这么一下你如果自定义的pod有关于resource或resource_bundle的话应该会发现真正的末日降临了，之前的资源全读不出来了！
-![DingTalk20170818141324.png](http://upload-images.jianshu.io/upload_images/3994053-79ea56d0ef0438f4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![DingTalk20170818141324.png](/assets/blogImage/3994053-79ea56d0ef0438f4.png)
 一张图片告诉你发生了什么，pod构建动态库的时候你的资源文件都在Framework里！
 现在的选择变成：要么资源文件放外面单独加，要么改代码。。。。就问你坑不坑？
 放外面单独加我这就不说了太简单，代码写的话其实也要看本身代码的结构什么样，如果像我举例中的SDK基本没救，没有统一的地方获取NSBundle,也没对bundle名称做统一，更没对UIImage设置加扩展！
@@ -99,7 +99,7 @@ UIImage *tmpImage=[UIImage imageNamed: bundleImageName];
 ### 模块开发
 在模块开发时可以podfile里指定本地路径，.podspec引入工程内但不要加到target里。这样改podspec方便，而且只是修改文件的话可以随时看到pod的真实效果。
 上面说的并不是最好的方式，bug fix可能还不错，真开发一大块没有的东西还是先开发最后写podspec为上策！
-![DingTalk20170818182404.png](http://upload-images.jianshu.io/upload_images/3994053-4cdcb0ac2b4b4918.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![DingTalk20170818182404.png](/assets/blogImage/3994053-4cdcb0ac2b4b4918.png)
 ```
   pod 'xxxModule',:path => '../xxxModule.podspec'
 ```
