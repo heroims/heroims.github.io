@@ -16,12 +16,12 @@ tags:
 这里点个“+”直接就o了
 剩下的就是创建strings文件也就是语言映射文件
 
-![32E018FA-1E4C-4127-BD87-0AE0B0B1641D.png](http://upload-images.jianshu.io/upload_images/3994053-6172f40aabb17548.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![32E018FA-1E4C-4127-BD87-0AE0B0B1641D.png](/assets/blogImage/3994053-6172f40aabb17548.jpeg)
 
 划线的就是创建时候该点击的InfoPlist.strings就是定义CFBundleDisplayName来确定app的名字
 Localizable.strings则是正经的语言映射表了
 xib，storyboard和image也是一个套路看划线那点击就ok了
-![6DCE952A-4868-4652-AAB5-59C36DF129D5.png](http://upload-images.jianshu.io/upload_images/3994053-f2f6768c6d73d371.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![6DCE952A-4868-4652-AAB5-59C36DF129D5.png](/assets/blogImage/3994053-f2f6768c6d73d371.jpeg)
 # 百行代码全局Hook完成本地化
 废话不多说先放代码在解释
 https://github.com/heroims/LocalizedEngine
