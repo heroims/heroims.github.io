@@ -40,9 +40,9 @@ tags:
 其实常用的就只有Run，配置一下就基本满足大部分需求，做完这些再把当前的scheme设置成shared就算是完整的配置完了scheme了
 ![
 ![Uploading 屏幕快照 2017-10-31 下午7.58.22_122575.png . . .]
-](http://upload-images.jianshu.io/upload_images/3994053-76c183e70ef95e13.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+](/assets/blogImage/3994053-76c183e70ef95e13)
 
-![屏幕快照 2017-10-31 下午7.59.00.png](http://upload-images.jianshu.io/upload_images/3994053-c86836b8b7d2d84b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![屏幕快照 2017-10-31 下午7.59.00.png](/assets/blogImage/3994053-c86836b8b7d2d84b)
 
 # 使用
 看样子好像一切都已经完美搞定剩下的就是使用了，其实正题才刚刚开始。。。。
@@ -60,26 +60,26 @@ tags:
 #endif
 ```
 还可以配置不同AppIcon和LaunchImage对应不同环境如下图
-![屏幕快照 2017-10-31 下午8.16.10.png](http://upload-images.jianshu.io/upload_images/3994053-17ea70096ec3e073.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![屏幕快照 2017-10-31 下午8.16.10.png](/assets/blogImage/3994053-17ea70096ec3e073)
 另外User-Defined-Setting也是还算常用的一个配置,如下图添加了一个APPCustomName，这个用的时候写成`$(APPCustomName)`
 
-![屏幕快照 2017-11-01 上午11.55.32.png](http://upload-images.jianshu.io/upload_images/3994053-b39c7f556d923efc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![屏幕快照 2017-11-01 上午11.55.32.png](/assets/blogImage/3994053-b39c7f556d923efc)
 
-![屏幕快照 2017-11-01 下午12.06.32.png](http://upload-images.jianshu.io/upload_images/3994053-92d4b200d7f69e69.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![屏幕快照 2017-11-01 下午12.06.32.png](/assets/blogImage/3994053-92d4b200d7f69e69)
 另外就是plist里所有值都可以按上面方法做到环境分离，写法保持`$(xxxx)`即可，这样配合Build Settings也可以把Bundle Identifier用这种方法做环境分离打出不同环境的包，这样不同环境的包就可以在手机上并存了。
 # 调试
 重头戏现在才开始，上边的搞完，就能打包看效果了，但是一旦你的项目里包含了其他项目或用了pod，瞬间你就会发现调试的时候NSLog输出变量都在断点的话则什么都没有!如图，这是pod方式用AF，到AF里打断点外部传的变量都是nil。。。。
-![屏幕快照 2017-11-01 下午3.46.15.png](http://upload-images.jianshu.io/upload_images/3994053-ea973b927dfa3697.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![屏幕快照 2017-11-01 下午3.46.15.png](/assets/blogImage/3994053-ea973b927dfa3697)
 
 
-![屏幕快照 2017-11-01 下午3.46.37.png](http://upload-images.jianshu.io/upload_images/3994053-bf61aba6d19b56e6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![屏幕快照 2017-11-01 下午3.46.37.png](/assets/blogImage/3994053-bf61aba6d19b56e6)
 
 直接引用一个工程项目也会有此情况，当然你要引用的是第三方库没法调试就不用考虑了，这里原因其实很简单,看下图
 
-![屏幕快照 2017-11-01 下午4.01.51.png](http://upload-images.jianshu.io/upload_images/3994053-defff1bd06fc295d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![屏幕快照 2017-11-01 下午4.01.51.png](/assets/blogImage/3994053-defff1bd06fc295d)
 
 你需要确保所有引进来的工程`Optimization Level`这个属性想要支持调试必须是'None[-O0]'，和Debug一样的设计，其次如果组件化的设计，你的预编译宏的值也要在你Module的工程里有设置，换句话说现在引进来的其他工程你的预编译宏在他们里面是没有生效的！
-![屏幕快照 2017-11-01 下午4.07.54.png](http://upload-images.jianshu.io/upload_images/3994053-50a770f7ab269284.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![屏幕快照 2017-11-01 下午4.07.54.png](/assets/blogImage/3994053-50a770f7ab269284)
 
 所以你还需要把每个工程里都设置一遍`Optimization Leve`和`Preprocessor Macros`，手动设置就不说了,还有这里这里如果真的时间到大型项目里很可能要设置的不止2个配置，这里只是举了最容易发现的两个问题，同理解决即可。如果用pod，我们所希望的当然是`pod update`完就帮我们设置好！
 
