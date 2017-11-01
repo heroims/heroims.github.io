@@ -12,7 +12,7 @@ tags:
 ---
 
 统计这个事情可以说是个巨无语的系统，当然不把他独立出来也就不是什么问题了，只是一堆牛皮癣似得代码穿插在项目各个地方，毕竟真正应用到一个app里的统计都跟业务有着很强的绑定关系，脱离业务的统计数据基本没什么大用，先吐槽一波再开始正文。。。。
-![DingTalk20170802140347.png](http://upload-images.jianshu.io/upload_images/3994053-18807a49c709e49a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![DingTalk20170802140347.png](/assets/blogImage/3994053-18807a49c709e49a.png)
 # 基础封装
 先从用第三方的来说，基本上就只是需要包个壳就ok了，建个manager，初始化sdk一封装，加几个常用统计方法基本ok。常见的方法就是传个event名再加个properties传扩展字典，用户登录状态绑定注销，通用字段增删改，基本上这就满足了大部分需求。。。
 

@@ -22,7 +22,7 @@ tags:
 
 如图实现，没mac和有mac简直就是天壤之别的恶心差距！
 
-![Untitled.png](http://upload-images.jianshu.io/upload_images/3994053-fad34baa2afc46ac.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![Untitled.png](/assets/blogImage/3994053-fad34baa2afc46ac.png)
 
 # 安装配置
 <!-- more -->
