@@ -12,7 +12,7 @@ tags:
 # IOS百行代码全局语言本地化/国际化
 废话不多说先把基本配置搞定图文一起来
 
-![3618569F-C518-4582-8580-9DC73F1E8B2E.png](http://upload-images.jianshu.io/upload_images/3994053-006976bd750f8324.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![3618569F-C518-4582-8580-9DC73F1E8B2E.png](/assets/blogImage/3994053-006976bd750f8324.jpeg)
 这里点个“+”直接就o了
 剩下的就是创建strings文件也就是语言映射文件
 
