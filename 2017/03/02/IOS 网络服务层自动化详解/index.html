@@ -15,12 +15,12 @@
 <meta property="og:url" content="http://yoursite.com/2017/03/02/IOS 网络服务层自动化详解/index.html">
 <meta property="og:site_name" content="Heroims的博客">
 <meta property="og:description" content="前言之前的文章http://www.jianshu.com/p/7a3a387584c6 最后提到了网络服务层自动化，今天在详细说说。之前封装了ServerAPI，这套框架本身其实相当于定义了一套规范的。自动化的概念还是放最后，先讲清楚这框架，到了后面自动化概念自然而然就出来了。 #ServerAPI 分析与网络服务层构建框架本身构成主要有4部分 ServerAPI主要对后台的API接口做对应描述">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994053-254e821d28eb7c80.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2017-08-22T03:13:35.000Z">
+<meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-254e821d28eb7c80.png">
+<meta property="og:updated_time" content="2017-11-01T11:27:13.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IOS 网络服务层自动化详解">
 <meta name="twitter:description" content="前言之前的文章http://www.jianshu.com/p/7a3a387584c6 最后提到了网络服务层自动化，今天在详细说说。之前封装了ServerAPI，这套框架本身其实相当于定义了一套规范的。自动化的概念还是放最后，先讲清楚这框架，到了后面自动化概念自然而然就出来了。 #ServerAPI 分析与网络服务层构建框架本身构成主要有4部分 ServerAPI主要对后台的API接口做对应描述">
-<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3994053-254e821d28eb7c80.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta name="twitter:image" content="http://yoursite.com/assets/blogImage/3994053-254e821d28eb7c80.png">
   
     <link rel="alternative" href="/atom.xml" title="Heroims的博客" type="application/atom+xml">
   
@@ -181,7 +181,7 @@
 <p>#ServerAPI使用<br>下面说说怎么用，按这种模式填充完自己定制的方法实现后，既可以当做离散型API用也会可以当做集约型API用，还可以直接用URL<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">//离散型API使用  一个请求是一个API类，用NSClassFromString主要为了省头文件引用懒得加头文件。。。           </div><div class="line">[NSClassFromString(@&quot;DemoAPI&quot;) newRequestDataWithCompletion:^(ServerResult *result, NSError *errInfo) &#123;</div><div class="line"></div><div class="line">&#125; requestParameters:nil requestTag:NSStringFromClass([self class])];</div><div class="line"></div><div class="line">ServerAPI *discreteApi=[[NSClassFromString(@&quot;DemoAPI&quot;) alloc] init];</div><div class="line">discreteApi.requestParameters=nil;</div><div class="line">discreteApi.requestTag=NSStringFromClass([self class]);</div><div class="line">[discreteApi requestDataWithCompletion:^(ServerResult *result, NSError *errInfo) &#123;</div><div class="line"></div><div class="line">&#125;];</div><div class="line"></div><div class="line">//集约型API使用  可以直接类扩展加静态方法设置，可以自行类扩展个更简洁通用的方法这里只距离</div><div class="line">ServerAPI *intensiveAPI=[[ServerAPI alloc] init];</div><div class="line">intensiveAPI.requestHost=@&quot;http://xxx.xxx.xxx&quot;;</div><div class="line">intensiveAPI.requestPath=@&quot;xxx&quot;;</div><div class="line">intensiveAPI.requestParameters=nil;</div><div class="line">intensiveAPI.requestTag=NSStringFromClass([self class]);</div><div class="line">intensiveAPI.accessType=APIAccessType_Get;</div><div class="line">intensiveAPI.resultFormat=APIResultFormat_JSON;</div><div class="line">intensiveAPI.timeOut=30;</div><div class="line">intensiveAPI.retryTimes=2;</div><div class="line">[intensiveAPI requestDataWithCompletion:^(ServerResult *result, NSError *errInfo) &#123;</div><div class="line"></div><div class="line">&#125;];</div><div class="line"></div><div class="line">//直接请求Url</div><div class="line">ServerAPI *urlAPI=[[ServerAPI alloc] init];</div><div class="line">urlAPI.requestURL=@&quot;http://xxx.xxx.xxx&quot;;</div><div class="line">urlAPI.requestTag=NSStringFromClass([self class]);</div><div class="line">[urlAPI requestDataWithCompletion:^(ServerResult *result, NSError *errInfo) &#123;</div><div class="line"></div><div class="line">&#125;];</div></pre></td></tr></table></figure></p>
 <h1 id="ServerAPI自动化产出（离散型API好处）"><a href="#ServerAPI自动化产出（离散型API好处）" class="headerlink" title="ServerAPI自动化产出（离散型API好处）"></a>ServerAPI自动化产出（离散型API好处）</h1><p>当采用了离散型API时，调用的时候通常只需要初始化对应的API，传入后台要的参数，至此数据返回，一个请求完成。<br>通过继承ServerAPI，return 描述的固定值一个对应的API类就创建完成，然后回到之前的文章，如果服务端写的代码工整或有地方统一定义直接可以自动导出一套API的所有描述文件，也就是各各XXXAPI，哪怕代码不工整，API文档总该有吧，有点格式就可以读出来自动生成API，如果还没有，，，，好吧，那就帮他们规范化所以有了下面我用Swift写的工具 。</p>
 <h4 id="ServerAPICreator"><a href="#ServerAPICreator" class="headerlink" title="ServerAPICreator"></a>ServerAPICreator</h4><p><a href="https://github.com/heroims/ServerAPICreator" target="_blank" rel="external">https://github.com/heroims/ServerAPICreator</a><br>功能很简单，就是对API接口的描述，填完自动生成wiki.md和一堆XXXAPI.h,XXXAPI.m文件。<br>这种东西就是定制化比较高的东西了，所以代码也就看看吧，拿来直接用是不可能的，怎样都要改改，但思路相信看到这的人基本都有了</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/3994053-254e821d28eb7c80.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="687474703a2f2f6865726f696d732e6769746875622e696f2f53657276657241504943726561746f722f32414530344336422d364233422d343738332d393537322d4143423746333632314641432e706e67.png"></p>
+<p><img src="/assets/blogImage/3994053-254e821d28eb7c80.png" alt="687474703a2f2f6865726f696d732e6769746875622e696f2f53657276657241504943726561746f722f32414530344336422d364233422d343738332d393537322d4143423746333632314641432e706e67.png"></p>
 <h3 id="联想"><a href="#联想" class="headerlink" title="联想"></a>联想</h3><p>按照这种设计架构的方式很多层面的东西都会渐渐的用描述解决，开发一套东西需要的是脚本描述。核心引擎好了，想想人工智能是不是不断积累数据，产出脚本描述然后不断的自动写代码给自己打patch（随便一说扯扯淡）。。。。</p>
 
       
@@ -426,23 +426,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">IOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -470,10 +454,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">网络层</a>
               </li>
              
@@ -483,6 +463,62 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">构建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -519,42 +555,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">蜂窝网络</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">构建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">编译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
             
             <div class="clearfix"></div>
