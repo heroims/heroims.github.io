@@ -21,16 +21,16 @@
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-3112177a3c76dafa.png">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-6076902ef0296120.png">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-5739deca1545b24e.png">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994053-76c183e70ef95e13.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994053-c86836b8b7d2d84b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994053-17ea70096ec3e073.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994053-b39c7f556d923efc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994053-92d4b200d7f69e69.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994053-ea973b927dfa3697.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994053-bf61aba6d19b56e6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994053-defff1bd06fc295d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3994053-50a770f7ab269284.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2017-11-01T12:40:22.000Z">
+<meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-76c183e70ef95e13">
+<meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-c86836b8b7d2d84b">
+<meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-17ea70096ec3e073">
+<meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-b39c7f556d923efc">
+<meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-92d4b200d7f69e69">
+<meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-ea973b927dfa3697">
+<meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-bf61aba6d19b56e6">
+<meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-defff1bd06fc295d">
+<meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-50a770f7ab269284">
+<meta property="og:updated_time" content="2017-11-01T17:15:29.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Xcode 配置多种scheme完美使用（配合Pods）">
 <meta name="twitter:description" content="前言这里说到scheme其实配置不难，但真正应用到大项目中会发现一个神奇的问题，调试的时候自己自定义的scheme变量值都是nil，即使配置好也那样，主要场景就是工程内的其他工程，所以你的配置其实是要应用到所有子工程下的，是不是瞬间压力山大，，，，，本文最后就讲讲结合pod后轻松解决的办法，开头还是由浅入深，这样受众多点，文章也不至于太单调，就从配置开始一路讲到调试使用。 配置 Configura">
@@ -192,19 +192,19 @@
 <h1 id="配置-Scheme"><a href="#配置-Scheme" class="headerlink" title="配置 Scheme"></a>配置 Scheme</h1><p>首先要创建scheme这里我创建的SchemeApp-Test就是测试环境用的<br><img src="/assets/blogImage/3994053-87e9c9897c77efce.png" alt="屏幕快照 2017-10-31 下午7.42.15.png"></p>
 <p><img src="/assets/blogImage/3994053-3112177a3c76dafa.png" alt="屏幕快照 2017-10-31 下午7.43.21.png"><br>添加完成就需要配置对应的Configurations，我们是基于原项目创建的，所以简单改下就可以。<br><img src="/assets/blogImage/3994053-6076902ef0296120.png" alt="
 ![Uploading 屏幕快照 2017-10-31 下午7.47.46_551095.png . . .]
-"><br><img src="/assets/blogImage/3994053-5739deca1545b24e.png" alt="屏幕快照 2017-10-31 下午7.47.46.png"><br>其实常用的就只有Run，配置一下就基本满足大部分需求，做完这些再把当前的scheme设置成shared就算是完整的配置完了scheme了<br><img src="http://upload-images.jianshu.io/upload_images/3994053-76c183e70ef95e13.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="
+"><br><img src="/assets/blogImage/3994053-5739deca1545b24e.png" alt="屏幕快照 2017-10-31 下午7.47.46.png"><br>其实常用的就只有Run，配置一下就基本满足大部分需求，做完这些再把当前的scheme设置成shared就算是完整的配置完了scheme了<br><img src="/assets/blogImage/3994053-76c183e70ef95e13" alt="
 ![Uploading 屏幕快照 2017-10-31 下午7.58.22_122575.png . . .]
 "></p>
-<p><img src="http://upload-images.jianshu.io/upload_images/3994053-c86836b8b7d2d84b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2017-10-31 下午7.59.00.png"></p>
+<p><img src="/assets/blogImage/3994053-c86836b8b7d2d84b" alt="屏幕快照 2017-10-31 下午7.59.00.png"></p>
 <h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>看样子好像一切都已经完美搞定剩下的就是使用了，其实正题才刚刚开始。。。。<br>首先是最常用的用法就是直接使用宏来框自己代码，这个上面其实已经有提到，这里只是写个正式点的如下,定义了BaseHost不同情况下的url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">#ifdef SCHEMETESTDEBUG</div><div class="line">#define BaseHost @&quot;http://xxx.xxx.xxx/test&quot;</div><div class="line">#define CanUseCustomHost YES</div><div class="line">#elif SCHEMETESTRELEASE</div><div class="line">#define BaseHost @&quot;http://xxx.xxx.xxx/test&quot;</div><div class="line">#define CanUseCustomHost NO</div><div class="line">#else</div><div class="line">#define BaseHost @&quot;http://xxx.xxx.xxx&quot;</div><div class="line">#define CanUseCustomHost NO</div><div class="line">#endif</div></pre></td></tr></table></figure></p>
-<p>还可以配置不同AppIcon和LaunchImage对应不同环境如下图<br><img src="http://upload-images.jianshu.io/upload_images/3994053-17ea70096ec3e073.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2017-10-31 下午8.16.10.png"><br>另外User-Defined-Setting也是还算常用的一个配置,如下图添加了一个APPCustomName，这个用的时候写成<code>$(APPCustomName)</code></p>
-<p><img src="http://upload-images.jianshu.io/upload_images/3994053-b39c7f556d923efc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2017-11-01 上午11.55.32.png"></p>
-<p><img src="http://upload-images.jianshu.io/upload_images/3994053-92d4b200d7f69e69.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2017-11-01 下午12.06.32.png"><br>另外就是plist里所有值都可以按上面方法做到环境分离，写法保持<code>$(xxxx)</code>即可，这样配合Build Settings也可以把Bundle Identifier用这种方法做环境分离打出不同环境的包，这样不同环境的包就可以在手机上并存了。</p>
-<h1 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h1><p>重头戏现在才开始，上边的搞完，就能打包看效果了，但是一旦你的项目里包含了其他项目或用了pod，瞬间你就会发现调试的时候NSLog输出变量都在断点的话则什么都没有!如图，这是pod方式用AF，到AF里打断点外部传的变量都是nil。。。。<br><img src="http://upload-images.jianshu.io/upload_images/3994053-ea973b927dfa3697.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2017-11-01 下午3.46.15.png"></p>
-<p><img src="http://upload-images.jianshu.io/upload_images/3994053-bf61aba6d19b56e6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2017-11-01 下午3.46.37.png"></p>
+<p>还可以配置不同AppIcon和LaunchImage对应不同环境如下图<br><img src="/assets/blogImage/3994053-17ea70096ec3e073" alt="屏幕快照 2017-10-31 下午8.16.10.png"><br>另外User-Defined-Setting也是还算常用的一个配置,如下图添加了一个APPCustomName，这个用的时候写成<code>$(APPCustomName)</code></p>
+<p><img src="/assets/blogImage/3994053-b39c7f556d923efc" alt="屏幕快照 2017-11-01 上午11.55.32.png"></p>
+<p><img src="/assets/blogImage/3994053-92d4b200d7f69e69" alt="屏幕快照 2017-11-01 下午12.06.32.png"><br>另外就是plist里所有值都可以按上面方法做到环境分离，写法保持<code>$(xxxx)</code>即可，这样配合Build Settings也可以把Bundle Identifier用这种方法做环境分离打出不同环境的包，这样不同环境的包就可以在手机上并存了。</p>
+<h1 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h1><p>重头戏现在才开始，上边的搞完，就能打包看效果了，但是一旦你的项目里包含了其他项目或用了pod，瞬间你就会发现调试的时候NSLog输出变量都在断点的话则什么都没有!如图，这是pod方式用AF，到AF里打断点外部传的变量都是nil。。。。<br><img src="/assets/blogImage/3994053-ea973b927dfa3697" alt="屏幕快照 2017-11-01 下午3.46.15.png"></p>
+<p><img src="/assets/blogImage/3994053-bf61aba6d19b56e6" alt="屏幕快照 2017-11-01 下午3.46.37.png"></p>
 <p>直接引用一个工程项目也会有此情况，当然你要引用的是第三方库没法调试就不用考虑了，这里原因其实很简单,看下图</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/3994053-defff1bd06fc295d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2017-11-01 下午4.01.51.png"></p>
-<p>你需要确保所有引进来的工程<code>Optimization Level</code>这个属性想要支持调试必须是’None[-O0]’，和Debug一样的设计，其次如果组件化的设计，你的预编译宏的值也要在你Module的工程里有设置，换句话说现在引进来的其他工程你的预编译宏在他们里面是没有生效的！<br><img src="http://upload-images.jianshu.io/upload_images/3994053-50a770f7ab269284.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2017-11-01 下午4.07.54.png"></p>
+<p><img src="/assets/blogImage/3994053-defff1bd06fc295d" alt="屏幕快照 2017-11-01 下午4.01.51.png"></p>
+<p>你需要确保所有引进来的工程<code>Optimization Level</code>这个属性想要支持调试必须是’None[-O0]’，和Debug一样的设计，其次如果组件化的设计，你的预编译宏的值也要在你Module的工程里有设置，换句话说现在引进来的其他工程你的预编译宏在他们里面是没有生效的！<br><img src="/assets/blogImage/3994053-50a770f7ab269284" alt="屏幕快照 2017-11-01 下午4.07.54.png"></p>
 <p>所以你还需要把每个工程里都设置一遍<code>Optimization Leve</code>和<code>Preprocessor Macros</code>，手动设置就不说了,还有这里这里如果真的时间到大型项目里很可能要设置的不止2个配置，这里只是举了最容易发现的两个问题，同理解决即可。如果用pod，我们所希望的当然是<code>pod update</code>完就帮我们设置好！</p>
 <p>下面就放一波代码，以当前情况为例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">target &apos;SchemeApp&apos; do</div><div class="line"># Uncomment the next line if you&apos;re using Swift or would like to use dynamic frameworks</div><div class="line"># use_frameworks!</div><div class="line"></div><div class="line"># Pods for SchemeApp</div><div class="line">pod &apos;AFNetworking&apos;</div><div class="line">target &apos;SchemeAppUITests&apos; do</div><div class="line">inherit! :search_paths</div><div class="line"># Pods for testing</div><div class="line">end</div><div class="line"></div><div class="line">end</div><div class="line"></div><div class="line">post_install do |installer_representation|</div><div class="line"></div><div class="line">installer_representation.pods_project.targets.each do |target|</div><div class="line">target.build_configurations.each do |config|</div><div class="line">#去警告</div><div class="line">config.build_settings[&apos;GCC_WARN_INHIBIT_ALL_WARNINGS&apos;] = &apos;YES&apos;</div><div class="line">#判断scheme</div><div class="line">if config.name.include?(&quot;SchemeAppTest_Release&quot;)</div><div class="line">#添加scheme对应的预编译宏</div><div class="line">config.build_settings[&apos;GCC_PREPROCESSOR_DEFINITIONS&apos;] ||= [&apos;$(inherited)&apos;]</div><div class="line">config.build_settings[&apos;GCC_PREPROCESSOR_DEFINITIONS&apos;] &lt;&lt; &apos;SCHEMEAPPTESTRELEASE=3&apos;</div><div class="line">end</div><div class="line">if config.name.include?(&quot;SchemeAppTest_Debug&quot;)</div><div class="line">config.build_settings[&apos;GCC_PREPROCESSOR_DEFINITIONS&apos;] ||= [&apos;$(inherited)&apos;]</div><div class="line">config.build_settings[&apos;GCC_PREPROCESSOR_DEFINITIONS&apos;] &lt;&lt; &apos;SCHEMEAPPTESTDEBUG=2&apos;</div><div class="line">#指定scheme的调试模式可见变量</div><div class="line">config.build_settings[&apos;GCC_OPTIMIZATION_LEVEL&apos;] = &apos;0&apos;</div><div class="line">#某些情况由于编译器不支持无法debug（可选）</div><div class="line">config.build_settings[&apos;ONLY_ACTIVE_ARCH&apos;] = &apos;YES&apos;</div><div class="line">end</div><div class="line">end</div><div class="line">end</div><div class="line">end</div></pre></td></tr></table></figure></p>
 <p>利用好podfile文件,就这样一次性解决,把所有pod都配置了一遍<code>Build Settings</code>的设置，至此scheme才算完美搞完，利用上面的思路，即使项目再神奇应该也能做到完美的配置scheme。</p>
@@ -498,67 +498,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">构建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">编译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Scheme</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">预编译宏</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Configurations</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Preprocessor Macros</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">User-Defined-Setting</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">网络层</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">自动化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -595,6 +543,58 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">蜂窝网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Scheme</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">预编译宏</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Configurations</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Preprocessor Macros</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">User-Defined-Setting</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">构建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
               </li>
              
               <li class="article-tag-list-item">
