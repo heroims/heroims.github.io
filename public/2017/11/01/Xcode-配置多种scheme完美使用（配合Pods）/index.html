@@ -9,7 +9,7 @@
   <title>Xcode 配置多种scheme完美使用（配合Pods） | Heroims的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="前言这里说到scheme其实配置不难，但真正应用到大项目中会发现一个神奇的问题，调试的时候自己自定义的scheme变量值都是nil，即使配置好也那样，主要场景就是工程内的其他工程，所以你的配置其实是要应用到所有子工程下的，是不是瞬间压力山大，，，，，本文最后就讲讲结合pod后轻松解决的办法，开头还是由浅入深，这样受众多点，文章也不至于太单调，就从配置开始一路讲到调试使用。 配置 Configura">
-<meta name="keywords" content="IOS,Scheme,预编译宏,Configurations,Preprocessor Macros,User-Defined-Setting">
+<meta name="keywords" content="IOS,CocoaPods,Scheme,预编译宏,Configurations,Preprocessor Macros,User-Defined-Setting">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Xcode 配置多种scheme完美使用（配合Pods）">
 <meta property="og:url" content="http://yoursite.com/2017/11/01/Xcode-配置多种scheme完美使用（配合Pods）/index.html">
@@ -30,7 +30,7 @@
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-bf61aba6d19b56e6">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-defff1bd06fc295d">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-50a770f7ab269284">
-<meta property="og:updated_time" content="2017-11-01T17:15:29.000Z">
+<meta property="og:updated_time" content="2017-11-01T17:18:26.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Xcode 配置多种scheme完美使用（配合Pods）">
 <meta name="twitter:description" content="前言这里说到scheme其实配置不难，但真正应用到大项目中会发现一个神奇的问题，调试的时候自己自定义的scheme变量值都是nil，即使配置好也那样，主要场景就是工程内的其他工程，所以你的配置其实是要应用到所有子工程下的，是不是瞬间压力山大，，，，，本文最后就讲讲结合pod后轻松解决的办法，开头还是由浅入深，这样受众多点，文章也不至于太单调，就从配置开始一路讲到调试使用。 配置 Configura">
@@ -222,6 +222,10 @@
 			 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CocoaPods</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
