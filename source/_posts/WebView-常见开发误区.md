@@ -2,6 +2,9 @@
 title: WebView 常见开发误区
 date: 2017-01-01 16:13:04
 tags:
+    - IOS
+    - WebView
+    - 常见开发误区
 ---
 # RequestUrl
 setRequestUrl方法内注意fragment的概念，当前段采用了#在url中的时候，且作为新页面传给客户端，一定要注意，因为#也就是fragment是不会触发页面重新加载的如果host和path都一样，这时候需要调用reload方法如下，但另一方面也该给前段说明这是启用一个新页面本来就不该用#，背离了用#的意义

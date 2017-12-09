@@ -241,6 +241,71 @@
 
 
   
+    <article id="post-WebView-常见开发误区" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/01/WebView-常见开发误区/">WebView 常见开发误区</a>
+    </h1>
+  
+
+        
+        <a href="/2017/01/01/WebView-常见开发误区/" class="archive-article-date">
+  	<time datetime="2017-01-01T08:13:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="RequestUrl"><a href="#RequestUrl" class="headerlink" title="RequestUrl"></a>RequestUrl</h1><p>setRequestUrl方法内注意fragment的概念，当前段采用了#在url中的时候，且作为新页面传给客户端，一定要注意，因为#也就是fragment是不会触发页面重新加载的如果host和path都一样，这时候需要调用reload方法如下，但另一方面也该给前段说明这是启用一个新页面本来就不该用#，背离了用#的意义<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">-(void)setRequestUrl:(NSString *)requestUrl&#123;</div><div class="line">_requestUrl=requestUrl;</div><div class="line"></div><div class="line">NSURL *tmpUrl=[NSURL URLWithString:requestUrl];</div><div class="line"></div><div class="line">NSURL *ordUrl=self.lk_webView.request.URL;</div><div class="line"></div><div class="line">[self.lk_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:_requestUrl]]];</div><div class="line"></div><div class="line">//fragment不会触发重新加载</div><div class="line">if ([tmpUrl.host isEqualToString:ordUrl.host]&amp;&amp;[tmpUrl.path isEqualToString:ordUrl.path]&amp;&amp;![tmpUrl.fragment isEqualToString:ordUrl.fragment]) &#123;</div><div class="line">[self.lk_webView reload];</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h1 id="异步页面标题设置"><a href="#异步页面标题设置" class="headerlink" title="异步页面标题设置"></a>异步页面标题设置</h1><p>通常客户端直接在webview开始加载或加载完js交互调一下document.title设置就完事了，但是如果网页异步设置页面标题就尴尬了，所以通常要定义一个供网页调用的native方法如下，isDynamicTitle控制是否在开始加载和结束加载webview的时候执行<code>document.title</code>获取标题动态设置，当前端主动设置就要关闭动态设置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">-(void)setWebViewTitle:(NSString*)title&#123;</div><div class="line">dispatch_async(dispatch_get_main_queue(), ^&#123;</div><div class="line">UIViewController *tmpVC=[UIViewController topViewController];</div><div class="line">if ([tmpVC isKindOfClass:[LK_WebViewController class]]) &#123;</div><div class="line">[(LK_WebViewController*)tmpVC setIsDynamicTitle:NO];</div><div class="line">tmpVC.title=title;</div><div class="line">&#125;</div><div class="line">&#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h1 id="区域内使用webview取消填充"><a href="#区域内使用webview取消填充" class="headerlink" title="区域内使用webview取消填充"></a>区域内使用webview取消填充</h1><p>如果在一个固定区域使用webview，你会发现有时底部会有一条线，设背景图背景色都没用，那是view的opaque在生效，需要设置成NO，webview底部会留1像素的缝隙，只有取消填充才能保证背景图背景色不被那条底线干扰</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/01/01/WebView-常见开发误区/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
@@ -442,26 +507,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Scheme</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">预编译宏</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Configurations</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Preprocessor Macros</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">User-Defined-Setting</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">构建</a>
               </li>
              
@@ -483,6 +528,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Scheme</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">预编译宏</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Configurations</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Preprocessor Macros</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">User-Defined-Setting</a>
               </li>
              
               <li class="article-tag-list-item">

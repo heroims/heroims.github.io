@@ -6,14 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: 翻译 | Heroims的博客</title>
+  <title>WebView 常见开发误区 | Heroims的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Heroims的博客">
-<meta property="og:url" content="http://yoursite.com/tags/翻译/index.html">
+  <meta name="description" content="RequestUrlsetRequestUrl方法内注意fragment的概念，当前段采用了#在url中的时候，且作为新页面传给客户端，一定要注意，因为#也就是fragment是不会触发页面重新加载的如果host和path都一样，这时候需要调用reload方法如下，但另一方面也该给前段说明这是启用一个新页面本来就不该用#，背离了用#的意义1234567891011121314-(void)setR">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WebView 常见开发误区">
+<meta property="og:url" content="http://yoursite.com/2017/01/01/WebView-常见开发误区/index.html">
 <meta property="og:site_name" content="Heroims的博客">
+<meta property="og:description" content="RequestUrlsetRequestUrl方法内注意fragment的概念，当前段采用了#在url中的时候，且作为新页面传给客户端，一定要注意，因为#也就是fragment是不会触发页面重新加载的如果host和path都一样，这时候需要调用reload方法如下，但另一方面也该给前段说明这是启用一个新页面本来就不该用#，背离了用#的意义1234567891011121314-(void)setR">
+<meta property="og:updated_time" content="2017-12-09T08:14:30.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Heroims的博客">
+<meta name="twitter:title" content="WebView 常见开发误区">
+<meta name="twitter:description" content="RequestUrlsetRequestUrl方法内注意fragment的概念，当前段采用了#在url中的时候，且作为新页面传给客户端，一定要注意，因为#也就是fragment是不会触发页面重新加载的如果host和path都一样，这时候需要调用reload方法如下，但另一方面也该给前段说明这是启用一个新页面本来就不该用#，背离了用#的意义1234567891011121314-(void)setR">
   
     <link rel="alternative" href="/atom.xml" title="Heroims的博客" type="application/atom+xml">
   
@@ -143,76 +147,152 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-WebView-常见开发误区" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/02/15/IOS百行代码全局语言本地化:国际化/" class="archive-article-date">
-  	<time datetime="2017-02-14T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-15</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/02/15/IOS百行代码全局语言本地化:国际化/">IOS百行代码全局语言本地化/国际化</a>
+    <h1 class="article-title" itemprop="name">
+      WebView 常见开发误区
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">切面</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">百行代码系列</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">本地化/国际化</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">翻译</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+        <a href="/2017/01/01/WebView-常见开发误区/" class="archive-article-date">
+  	<time datetime="2017-01-01T08:13:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="RequestUrl"><a href="#RequestUrl" class="headerlink" title="RequestUrl"></a>RequestUrl</h1><p>setRequestUrl方法内注意fragment的概念，当前段采用了#在url中的时候，且作为新页面传给客户端，一定要注意，因为#也就是fragment是不会触发页面重新加载的如果host和path都一样，这时候需要调用reload方法如下，但另一方面也该给前段说明这是启用一个新页面本来就不该用#，背离了用#的意义<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">-(void)setRequestUrl:(NSString *)requestUrl&#123;</div><div class="line">_requestUrl=requestUrl;</div><div class="line"></div><div class="line">NSURL *tmpUrl=[NSURL URLWithString:requestUrl];</div><div class="line"></div><div class="line">NSURL *ordUrl=self.lk_webView.request.URL;</div><div class="line"></div><div class="line">[self.lk_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:_requestUrl]]];</div><div class="line"></div><div class="line">//fragment不会触发重新加载</div><div class="line">if ([tmpUrl.host isEqualToString:ordUrl.host]&amp;&amp;[tmpUrl.path isEqualToString:ordUrl.path]&amp;&amp;![tmpUrl.fragment isEqualToString:ordUrl.fragment]) &#123;</div><div class="line">[self.lk_webView reload];</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h1 id="异步页面标题设置"><a href="#异步页面标题设置" class="headerlink" title="异步页面标题设置"></a>异步页面标题设置</h1><p>通常客户端直接在webview开始加载或加载完js交互调一下document.title设置就完事了，但是如果网页异步设置页面标题就尴尬了，所以通常要定义一个供网页调用的native方法如下，isDynamicTitle控制是否在开始加载和结束加载webview的时候执行<code>document.title</code>获取标题动态设置，当前端主动设置就要关闭动态设置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">-(void)setWebViewTitle:(NSString*)title&#123;</div><div class="line">dispatch_async(dispatch_get_main_queue(), ^&#123;</div><div class="line">UIViewController *tmpVC=[UIViewController topViewController];</div><div class="line">if ([tmpVC isKindOfClass:[LK_WebViewController class]]) &#123;</div><div class="line">[(LK_WebViewController*)tmpVC setIsDynamicTitle:NO];</div><div class="line">tmpVC.title=title;</div><div class="line">&#125;</div><div class="line">&#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h1 id="区域内使用webview取消填充"><a href="#区域内使用webview取消填充" class="headerlink" title="区域内使用webview取消填充"></a>区域内使用webview取消填充</h1><p>如果在一个固定区域使用webview，你会发现有时底部会有一条线，设背景图背景色都没用，那是view的opaque在生效，需要设置成NO，webview底部会留1像素的缝隙，只有取消填充才能保证背景图背景色不被那条底线干扰</p>
 
-          
+      
 
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2017/01/01/WebView-常见开发误区/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2017/02/01/移动端Model层与Server服务层自动化/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          移动端Model层与Server服务层自动化
+        
+      </div>
+    </a>
   
   
-    </div></section>
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#RequestUrl"><span class="toc-number">1.</span> <span class="toc-text">RequestUrl</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#异步页面标题设置"><span class="toc-number">2.</span> <span class="toc-text">异步页面标题设置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#区域内使用webview取消填充"><span class="toc-number">3.</span> <span class="toc-text">区域内使用webview取消填充</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
 
 
           </div>
@@ -235,9 +315,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
