@@ -6,7 +6,7 @@ tags:
 	- OSX
 	- 安保系统
 	- Crash防御
-     - Cocoa
+	- Cocoa
 ---
 # 前言
 这里主要以iOS和OSX讲讲crash闪退怎么防御。
