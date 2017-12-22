@@ -8,6 +8,9 @@ tags:
 	- Crash防御
 	- Cocoa
 ---
+
+![3994053-6cb0e72bd8827012.png](/assets/blogImage/3994053-6cb0e72bd8827012.jpg)
+
 # 前言
 这里主要以iOS和OSX讲讲crash闪退怎么防御。
 其中最新的OSX应用本身就有一定闪退防御，但有点类似`@try @catch`在最外层包了一下普通的越界调用空方法都会中断在操作位置不向下执行，如果没有进一步复杂逻辑不会闪退，只是影响后续的操作。
@@ -19,15 +22,12 @@ tags:
 参考了众多网上的资料有了下面的小成果分享出来，这其实只是安保系统最后的一个环节的防御
 
 https://github.com/heroims/SafeObjectProxy
-
 # 安保系统设计
 这里我所认为的安保系统应该从代码和规范两个层面看，毕竟想抓到所有的crash情况是一定不可能的，现实中即使处处try catch都没法保证抓到所有crash！
 ## 代码
 - swizzing切面
 - 方法防御选型
 - 防御成功上报
-
-<!-- more -->
 
 程序内需要的是代码，这个模块是要没有任何侵入性的，所以切面是必须的，其次就是尽量的细化切面颗粒度保证意外情况最小化！
 
@@ -42,10 +42,10 @@ https://github.com/heroims/SafeObjectProxy
 
 @required
 /**
- 上报防御的crash log
- 
- @param log log无法抓到Notification的遗漏注销情况
- */
+上报防御的crash log
+
+@param log log无法抓到Notification的遗漏注销情况
+*/
 -(void)reportDefendCrashLog:(NSString*)log;
 
 @end
@@ -122,9 +122,9 @@ KVC归根结底也算这类入参异常，一共切面3个地方就够防御了�
 ## Dangling Pointer(野指针)
 这个种Crash堪称经典！就是那个最难排查的，而这里我们能做的防御事情也十分有限！
 具体定位看看腾讯这几篇很有帮助！
- [如何定位Obj-C野指针随机Crash(一)](https://dev.qq.com/topic/59141e56ca95d00d727ba750)
- [如何定位Obj-C野指针随机Crash(二)](https://dev.qq.com/topic/59142d61ca95d00d727ba752)
- [如何定位Obj-C野指针随机Crash(三)](https://dev.qq.com/topic/5915134b75d11c055ca7fca0)
+[如何定位Obj-C野指针随机Crash(一)](https://dev.qq.com/topic/59141e56ca95d00d727ba750)
+[如何定位Obj-C野指针随机Crash(二)](https://dev.qq.com/topic/59142d61ca95d00d727ba752)
+[如何定位Obj-C野指针随机Crash(三)](https://dev.qq.com/topic/5915134b75d11c055ca7fca0)
 我们只能去对已知的出现野指针的类进行防御，找到crash的野指针开启Zombie Objects，加上Zombies工具，然后想办法不断提高复现率还是可以的定位到的。
 我们的防御则是hook系统dealloc，判断需要做处理的类不走系统delloc而是走`objc_desctructInstance `释放实例内部所持有属性的引用和关联对象,保证对象最小化。紧接着就需要来波`isa swizzling`了，因为通常野指针伴随着的还有就是调用没有的方法，或者由于调用的这个时机是不正常的，各种数据的安全性都没了保证，所以dealloc后解除所有持有，再把原来的isa指向一个其他的类，而这个类能把所有的调用方法指向一个空方法这样就起到了防御的作用。
 
@@ -143,7 +143,7 @@ KVO这种crash如果要防御其实只能防御下面3种情况：
 
 而这3种情况我们来认真思考下开发的阶段是不是貌似都会第一时间就被发现！而且如果是没经验的程序员写KVO我们是不是都不敢用，会再三审查，而有经验的又不会犯上面的错。。。。
 如果对上面的情况防御也很复杂，而且我尝试并且用过很多第三方，都在我司稍微有点复杂的项目上挂了，不仅没能防御crash还造了crash，这种成对逻辑的灵活性非常高，你没法知道系统内部人家怎么用着玩的！
-说一下防御上面的情况首先是吧，切面add、removeObserve是一定的，还要在所有的类里对再加一个对象，这个对象主要负责管理KVO下面就叫KVOController吧，让所有的观察者都成为了被观察者的一个属性，用map记录原来的观察者和keyPath等信息,这样添加或移除观察者就能判断是不是成对出现的，另外KVOController在dealloc时也可以通过map依次移除监听，而由于所有的监听回调其实都是由KVOController的`observeValueForKeyPath:ofObject:change:context:`通过`[originObserver observeValueForKeyPath:keyPath ofObject:object change:change context:context]`传递出去的自然没写监听回调的情况也可以判断了，但也是能解决那3个情况！
+说一下防御上面的情况首先切面add、removeObserve是一定的，还要在所有的类里再加一个对象，这个对象主要负责管理KVO下面就叫KVOController吧，让所有的观察者都成为了被观察者的一个属性，用map记录原来的观察者和keyPath等信息,这样添加或移除观察者就能判断是不是成对出现的，另外KVOController在dealloc时也可以通过map依次移除监听，而由于所有的监听回调其实都是由KVOController的`observeValueForKeyPath:ofObject:change:context:`通过`[originObserver observeValueForKeyPath:keyPath ofObject:object change:change context:context]`传递出去的自然没写监听回调的情况也可以判断了，但也是能解决那3个情况！
 
 真正KVO产生的恐怖的crash是移除时机不和观察者或被观察者销毁有关系，而是跟我们的逻辑有关，一旦没在合适时机移除导致的crash排查起来超级费劲！还有你在监听回调里处理逻辑有没有线程安全问题，这些才是我们在上线前容易漏，排查又不好排查的！
 
@@ -164,5 +164,4 @@ Timer:[MSWeakTimer](https://github.com/mindsnacks/MSWeakTimer)比较推荐的一
 ## Thread Conflict(线程冲突)
 基本无解的问题，出现以后瞬间懵逼，典型例子就是死锁，异步调用同一对象导致不安全，基本没有防御手段，排查也只能靠多加log不断复现，然后猜。。。。
 但一般只要代码按照正常的规范写也不会那么容易遇到这问题，但线程冲突理论上只要保证UI操作都在主线程，其他都gcd不在主线程上，然后部分需要线程安全的gcd信号量做锁就可以，但不会有人这样写代码，性能和效率那么搞是都要废的，现在都恨不得你马上出活那有空那样，这类就可以完全不考虑防御的事了！
-
 

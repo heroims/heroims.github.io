@@ -9,13 +9,13 @@
   <title>Cocoa(iOS,OSX)安保系统设计实现 | Heroims的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="前言这里主要以iOS和OSX讲讲crash闪退怎么防御。其中最新的OSX应用本身就有一定闪退防御，但有点类似@try @catch在最外层包了一下普通的越界调用空方法都会中断在操作位置不向下执行，如果没有进一步复杂逻辑不会闪退，只是影响后续的操作。 而iOS则没这么好说话了，二话不说直接闪退给你看没有上面的那种机制。 所以才有了设计一个安保系统的意义，来保证最大程度的健壮性，理想的状态就是不cra">
-<meta name="keywords" content="IOS,OSX,安保系统,Crash防御 - Cocoa">
+<meta name="keywords" content="IOS,OSX,安保系统,Crash防御,Cocoa">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Cocoa(iOS,OSX)安保系统设计实现">
 <meta property="og:url" content="http://yoursite.com/2017/12/21/Cocoa-iOS-OSX-安保系统设计实现/index.html">
 <meta property="og:site_name" content="Heroims的博客">
 <meta property="og:description" content="前言这里主要以iOS和OSX讲讲crash闪退怎么防御。其中最新的OSX应用本身就有一定闪退防御，但有点类似@try @catch在最外层包了一下普通的越界调用空方法都会中断在操作位置不向下执行，如果没有进一步复杂逻辑不会闪退，只是影响后续的操作。 而iOS则没这么好说话了，二话不说直接闪退给你看没有上面的那种机制。 所以才有了设计一个安保系统的意义，来保证最大程度的健壮性，理想的状态就是不cra">
-<meta property="og:updated_time" content="2017-12-21T11:26:24.000Z">
+<meta property="og:updated_time" content="2017-12-21T11:28:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cocoa(iOS,OSX)安保系统设计实现">
 <meta name="twitter:description" content="前言这里主要以iOS和OSX讲讲crash闪退怎么防御。其中最新的OSX应用本身就有一定闪退防御，但有点类似@try @catch在最外层包了一下普通的越界调用空方法都会中断在操作位置不向下执行，如果没有进一步复杂逻辑不会闪退，只是影响后续的操作。 而iOS则没这么好说话了，二话不说直接闪退给你看没有上面的那种机制。 所以才有了设计一个安保系统的意义，来保证最大程度的健壮性，理想的状态就是不cra">
@@ -244,7 +244,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Crash防御 - Cocoa</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Crash防御</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Cocoa</a>
         		</li>
       		
 		</ul>
@@ -465,7 +469,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Crash防御 - Cocoa</a>
+                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -490,6 +498,46 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">切面</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">统计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -533,35 +581,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">切面</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -577,23 +601,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
+                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">日志</a>
+                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
+                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">架构</a>
+                <a href="javascript:void(0)" class="js-tag color3">WebView</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">统计</a>
+                <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -617,23 +641,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
+                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -645,15 +661,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">WebView</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
               </li>
             
             <div class="clearfix"></div>
