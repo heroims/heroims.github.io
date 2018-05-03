@@ -6,7 +6,7 @@ tags:
     - IOS
     - Android
 ---
-
+```
 <html>
 
 <head>
@@ -65,7 +65,7 @@ document.getElementById("applink2").onclick = applink(appstore);
 
 </html>
 
-
+```
 
 其原理就是为HTML页面中的超链接点击事件增加一个setTimeout方法.
 
@@ -86,9 +86,8 @@ document.getElementById("applink2").onclick = applink(appstore);
 
 android里面androidManifest.xml文件对activity的配置，如何配置就不表述了，表达能力有限，请参考developer.android.com
 
-
-
-vi<activity android:name=".ui.UploadActivity" android:screenOrientation="portrait">
+```
+<activity android:name=".ui.UploadActivity" android:screenOrientation="portrait">
 
 <intent-filter>
 
@@ -104,20 +103,16 @@ vi<activity android:name=".ui.UploadActivity" android:screenOrientation="portrai
 
 </activity>
 
-
+```
 
 HTML页面中指向该应用程序的hyperlink
 
 
-
-copy
-
-
-
+```
 <a id="applink1" href="http://192.168.167.33:8088/mi-tracker-web/download.html">
 
 Open Application</a>
-
+```
 
 
 
@@ -147,8 +142,7 @@ download.jsp源代码如下。具体为什么请求的是download.html这个地�
 
 
 
-copy
-
+```
 
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
@@ -181,7 +175,7 @@ view plaincopy
 
 </html>
 
-
+```
 
 在 androidManifest.xml中定义intent-filter的时候定义的scheme，host，port，path拼凑起来是一个有用的 HTTP路径，这样就算本机没有activity定义了intent-filter来捕获这个链接，那这个链接也会重定向到打开android market place的页面，继而打开应用商店。因为每个android手机都会捕获到market这个协议(如果android手机里面没有market商店，不 怪我哈)，系统就会自动打开market place应用商店并根据参数进入搜索页面并显示结果。
 
