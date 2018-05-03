@@ -534,7 +534,7 @@
 <h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><p>封装pod依赖另一个有.a或Framework的pod，然后用<code>use_frameworks!</code>来动态库模式pod。那情况原来只能把那有.a或Framework的pod直接代码都放自己pod里，不能dependency，当然项目没用任何Swift其实就没事因为用不到<code>use_frameworks!</code>。还有就是Pod里用了资源文件的，因为用了资源文件和<code>use_frameworks!</code>，最终生成资源可都在.app的Frameworks/xxxxx.framework/里，如果第三方代码处理了这种情况还好，不过现在看几乎没有几个做这个处理的，都没想过动态库带来的改变也是醉了，资源都会找不到！使用静态库模式则会拍平就没这问题了。</p>
 <h1 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h1><p>下面来个例子，封装统计模块需要依赖Google统计，Fabric crash统计，现在有了这属性直接如下就完成了依赖关系<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">#Google 统计</div><div class="line">s.ios.dependency      &apos;Google/Analytics&apos;</div><div class="line">#Fabric crash统计</div><div class="line">s.ios.dependency      &apos;Fabric&apos;</div><div class="line">s.ios.dependency      &apos;Crashlytics&apos;</div><div class="line">#指定Pod为静态库模式</div><div class="line">s.static_framework      = true</div></pre></td></tr></table></figure></p>
 <h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
-<li>不能在当前pod里使用<code>subpecs</code></li>
+<li>不能在当前pod里的<code>subpecs</code>中使用</li>
 <li>Framework受限头文件引用模式</li>
 </ul>
         
@@ -721,7 +721,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2017 Heroims
+    		&copy; 2018 Heroims
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -804,27 +804,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -872,11 +856,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -940,6 +936,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">构建</a>
               </li>
              
@@ -984,14 +992,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Model层</a>
               </li>
              
@@ -1004,11 +1004,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
             
             <div class="clearfix"></div>
@@ -1065,6 +1065,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           
             <li class="search-li">
               <a href="http://heroims.github.io/MyWeblog/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>无聊练手网页</a>
+            </li>
+          
+            <li class="search-li">
+              <a href="https://blog.ti-node.com/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>elarity</a>
             </li>
           
         </ul>
