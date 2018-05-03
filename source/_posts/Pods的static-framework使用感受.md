@@ -26,7 +26,7 @@ s.static_framework      = true
 ```
 
 ### 注意事项
-- 不能在当前pod里使用`subpecs`
+- 不能在当前pod里的`subpecs`中使用
 - Framework受限头文件引用模式
 
 <!-- more -->
@@ -34,7 +34,7 @@ s.static_framework      = true
 
 
 
-下面说说这类情况，第一个`static_framework`不能放到`subpecs`里也不能有`subpecs`，这个倒是不难解决，可以为这个单建一个pod作为依赖的中间件，这样要创建的pod就可以不使用`static_framework`属性了依赖使用了这个属性里面只有dependency的中间件。
+下面说说这类情况，第一个`static_framework`不能放到`subpecs`里，这个倒是不难解决，可以为这个单建一个pod作为依赖的中间件，这样要创建的pod就可以不使用`static_framework`属性了依赖使用了这个属性里面只有dependency的中间件。
 第二种就是没救的，典型范例环信和友盟分享，这俩都是对Pod里的Framework认知不足，不过也有部分原因在OC没正经命名空间。
 没问题可用`static_framework`的Framework的`podspec`写法如下
 ```
@@ -43,3 +43,4 @@ s.ios.public_header_files = 'xxxx.framework/Headers/*.h'
 s.ios.vendored_frameworks = 'xxxx.framework'
 ```
 而且内部对xxxx.framework的文件引用只能`#import "xxx.h"`不能`#import <xxxx/xxx.h>`，否则头文件找不到，静态库模式这情况没办法，还有IOS本来Framework就都不是正经的动态库有这问题并不奇怪，同样也因此没法通过Framework隔离同名文件了，没有命名空间概念隔离的情况再现，这就是之前说的OC的一部分原因，所以才会很多都写`#import <xxxx/xxx.h>`感觉踏实。所以现在就尴尬了，国内很多支持pod的sdk是Framework都是直接`s.ios.vendored_frameworks = 'xxxx.framework'`，所以其实这些sdk其实真的该考虑pod的Framework单独处理，给人扔项目里直接用的保持`#import <xxxx/xxx.h>`风格写法没问题，pod很多时候就是为了管理各种依赖关系，至于是动态库还是静态库编译都是看项目本身需要，封装pod的时候应该必须保持`#import "xxx.h"`写法才ok，另外.a在pod里可能更加讨喜吧。
+
