@@ -25,7 +25,6 @@ tags:
 ![Untitled.png](/assets/blogImage/3994053-fad34baa2afc46ac.png)
 
 # 安装配置
-<!-- more -->
 ## 准备工作
 ruby （为了支持CocoaPods）
 [clang](http://releases.llvm.org/download.html) 4.0或以上（为了支持IOS10，如果你准备的sdk版本不高，那就无所谓了，关键是对应上）
@@ -106,7 +105,7 @@ sudo apt-get update
 sudo apt-get install git gcc cmake libssl-dev libtool autoconf automake clang-4.0
 ```
 除了错误别找我，直接谷歌去找源
-安装完`which clang`看看位置如果不是`usr/bin`
+安装完`clang`看看位置如果不是`usr/bin`
 执行下面命令制作软链接，只为保险不是必需的。。。。
 ```
 sudo ln -s /usr/bin/clang-4.0 /usr/bin/clang
@@ -173,7 +172,7 @@ mv clang-800.0.42.1 clang
 cd ../..
 ```
 
-## cctools-port 制作ios-toolchain
+## cctools-port 制作ios-toolchain 的Clang
 ### ios sdk 打包
 下载完Xcode直接执行下面命令
 ```
@@ -235,13 +234,15 @@ export PATH=$PATH:/usr/local/ios-arm64/bin
 
 其实到这基本完活了，单跑.m文件已经没问题了，下面只是为了更加方便的编译项目
 
-### 合并 armv7 和 arm64 工具链
-除了 bin 目录，其他的目录内容貌似都是一样的，把两个 bin 目录合在一起就行了
-### 替换Xcode xctoolchain
-最后把bin目录替换下面Xcode的目录,这个步骤为了xcbuild，看过`Toolchains`目录的应该会发现里面还有个swift的那个怎么办，没办法。。。不管了我反正没敢试
-```
-Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
-```
+这里已经可以跑个测试程序编译试试了如`arrch-apple-darwin11-clang helloworld.c -o helloworld`或`arm-apple-darwin11-clang helloworld.c -o helloworld`
+
+### 合并 armv7 和 arm64 工具链(可选)
+一般用`ar`命令做合并不过容易出问题
+
+### 替换xctoolchain
+把最后想要用的生成的工具链clang 和 clang++文件替换到`usr/bin`下（不替换也可以达成目的即可），相当于回头编译的时候走我们产出的这套clang环境。总之就是思路就是让`xcbuild`走我们的这套clang去打包编译程序即可。如果你用Apple Clang或直接Clang能打包编译也就不用自己手动做这个事了。
+
+
 ## Ninja 安装
 Ubuntu一行命令解决。。。。
 ```
