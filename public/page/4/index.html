@@ -145,6 +145,106 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-浏览器判断是否安装了ios-android客户端程序" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/04/浏览器判断是否安装了ios-android客户端程序/">浏览器判断是否安装了ios/android客户端程序</a>
+    </h1>
+  
+
+        
+        <a href="/2014/11/04/浏览器判断是否安装了ios-android客户端程序/" class="archive-article-date">
+  	<time datetime="2014-11-04T04:10:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2014-11-04</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div></pre></td><td class="code"><pre><div class="line">&lt;html&gt;</div><div class="line"></div><div class="line">&lt;head&gt;</div><div class="line"></div><div class="line">&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width&quot; /&gt;</div><div class="line"></div><div class="line">&lt;/head&gt;</div><div class="line"></div><div class="line">&lt;body&gt;</div><div class="line"></div><div class="line">&lt;h2&gt;&lt;a id=&quot;applink1&quot; href=&quot;mtcmtc://profile/116201417&quot;&gt;Open scheme(mtcmtc) defined in iPhone with parameters &lt;/a&gt;&lt;/h2&gt;</div><div class="line"></div><div class="line">&lt;h2&gt;&lt;a id=&quot;applink2&quot; href=&quot;unknown://nowhere&quot;&gt;open unknown with fallback to appstore&lt;/a&gt;&lt;/h2&gt;</div><div class="line"></div><div class="line">&lt;p&gt;&lt;i&gt;Only works on iPhone!&lt;/i&gt;&lt;/p&gt;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">&lt;script type=&quot;text/javascript&quot;&gt;</div><div class="line"></div><div class="line">// To avoid the &quot;protocol not supported&quot; alert, fail must open another app.</div><div class="line"></div><div class="line">var appstore = &quot;itms://itunes.apple.com/us/app/facebook/id284882215?mt=8&amp;uo=6&quot;;</div><div class="line"></div><div class="line">function applink(fail)&#123;</div><div class="line"></div><div class="line">return function()&#123;</div><div class="line"></div><div class="line">var clickedAt = +new Date;</div><div class="line"></div><div class="line">// During tests on 3g/3gs this timeout fires immediately if less than 500ms.</div><div class="line"></div><div class="line">setTimeout(function()&#123;</div><div class="line"></div><div class="line">// To avoid failing on return to MobileSafari, ensure freshness!</div><div class="line"></div><div class="line">if (+new Date - clickedAt &lt; 2000)&#123;</div><div class="line"></div><div class="line">window.location = fail;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">&#125;, 500);</div><div class="line"></div><div class="line">&#125;;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">document.getElementById(&quot;applink1&quot;).onclick = applink(appstore);</div><div class="line"></div><div class="line">document.getElementById(&quot;applink2&quot;).onclick = applink(appstore);</div><div class="line"></div><div class="line">&lt;/script&gt;</div><div class="line"></div><div class="line">&lt;/body&gt;</div><div class="line"></div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure>
+<p>其原理就是为HTML页面中的超链接点击事件增加一个setTimeout方法.</p>
+<p>如果在iPhone上面500ms内，本机有应用程序能解析这个协议并打开程序，则这个回调方法失效；如果本机没有应用程序能解析该协议或者500ms内没有打开个程序，则执行setTimeout里面的function，就是跳转到apple的itunes。</p>
+<p>我 用同样的原理来处理android的javascript跳转，发现如果本机没有程序注册intent-filter for 这个协议，那么android内置的browser就会处理这个协议并且立即给出反应(404，你懂的),不会像iPhone一样去执行 setTimeout里面的function，即便你把500ms改成0ms也不管用。</p>
+<p>我就开始了我的Google search之旅，最终在stackoverflow一个不起眼的地方找到solution。</p>
+<p>不解释，先给出源代码</p>
+<p>android里面androidManifest.xml文件对activity的配置，如何配置就不表述了，表达能力有限，请参考developer.android.com</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&lt;activity android:name=&quot;.ui.UploadActivity&quot; android:screenOrientation=&quot;portrait&quot;&gt;</div><div class="line"></div><div class="line">&lt;intent-filter&gt;</div><div class="line"></div><div class="line">&lt;data android:scheme=&quot;http&quot; android:host=&quot;192.168.167.33&quot; android:port=&quot;8088&quot; android:path=&quot;/mi-tracker-web/download.html&quot;/&gt;</div><div class="line"></div><div class="line">&lt;action android:name=&quot;android.intent.action.VIEW&quot; /&gt;</div><div class="line"></div><div class="line">&lt;category android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;</div><div class="line"></div><div class="line">&lt;category android:name=&quot;android.intent.category.BROWSABLE&quot; /&gt;</div><div class="line"></div><div class="line">&lt;/intent-filter&gt;</div><div class="line"></div><div class="line">&lt;/activity&gt;</div></pre></td></tr></table></figure>
+<p>HTML页面中指向该应用程序的hyperlink</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;a id=&quot;applink1&quot; href=&quot;http://192.168.167.33:8088/mi-tracker-web/download.html&quot;&gt;</div><div class="line"></div><div class="line">Open Application&lt;/a&gt;</div></pre></td></tr></table></figure>
+<p>不难发现，在androidManifest.xml中配置的filter中data的属性表述，在下面的HTML.href中全部看到了。请注意，这两个路径要全部一致，不能有差别，否则android系统就不会拦截这个hyperlink。</p>
+<p>好了，为什么我说这个solution能解决我们当初提出来的需求呢，答案在这里：</p>
+<p>如果说本机安装了这个应用程序</p>
+<p>在android browser中点击HTML中的applink1，browser会重定向到指定的链接，但是由于我们的应用程序在android OS中配置了一个intent-filter，也是针对这个制定的链接。就是说现在android系统有两个程序能处理这个链接：一个是系统的 browser，一个是配置了intent-filter的activity。现在点击这个链接，系统就会弹出一个选择：是用browser还是你指定的 activity打开。如果你选择你的activity，系统就会打开你的应用程序，如果你继续选择用browser，就没有然后了。</p>
+<p>如果说本机木有安装这个应用程序</p>
+<p>那么这个HTML里面的这个超链接就起很重要的左右了，这个download.html里面可以forward到android的应用商店</p>
+<p>download.jsp源代码如下。具体为什么请求的是download.html这个地址却访问到了download.jsp，就不解释了，struts2的东西。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line">&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=ISO-8859-1&quot;</div><div class="line"></div><div class="line">pageEncoding=&quot;ISO-8859-1&quot;%&gt;</div><div class="line"></div><div class="line">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;</div><div class="line"></div><div class="line">&lt;html&gt;</div><div class="line"></div><div class="line">&lt;head&gt;</div><div class="line"></div><div class="line">&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=ISO-8859-1&quot;&gt;</div><div class="line"></div><div class="line">&lt;title&gt;Insert title here&lt;/title&gt;</div><div class="line"></div><div class="line">&lt;/head&gt;</div><div class="line"></div><div class="line">&lt;body&gt;</div><div class="line"></div><div class="line">&lt;script type=&quot;text/javascript&quot;&gt;</div><div class="line"></div><div class="line">&lt;span style=&quot;white-space:pre&quot;&gt;    &lt;/span&gt;window.location=&quot;market://search?q=com.singtel.travelbuddy.android&quot;;&lt;/script&gt;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">view plaincopy</div><div class="line"></div><div class="line">&lt;/body&gt;</div><div class="line"></div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure>
+<p>在 androidManifest.xml中定义intent-filter的时候定义的scheme，host，port，path拼凑起来是一个有用的 HTTP路径，这样就算本机没有activity定义了intent-filter来捕获这个链接，那这个链接也会重定向到打开android market place的页面，继而打开应用商店。因为每个android手机都会捕获到market这个协议(如果android手机里面没有market商店，不 怪我哈)，系统就会自动打开market place应用商店并根据参数进入搜索页面并显示结果。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">JavaScript</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Android</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2014/11/04/浏览器判断是否安装了ios-android客户端程序/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-ffmpeg参数说明" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1479,6 +1579,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">IOS</a>
               </li>
              
@@ -1547,6 +1663,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">网络层</a>
               </li>
              
@@ -1556,6 +1676,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1595,7 +1719,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1608,18 +1736,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1663,15 +1779,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
               </li>
              
               <li class="article-tag-list-item">

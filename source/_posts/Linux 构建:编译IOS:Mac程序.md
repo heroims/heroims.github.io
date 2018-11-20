@@ -33,6 +33,7 @@ ruby （为了支持CocoaPods）
 [ninja](https://github.com/ninja-build/ninja.git)
 [xcbuild](https://github.com/facebook/xcbuild.git)
 Xcode（确切的说其实只要三个文件夹但我很不放心用了整个）
+<!-- more -->
 ## CocoaPods 安装
 这里不得不提CocoaPods兼容性真心不错
 CentOS
