@@ -15,7 +15,7 @@
 <meta property="og:url" content="http://yoursite.com/2018/11/21/AES-128-CBC Base64加密——OC,Java,Golang联调/index.html">
 <meta property="og:site_name" content="Heroims的博客">
 <meta property="og:description" content="AES-128-CBC这里首先说说AES加密原理AES加密算法采用分组密码体制，每个分组数据的长度为128位16个字节，密钥长度可以是128位16个字节、192位或256位，一共有四种加密模式（ECB、CBC、CFB、OFB），我们通常采用需要初始向量IV的CBC模式，初始向量的长度规定是128位16个字节。另外就是Padding，这里面有大坑。。。。先说一下Padding的三种模式PKCS5、P">
-<meta property="og:updated_time" content="2018-11-20T19:02:24.000Z">
+<meta property="og:updated_time" content="2018-11-20T19:07:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="AES-128-CBC Base64加密——OC,Java,Golang联调">
 <meta name="twitter:description" content="AES-128-CBC这里首先说说AES加密原理AES加密算法采用分组密码体制，每个分组数据的长度为128位16个字节，密钥长度可以是128位16个字节、192位或256位，一共有四种加密模式（ECB、CBC、CFB、OFB），我们通常采用需要初始向量IV的CBC模式，初始向量的长度规定是128位16个字节。另外就是Padding，这里面有大坑。。。。先说一下Padding的三种模式PKCS5、P">
@@ -168,7 +168,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="AES-128-CBC"><a href="#AES-128-CBC" class="headerlink" title="AES-128-CBC"></a>AES-128-CBC</h1><p>这里首先说说AES加密原理<br>AES加密算法采用分组密码体制，每个分组数据的长度为128位16个字节，密钥长度可以是128位16个字节、192位或256位，一共有四种加密模式（ECB、CBC、CFB、OFB），我们通常采用需要初始向量IV的CBC模式，初始向量的长度规定是128位16个字节。另外就是Padding，这里面有大坑。。。。先说一下Padding的三种模式PKCS5、PKCS7和NOPADDING。PKCS5是指分组数据缺少几个字节，就在数据的末尾填充几个字节的几，比如缺少5个字节，就在末尾填充5个字节的5。PKCS7是指分组数据缺少几个字节，就在数据的末尾填充几个字节的0，比如缺少7个字节，就在末尾填充7个字节的0。NoPadding是指不需要填充，也就是说数据的发送方肯定会保证最后一段数据也正好是16个字节。而PKCS5如果正好是16个字节且最后是16的时候则会再填充16个16用来区分，PKC7则是为0时填充16个0。而在iOS的OC方法里压根没提供PKCS5，只有PKCS7更坑的是真正对接时发现iOS上的PKCS7和其他端PKCS5是一样的。。。。所以才有了现在的想法分享一下踩过的坑，具体啥原因恐怕只有苹果自家知道，系统方法是真的坑！Java可以直接用系统方法填好设置结束战斗。。。Go的话padding这块自己写实现其他的系统都能设置。最后说一下密钥长度这里只有iOS是要自己设置好位数再对应位数写密钥，其他平台直接对应位数写密钥即可，所以最好各平台自己在封装下判断密钥长度出事向量长度，不然各端对应起来还是要犯傻。</p>
+        <h1 id="AES-128-CBC"><a href="#AES-128-CBC" class="headerlink" title="AES-128-CBC"></a>AES-128-CBC</h1><p>这里首先说说AES加密原理<br>AES加密算法采用分组密码体制，每个分组数据的长度为128位16个字节，密钥长度可以是128位16个字节、192位或256位，一共有四种加密模式（ECB、CBC、CFB、OFB），我们通常采用需要初始向量IV的CBC模式，初始向量的长度规定是128位16个字节。另外就是Padding，这里面有大坑。。。。先说一下Padding的三种模式PKCS5、PKCS7和NOPADDING。PKCS5是指分组数据缺少几个字节，就在数据的末尾填充几个字节的几，比如缺少5个字节，就在末尾填充5个字节的5。PKCS7是指分组数据缺少几个字节，就在数据的末尾填充几个字节的0，比如缺少7个字节，就在末尾填充7个字节的0。NoPadding是指不需要填充，也就是说数据的发送方肯定会保证最后一段数据也正好是16个字节。而PKCS5如果正好是16个字节且最后是16的时候则会再填充16个16用来区分，PKC7则是为0时填充16个0。而在iOS的OC方法里压根没提供PKCS5，只有PKCS7更坑的是真正对接时发现iOS上的PKCS7和其他端PKCS5是一样的。。。。所以才有了现在的想法分享一下踩过的坑，具体啥原因恐怕只有苹果自家知道，系统方法是真的坑！Java可以直接用系统方法填好设置结束战斗。。。Go的话padding这块自己写实现其他的系统都能设置。最后说一下密钥长度这里只有iOS是要自己设置好位数再对应位数写密钥，其他平台直接对应位数写密钥即可，所以最好各平台自己在封装下判断密钥长度出事向量长度，不然各端对应起来还是要犯傻。<br><a id="more"></a></p>
 <h1 id="Base64"><a href="#Base64" class="headerlink" title="Base64"></a>Base64</h1><p>下面说一下Base64，这个也是个坑，iOS系统提供的base64可选类型压根就不是已知领域常用的，正常是padding和websafe，padding会填充=，而websafe则会替换”+”为”-“，”\“为”_”<br>而iOS提供的则是下边的，完全不常用的。。。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">NSDataBase64Encoding64CharacterLineLength      其作用是将生成的Base64字符串按照64个字符长度进行等分换行。  </div><div class="line">NSDataBase64Encoding76CharacterLineLength      其作用是将生成的Base64字符串按照76个字符长度进行等分换行。  </div><div class="line">NSDataBase64EncodingEndLineWithCarriageReturn  其作用是将生成的Base64字符串以回车结束。  </div><div class="line">NSDataBase64EncodingEndLineWithLineFeed        其作用是将生成的Base64字符串以换行结束。</div></pre></td></tr></table></figure></p>
 <p>基本上GTMBase64用定了，然后还要扩展一下padding设置，原版只是把websafe模式开放了padding设置，内部其实有对应逻辑只需要自己加个方法调用一下即可。下面就是添加的和微改的两个方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">+(NSString *)stringByEncodingData:(NSData *)data padded:(BOOL)padded&#123;</div><div class="line">NSString *result = nil;</div><div class="line">NSData *converted = [self baseEncode:[data bytes]</div><div class="line">length:[data length]</div><div class="line">charset:kBase64EncodeChars</div><div class="line">padded:padded];</div><div class="line">if (converted) &#123;</div><div class="line">result = [[[NSString alloc] initWithData:converted</div><div class="line">encoding:NSUTF8StringEncoding] autorelease];</div><div class="line">&#125;</div><div class="line">return result;</div><div class="line">&#125;</div><div class="line">+(NSData *)decodeString:(NSString *)string &#123;</div><div class="line">NSData *result = nil;</div><div class="line">NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];</div><div class="line">if (data) &#123;</div><div class="line">result = [self baseDecode:[data bytes]</div><div class="line">length:[data length]</div><div class="line">charset:kBase64DecodeChars</div><div class="line">requirePadding:NO];</div><div class="line">&#125;</div><div class="line">return result;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>至于Java，android开发很爽直接用android.util.base64,里面直接可以设置nopadding和websafe等，而纯Java用java.util.base64就要自己写替换逻辑，具体代码见源码部分<br>最后说一下Go直接系统方法提供完美解决<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">base64.StdEncoding</div><div class="line">base64.URLEncoding        websafe模式</div><div class="line">base64.RawStdEncoding    nopadding</div><div class="line">base64.RawURLEncoding    websafe模式nopadding</div></pre></td></tr></table></figure></p>
@@ -462,58 +462,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">网络</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">切面</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">架构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">统计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">实用技巧</a>
               </li>
              
@@ -550,23 +498,63 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">切面</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">统计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">构建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">编译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -610,15 +598,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">构建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Android</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
               </li>
              
               <li class="article-tag-list-item">
