@@ -16,7 +16,7 @@ OLLVM(Obfuscator-LLVM)是瑞士西北应用科技大学安全实验室于2010年
 OLLVM如果自己想拿最新版的LLVM和Clang进行移植功能其实也并不是很难，整理一下其实改动很小，接下来将会讲一下移植的方法。
 
 ## 个人整理
-先放一下个人移植好的版本地址https://github.com/heroims/obfuscator.git，个人fork原版后又加入了llvm5.0，6.0，7.0以及swift-llvm5.0的版本，应该能满足大部分需求了，如果有新版本下面的讲解，各位也可以自己动手去下载自己需要的llvm和clang进行移植。git上的提交每次都很独立如下图，方便各位cherry-pick。
+先放一下个人移植好的版本地址https://github.com/heroims/obfuscator.git ，个人fork原版后又加入了llvm5.0，6.0，7.0以及swift-llvm5.0的版本，应该能满足大部分需求了，如果有新版本下面的讲解，各位也可以自己动手去下载自己需要的llvm和clang进行移植。git上的提交每次都很独立如下图，方便各位cherry-pick。
 <!-- more -->
 ![image.png](/assets/blogImage/3994053-1d4286b24563a1db.png)
 

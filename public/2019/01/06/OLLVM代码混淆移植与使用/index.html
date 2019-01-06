@@ -8,13 +8,13 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>OLLVM代码混淆移植与使用 | Heroims的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="简介OLLVM(Obfuscator-LLVM)是瑞士西北应用科技大学安全实验室于2010年6月份发起的一个项目,该项目旨在提供一套开源的针对LLVM的代码混淆工具,以增加对逆向工程的难度。github上地址是https://github.com/obfuscator-llvm/obfuscator，只不过仅更新到llvm的4.0，2017年开始就没在更新。 移植OLLVM如果自己想拿最新版的LL">
+  <meta name="description" content="简介OLLVM(Obfuscator-LLVM)是瑞士西北应用科技大学安全实验室于2010年6月份发起的一个项目,该项目旨在提供一套开源的针对LLVM的代码混淆工具,以增加对逆向工程的难度。github上地址是https://github.com/obfuscator-llvm/obfuscator ，只不过仅更新到llvm的4.0，2017年开始就没在更新。 移植OLLVM如果自己想拿最新版的L">
 <meta name="keywords" content="LLVM,OLLVM,Clang,混淆,XCode,NDK,Visual Studio">
 <meta property="og:type" content="article">
 <meta property="og:title" content="OLLVM代码混淆移植与使用">
 <meta property="og:url" content="http://yoursite.com/2019/01/06/OLLVM代码混淆移植与使用/index.html">
 <meta property="og:site_name" content="Heroims的博客">
-<meta property="og:description" content="简介OLLVM(Obfuscator-LLVM)是瑞士西北应用科技大学安全实验室于2010年6月份发起的一个项目,该项目旨在提供一套开源的针对LLVM的代码混淆工具,以增加对逆向工程的难度。github上地址是https://github.com/obfuscator-llvm/obfuscator，只不过仅更新到llvm的4.0，2017年开始就没在更新。 移植OLLVM如果自己想拿最新版的LL">
+<meta property="og:description" content="简介OLLVM(Obfuscator-LLVM)是瑞士西北应用科技大学安全实验室于2010年6月份发起的一个项目,该项目旨在提供一套开源的针对LLVM的代码混淆工具,以增加对逆向工程的难度。github上地址是https://github.com/obfuscator-llvm/obfuscator ，只不过仅更新到llvm的4.0，2017年开始就没在更新。 移植OLLVM如果自己想拿最新版的L">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-1d4286b24563a1db.png">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-3d3054a05c96b72a.png">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-e76e7039112a47c8.png">
@@ -36,10 +36,10 @@
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-9d9e6f40bfb9aff4.png">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-b86496d5219b2efd.png">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-7851701440866c65.png">
-<meta property="og:updated_time" content="2019-01-06T17:55:53.000Z">
+<meta property="og:updated_time" content="2019-01-06T18:18:25.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="OLLVM代码混淆移植与使用">
-<meta name="twitter:description" content="简介OLLVM(Obfuscator-LLVM)是瑞士西北应用科技大学安全实验室于2010年6月份发起的一个项目,该项目旨在提供一套开源的针对LLVM的代码混淆工具,以增加对逆向工程的难度。github上地址是https://github.com/obfuscator-llvm/obfuscator，只不过仅更新到llvm的4.0，2017年开始就没在更新。 移植OLLVM如果自己想拿最新版的LL">
+<meta name="twitter:description" content="简介OLLVM(Obfuscator-LLVM)是瑞士西北应用科技大学安全实验室于2010年6月份发起的一个项目,该项目旨在提供一套开源的针对LLVM的代码混淆工具,以增加对逆向工程的难度。github上地址是https://github.com/obfuscator-llvm/obfuscator ，只不过仅更新到llvm的4.0，2017年开始就没在更新。 移植OLLVM如果自己想拿最新版的L">
 <meta name="twitter:image" content="http://yoursite.com/assets/blogImage/3994053-1d4286b24563a1db.png">
   
     <link rel="alternative" href="/atom.xml" title="Heroims的博客" type="application/atom+xml">
@@ -190,10 +190,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>OLLVM(Obfuscator-LLVM)是瑞士西北应用科技大学安全实验室于2010年6月份发起的一个项目,该项目旨在提供一套开源的针对LLVM的代码混淆工具,以增加对逆向工程的难度。github上地址是<a href="https://github.com/obfuscator-llvm/obfuscator，只不过仅更新到llvm的4.0，2017年开始就没在更新。" target="_blank" rel="external">https://github.com/obfuscator-llvm/obfuscator，只不过仅更新到llvm的4.0，2017年开始就没在更新。</a></p>
+        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>OLLVM(Obfuscator-LLVM)是瑞士西北应用科技大学安全实验室于2010年6月份发起的一个项目,该项目旨在提供一套开源的针对LLVM的代码混淆工具,以增加对逆向工程的难度。github上地址是<a href="https://github.com/obfuscator-llvm/obfuscator" target="_blank" rel="external">https://github.com/obfuscator-llvm/obfuscator</a> ，只不过仅更新到llvm的4.0，2017年开始就没在更新。</p>
 <h1 id="移植"><a href="#移植" class="headerlink" title="移植"></a>移植</h1><p>OLLVM如果自己想拿最新版的LLVM和Clang进行移植功能其实也并不是很难，整理一下其实改动很小，接下来将会讲一下移植的方法。</p>
-<h2 id="个人整理"><a href="#个人整理" class="headerlink" title="个人整理"></a>个人整理</h2><p>先放一下个人移植好的版本地址<a href="https://github.com/heroims/obfuscator.git，个人fork原版后又加入了llvm5.0，6.0，7.0以及swift-llvm5.0的版本，应该能满足大部分需求了，如果有新版本下面的讲解，各位也可以自己动手去下载自己需要的llvm和clang进行移植。git上的提交每次都很独立如下图，方便各位cherry-pick。" target="_blank" rel="external">https://github.com/heroims/obfuscator.git，个人fork原版后又加入了llvm5.0，6.0，7.0以及swift-llvm5.0的版本，应该能满足大部分需求了，如果有新版本下面的讲解，各位也可以自己动手去下载自己需要的llvm和clang进行移植。git上的提交每次都很独立如下图，方便各位cherry-pick。</a></p>
-<p><img src="/assets/blogImage/3994053-1d4286b24563a1db.png" alt="image.png"></p>
+<h2 id="个人整理"><a href="#个人整理" class="headerlink" title="个人整理"></a>个人整理</h2><p>先放一下个人移植好的版本地址<a href="https://github.com/heroims/obfuscator.git，个人fork原版后又加入了llvm5.0，6.0，7.0以及swift-llvm5.0的版本，应该能满足大部分需求了，如果有新版本下面的讲解，各位也可以自己动手去下载自己需要的llvm和clang进行移植。git上的提交每次都很独立如下图，方便各位cherry-pick。" target="_blank" rel="external">https://github.com/heroims/obfuscator.git，个人fork原版后又加入了llvm5.0，6.0，7.0以及swift-llvm5.0的版本，应该能满足大部分需求了，如果有新版本下面的讲解，各位也可以自己动手去下载自己需要的llvm和clang进行移植。git上的提交每次都很独立如下图，方便各位cherry-pick。</a><br><a id="more"></a><br><img src="/assets/blogImage/3994053-1d4286b24563a1db.png" alt="image.png"></p>
 <h2 id="下载LLVM"><a href="#下载LLVM" class="headerlink" title="下载LLVM"></a>下载LLVM</h2><p>llvm地址：<a href="https://github.com/llvm-mirror" target="_blank" rel="external">https://github.com/llvm-mirror</a><br>swift-llvm地址：<a href="https://github.com/apple" target="_blank" rel="external">https://github.com/apple</a><br>大家可以从上面的地址下载最新的自己需要的llvm和clang</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>下载llvm源码</div><div class="line">wget https://codeload.github.com/llvm-mirror/llvm/zip/release_70</div><div class="line">unzip llvm-release_70.zip</div><div class="line">mv llvm-release_70 llvm</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">#</span>下载clang源码</div><div class="line">wget https://codeload.github.com/llvm-mirror/clang/zip/release_70</div><div class="line">unzip clang-release_70.zip</div><div class="line">mv clang-release_70 llvm/tools/clang</div></pre></td></tr></table></figure>
 <h2 id="添加混淆代码"><a href="#添加混淆代码" class="headerlink" title="添加混淆代码"></a>添加混淆代码</h2><p>如果用git的话只需要执行<code>git cherry-pick xxxx</code>把xxxx换成对应的我的版本上的提交哈希填上即可。极度推荐用git搞定。</p>
@@ -522,23 +521,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">IOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -555,6 +538,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -654,6 +653,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">构建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
               </li>
              
@@ -682,30 +693,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">构建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">编译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">WebView</a>
               </li>
              
@@ -731,6 +718,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">User-Defined-Setting</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
               </li>
              
               <li class="article-tag-list-item">
