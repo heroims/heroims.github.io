@@ -9,13 +9,13 @@
   <title>Xcode添加静态库以及编译选项配置常见问题 | Heroims的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="一,Xcode编译出现Link错误,出现”duplicate symbols for architecture i386 clang”提示.问题:链接时,项目有重名文件. 解决: 根据错误提示,做如下检查:1.Taraget-&amp;gt;Build Settings-&amp;gt;Link Binary With Libraries检查是否有重复lib. 2.全工程搜索下重名文件,决定如何删除. 二,关于C">
-<meta name="keywords" content="IOS,常见开发误区,静态库">
+<meta name="keywords" content="IOS,静态库,常见开发误区">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Xcode添加静态库以及编译选项配置常见问题">
 <meta property="og:url" content="http://yoursite.com/2015/06/04/Xcode添加静态库以及编译选项配置常见问题/index.html">
 <meta property="og:site_name" content="Heroims的博客">
 <meta property="og:description" content="一,Xcode编译出现Link错误,出现”duplicate symbols for architecture i386 clang”提示.问题:链接时,项目有重名文件. 解决: 根据错误提示,做如下检查:1.Taraget-&amp;gt;Build Settings-&amp;gt;Link Binary With Libraries检查是否有重复lib. 2.全工程搜索下重名文件,决定如何删除. 二,关于C">
-<meta property="og:updated_time" content="2017-12-09T08:54:52.000Z">
+<meta property="og:updated_time" content="2021-07-08T09:20:31.223Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Xcode添加静态库以及编译选项配置常见问题">
 <meta name="twitter:description" content="一,Xcode编译出现Link错误,出现”duplicate symbols for architecture i386 clang”提示.问题:链接时,项目有重名文件. 解决: 根据错误提示,做如下检查:1.Taraget-&amp;gt;Build Settings-&amp;gt;Link Binary With Libraries检查是否有重复lib. 2.全工程搜索下重名文件,决定如何删除. 二,关于C">
@@ -202,11 +202,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">常见开发误区</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">静态库</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">静态库</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">常见开发误区</a>
         		</li>
       		
 		</ul>
@@ -341,7 +341,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 Heroims
+    		&copy; 2021 Heroims
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -508,10 +508,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">网络层</a>
               </li>
              
@@ -521,6 +517,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -584,6 +584,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
               </li>
              
@@ -620,38 +632,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Scheme</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">预编译宏</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Configurations</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Preprocessor Macros</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">User-Defined-Setting</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
               </li>
              
@@ -673,6 +653,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GPUImage</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Scheme</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">预编译宏</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Configurations</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Preprocessor Macros</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">User-Defined-Setting</a>
               </li>
             
             <div class="clearfix"></div>

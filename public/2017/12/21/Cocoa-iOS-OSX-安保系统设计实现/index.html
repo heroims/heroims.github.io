@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="Heroims的博客">
 <meta property="og:description" content="前言这里主要以iOS和OSX讲讲crash闪退怎么防御。其中最新的OSX应用本身就有一定闪退防御，但有点类似@try @catch在最外层包了一下普通的越界调用空方法都会中断在操作位置不向下执行，如果没有进一步复杂逻辑不会闪退，只是影响后续的操作。 而iOS则没这么好说话了，二话不说直接闪退给你看没有上面的那种机制。 所以才有了设计一个安保系统的意义，来保证最大程度的健壮性，理想的状态就是不cr">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-6cb0e72bd8827012.jpg">
-<meta property="og:updated_time" content="2017-12-22T02:45:54.000Z">
+<meta property="og:updated_time" content="2021-07-08T09:20:31.218Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cocoa(iOS,OSX)安保系统设计实现">
 <meta name="twitter:description" content="前言这里主要以iOS和OSX讲讲crash闪退怎么防御。其中最新的OSX应用本身就有一定闪退防御，但有点类似@try @catch在最外层包了一下普通的越界调用空方法都会中断在操作位置不向下执行，如果没有进一步复杂逻辑不会闪退，只是影响后续的操作。 而iOS则没这么好说话了，二话不说直接闪退给你看没有上面的那种机制。 所以才有了设计一个安保系统的意义，来保证最大程度的健壮性，理想的状态就是不cr">
@@ -386,7 +386,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 Heroims
+    		&copy; 2021 Heroims
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -553,10 +553,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">网络层</a>
               </li>
              
@@ -566,6 +562,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -629,6 +629,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
               </li>
              
@@ -665,38 +677,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Scheme</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">预编译宏</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Configurations</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Preprocessor Macros</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">User-Defined-Setting</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
               </li>
              
@@ -718,6 +698,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GPUImage</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Scheme</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">预编译宏</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Configurations</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Preprocessor Macros</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">User-Defined-Setting</a>
               </li>
             
             <div class="clearfix"></div>
