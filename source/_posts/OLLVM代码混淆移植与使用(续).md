@@ -23,7 +23,10 @@ typora-root-url: ../
 这里是9以后不在调用这个方法了，导致fla不生效，也可以在`Flattening.cpp`里面修改添加
 ![image.png](/assets/blogImage/3994053-8354e86d99016a71.webp)
 
+<!-- more -->
+
 ### 10.0以后的修改
+
 这里是LoadInst初始化多加了个类型参数，类似地方全改一遍
 ![image.png](/assets/blogImage/3994053-f4eded6ede7d355f.webp)
 ![image.png](/assets/blogImage/3994053-179bfa5cc5cac5ad.webp)
