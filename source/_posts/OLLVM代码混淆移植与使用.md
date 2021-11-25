@@ -9,6 +9,7 @@ tags:
     - XCode
     - NDK
     - Visual Studio
+typora-root-url: ../
 ---
 # 简介
 OLLVM(Obfuscator-LLVM)是瑞士西北应用科技大学安全实验室于2010年6月份发起的一个项目,该项目旨在提供一套开源的针对LLVM的代码混淆工具,以增加对逆向工程的难度。github上地址是https://github.com/obfuscator-llvm/obfuscator ，只不过仅更新到llvm的4.0，2017年开始就没在更新。
@@ -48,7 +49,7 @@ git clone https://github.com/heroims/obfuscator.git
 cd obfuscator
 git checkout llvm-7.0
 cp include/llvm/Transforms/Obfuscation llvm/include/llvm/Transforms/Obfuscation
-cp lib/llvm/Transforms/Obfuscation llvm/lib/llvm/Transforms/Obfuscation
+cp lib/Transforms/Obfuscation llvm/lib/Transforms/Obfuscation
 ```
 然后手动修改8个文件如下：
 
