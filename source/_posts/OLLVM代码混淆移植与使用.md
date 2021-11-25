@@ -43,7 +43,7 @@ mv clang-release_70 llvm/tools/clang
 ##  添加混淆代码
 如果用git的话只需要执行`git cherry-pick xxxx`把xxxx换成对应的我的版本上的提交哈希填上即可。极度推荐用git搞定。
 
-如果手动一点点加的话，第一步就是把我改过的OLLVM文件夹里`/include/llvm/Transforms/Obfuscation`和`/lib/llvm/Transforms/Obfuscation`移动到刚才下载好的llvm源码文件夹相同的位置。
+如果手动一点点加的话，第一步就是把我改过的OLLVM文件夹里`/include/llvm/Transforms/Obfuscation`和`/lib/Transforms/Obfuscation`移动到刚才下载好的llvm源码文件夹相同的位置。
 ``` shell
 git clone https://github.com/heroims/obfuscator.git
 cd obfuscator
@@ -77,7 +77,8 @@ cd build
 cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_CREATE_XCODE_TOOLCHAIN=ON ../obfuscator/
 make -j7
 ```
-## 使用
+# 使用
+
 这里原版提供了3种混淆方式分别是控制流扁平化,指令替换,虚假控制流程,用起来都是加cflags的方式。下面简单说下这几种模式。
 ### 控制流扁平化
 这个模式主要是把一些if-else语句，嵌套成do-while语句
