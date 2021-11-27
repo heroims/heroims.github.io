@@ -27,6 +27,10 @@ typora-root-url: ../
 
 ### 10.0以后的修改
 
+首先`Obfuscation/CMakeLists.txt` 里 `add_llvm_library`改`add_llvm_component_library`
+
+
+
 这里是LoadInst初始化多加了个类型参数，类似地方全改一遍
 ![image.png](/assets/blogImage/3994053-f4eded6ede7d355f.webp)
 ![image.png](/assets/blogImage/3994053-179bfa5cc5cac5ad.webp)
