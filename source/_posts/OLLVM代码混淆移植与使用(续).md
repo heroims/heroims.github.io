@@ -40,8 +40,16 @@ typora-root-url: ../
 ![image.png](/assets/blogImage/3994053-233a4ab906d1dad8.webp)
 其他地方和原来一样不变。
 
+### 11.0以后的修改
+这里开始严格区分一元运算符和二元运算符了
+
+![image.png](/assets/blogImage/3994053-05536c4e64d907eb.png)
+
+![image.png](/assets/blogImage/3994053-b7202d3e94f22e28.png)
+
 ### XCode12 以后
-首先编译要多家几个项目，根据自己需要可以多填几个
+
+首先编译要多加几个项目，根据自己需要可以多填几个
 ```
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_CREATE_XCODE_TOOLCHAIN=ON -DLLVM_ENABLE_PROJECTS="clang;libcxx;libcxxabi" ../obfuscator/
