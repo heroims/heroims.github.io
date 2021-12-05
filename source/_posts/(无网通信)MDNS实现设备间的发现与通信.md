@@ -34,6 +34,8 @@ typora-root-url: ../
 
 基本流程就是基于某个自定义域名发布服务，发现设备，连接设备
 
+![image.png](/assets/blogImage/WX20211206-012426@2x.png)
+
 <!-- more -->
 
 ## Andoid
