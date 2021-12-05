@@ -145,6 +145,110 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-IOS 切面统计事件解耦" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/02/IOS 切面统计事件解耦/">IOS 切面统计事件解耦</a>
+    </h1>
+  
+
+        
+        <a href="/2017/08/02/IOS 切面统计事件解耦/" class="archive-article-date">
+  	<time datetime="2017-08-01T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>统计这个事情可以说是个巨无语的系统，当然不把他独立出来也就不是什么问题了，只是一堆牛皮癣似得代码穿插在项目各个地方，毕竟真正应用到一个app里的统计都跟业务有着很强的绑定关系，脱离业务的统计数据基本没什么大用，先吐槽一波再开始正文。。。。<br><img src="/assets/blogImage/3994053-18807a49c709e49a.png" alt="DingTalk20170802140347.png"></p>
+<h1 id="基础封装"><a href="#基础封装" class="headerlink" title="基础封装"></a>基础封装</h1><p>先从用第三方的来说，基本上就只是需要包个壳就ok了，建个manager，初始化sdk一封装，加几个常用统计方法基本ok。常见的方法就是传个event名再加个properties传扩展字典，用户登录状态绑定注销，通用字段增删改，基本上这就满足了大部分需求。。。</p>
+<p>如果是纯自己手写，上面说的壳放着，剩下的仿照sdk来，基本功能要实现异步队列记录往本地写数据，定期上传，处理好读写关系是关键，这里不多说不是这篇重点。</p>
+<p>ps:有个壳才敢放开手折腾优化</p>
+<h4 id="切面封装"><a href="#切面封装" class="headerlink" title="切面封装"></a>切面封装</h4><p>切面统计其实可以看我之前的<a href="http://www.jianshu.com/p/a9219e618ca2" target="_blank" rel="external">IOS 百行代码切面日志</a>，整个完成的就是切面的封装，看过的基本应该了解这套逻辑切面的时候不关心切面方法的参数的话会非常好用。<br>如果业务关联强的情况，虽然也能处理但要针对那些业务作出对应的逻辑，导致切面封装里夹杂很多特殊逻辑,下面的方法内部要对originAOP拆分取所有参，甚至要复制部分业务层逻辑过来最后完成一个统计。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">@interface NSObject (AOPLogger)</div><div class="line"></div><div class="line">/**</div><div class="line">替换或添加类方法，即使替换过也会替换，注意想单次替换使用dispatch_once保证，如果方法从未声明过则会添加失败</div><div class="line"></div><div class="line">@param originalSelector 原方法</div><div class="line">@param swizzledSelector 替换方法</div><div class="line">@param error 错误信息</div><div class="line">*/</div><div class="line">+(void)al_hookOrAddWithOriginClassSeletor:(SEL)originalSelector swizzledSelector:(SEL)swizzledSelector error:(NSError**)error;</div><div class="line"></div><div class="line"></div><div class="line">/**</div><div class="line">替换或添加实例方法，即使替换过也会替换，注意想单次替换使用dispatch_once保证，如果方法从未声明过则会添加失败</div><div class="line"></div><div class="line">@param originalSelector 原方法</div><div class="line">@param swizzledSelector 替换方法</div><div class="line">@param error 错误信息</div><div class="line">*/</div><div class="line">+(void)al_hookOrAddWithOriginSeletor:(SEL)originalSelector swizzledSelector:(SEL)swizzledSelector error:(NSError**)error;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure></p>
+        
+          <a class="article-more-a" href="/2017/08/02/IOS 切面统计事件解耦/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">切面</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AOP</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">日志</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">AOP解耦</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">统计</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/08/02/IOS 切面统计事件解耦/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-IOS 百行代码切面日志" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -468,11 +572,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">工程管理</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">架构设计</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -480,7 +584,7 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">架构设计</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">工程管理</a>
         		</li>
       		
 		</ul>
@@ -491,102 +595,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/02/05/IOS组件化与工程管理/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-移动端Model层与Server服务层自动化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/01/移动端Model层与Server服务层自动化/">移动端Model层与Server服务层自动化</a>
-    </h1>
-  
-
-        
-        <a href="/2017/02/01/移动端Model层与Server服务层自动化/" class="archive-article-date">
-  	<time datetime="2017-01-31T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Model层自动化"><a href="#Model层自动化" class="headerlink" title="Model层自动化"></a>Model层自动化</h1><h3 id="前言（纯属捎带扯一下，后端大咖勿看）"><a href="#前言（纯属捎带扯一下，后端大咖勿看）" class="headerlink" title="前言（纯属捎带扯一下，后端大咖勿看）"></a>前言（纯属捎带扯一下，后端大咖勿看）</h3><p>谈到Model层自动化的产出我们就来从最初的地方开始讲，数据库！<br>无论你是用啥写服务器如果还手写Model那真的只能说你够low我服！不过如果是手写Model自动生成数据库那另说，总的来说就是要么从数据库转实体出来，要么从实体转数据库这才有点意思。<br>上边只是开玩笑下面正题，很多时候大家都无奈没办法不能说low不low，其中奥妙各有体会，通常有点规模的团队都是先定义表然后就出Model了</p>
-<h3 id="后端的Model层"><a href="#后端的Model层" class="headerlink" title="后端的Model层"></a>后端的Model层</h3><p>后端数据库和实体互转的方案都不用Google，百度就能出来一大推，有直接读库生成的，也有从实体转sql生成库的，更有提前定义协议然后开始出对应模块对应语言的实体及sql</p>
-<h3 id="移动端的Model层"><a href="#移动端的Model层" class="headerlink" title="移动端的Model层"></a>移动端的Model层</h3><p>先继续谈会后台Model，这里要说的只是最好有一个提前定义的过程，这样一方面规范开发流程提前想好怎样建库合理，一方面有利于跨平台跨语言的开发，有了提前定义的协议，Model和枚举的各平台自动生成就方便了很多，写个简单的小程序即可，类型也就那几类。关键真的是一劳永逸，省去了大家互相校对的过程。<br>自动化生成移动端乃至前端用的Model层说白了就是做个类型映射，细说的话基本就是分为两类，一类直接就着后端现有项目读Model层的文件，然后做个类型的映射直接导出移动端需要的类，另一类也就是设计数据库时先定义Model的协议，然后根据协议自动生成各个平台需要的实体，而协议定义通常用序列化后的数据如xml(极力抵制，结构复杂)，json，pb，sql文件都能干这事。</p>
-<h3 id="Model自动化实现"><a href="#Model自动化实现" class="headerlink" title="Model自动化实现"></a>Model自动化实现</h3><p>上面说到了xml，json，pb，sql文件都能干这件事，但其中最容易就是json，github上搜个json class基本就能有一大片总有你想要的语言，但json的局限在于也就能转换一下model，当然通过特殊定义中间转换，枚举啥的也能搞定，在这我推荐pb，首先它就是专门用来定义协议的，枚举实体不用说都能搞定，包括默认值设置也能写出来，而且是谷歌出品本身是im通讯协议，被它序列化的数据在上面说的里面算是最小的，而另一方面关于转码参考<a href="https://github.com/google/protobuf/blob/master/docs/third_party.md" target="_blank" rel="external">https://github.com/google/protobuf/blob/master/docs/third_party.md</a> ，直接开放了各个语言的转换方法，当然你根本用不到它里面写的那么复杂，它的里面实体可是直接带pb转换model方法的，如果不是开发im根本用不到，要删部分源码实现自己的需要也行，。。。（下面讲一下正经方法）</p>
-<h4 id="Protobuf-Convert转码"><a href="#Protobuf-Convert转码" class="headerlink" title="Protobuf Convert转码"></a>Protobuf Convert转码</h4><p>下面放代码片段（反馈的人多放全的，之所以不想放还有个原因是这边实现有点粗）<br>这里以Python为例，只是因为安装执行方便所以选它<br>转成OC的例子，之所以选OC因为我就是个搞IOS的。。。写起来各个公司需求不同每次都要改改改。。。也就是这个原因懒得放全的了，因为用的人说到底还是需要手动改成自己想要的，没有通用的。。。<br>
-        
-          <a class="article-more-a" href="/2017/02/01/移动端Model层与Server服务层自动化/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">网络层</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">自动化</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">架构设计</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Model层</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/01/移动端Model层与Server服务层自动化/">查看全文 >></a>
         </p>
       
 
@@ -713,19 +721,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
+                <a href="javascript:void(0)" class="js-tag color2">Wifi Direct</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
+                <a href="javascript:void(0)" class="js-tag color4">NDS</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+                <a href="javascript:void(0)" class="js-tag color5">MDNS</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
+                <a href="javascript:void(0)" class="js-tag color2">DNS-SD</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">iOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Andoid</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">无网通信</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">BLE</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -737,23 +761,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">IOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -781,11 +789,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
+                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -801,39 +821,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">构建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">编译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+                <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -873,6 +861,34 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">构建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
               </li>
              
@@ -901,11 +917,31 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">WebView</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -929,22 +965,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
@@ -962,6 +982,26 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GPUImage</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
               </li>
             
             <div class="clearfix"></div>
