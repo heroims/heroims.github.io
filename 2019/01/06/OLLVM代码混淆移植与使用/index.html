@@ -36,7 +36,7 @@
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-9d9e6f40bfb9aff4.png">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-b86496d5219b2efd.png">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-7851701440866c65.png">
-<meta property="og:updated_time" content="2021-12-27T18:09:23.430Z">
+<meta property="og:updated_time" content="2021-12-27T18:23:12.075Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="OLLVM代码混淆移植与使用">
 <meta name="twitter:description" content="简介OLLVM(Obfuscator-LLVM)是瑞士西北应用科技大学安全实验室于2010年6月份发起的一个项目,该项目旨在提供一套开源的针对LLVM的代码混淆工具,以增加对逆向工程的难度。github上地址是https://github.com/obfuscator-llvm/obfuscator ，只不过仅更新到llvm的4.0，2017年开始就没在更新。 移植OLLVM如果自己想拿最新版的L">
@@ -219,7 +219,7 @@
 <p>上面说完模式下面讲一下几种使用方式</p>
 <h3 id="直接用二进制文件"><a href="#直接用二进制文件" class="headerlink" title="直接用二进制文件"></a>直接用二进制文件</h3><p>直接使用编译的二进制文件<code>build/bin/clang test.c -o test -mllvm -sub -mllvm -fla -mllvm -bcf</code></p>
 <h3 id="NDK集成"><a href="#NDK集成" class="headerlink" title="NDK集成"></a>NDK集成</h3><p>这里分为工具链的制作和项目里的配置。</p>
-<h4 id="制作Toolchains"><a href="#制作Toolchains" class="headerlink" title="制作Toolchains"></a>制作Toolchains</h4><p>这里以修改最新的ndk r18为例，老的ndk版本比这更容易都在ndk-bundle/toolchains里放着需要修改的文件。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>复制ndk的toolschain里的llvm</div><div class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/toolchains/llvm Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm</div><div class="line"><span class="meta">#</span>删除prebuilt文件夹下的文件夹的bin和lib64，prebuilt文件夹下根据系统不同命名也不同</div><div class="line">rm -rf Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/bin</div><div class="line">rm -rf Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/lib64</div><div class="line"><span class="meta">#</span>把我们之前编译好的ollvm下的bin和lib移到我们刚才删除bin和lib64的目录下</div><div class="line">mv build/bin Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/bin</div><div class="line">mv build/lib Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/lib64</div><div class="line"><span class="meta">#</span>复制ndk-bundle⁩/⁨build⁩/⁨core⁩/⁨toolchains的文件夹，这里根据自己对CPU架构的需求自己复制然后修改</div><div class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang⁩ Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang-ollvm</div><div class="line"></div><div class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang⁩ Android/sdk/ndk/xx.x.xxxxxx/build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang-ollvm</div><div class="line"></div><div class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/x86_64-clang Android/sdk/ndk/xx.x.xxxxxx/build⁩/⁨core⁩/⁨toolchains/x86_64-clang-ollvm</div><div class="line"></div><div class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/x86-clang-clang⁩ Android/sdk/ndk/xx.x.xxxxxx/build⁩/⁨core⁩/⁨toolchains/x86-clang-ollvm</div></pre></td></tr></table></figure></p>
+<h4 id="制作Toolchains"><a href="#制作Toolchains" class="headerlink" title="制作Toolchains"></a>制作Toolchains</h4><p>这里以修改最新的ndk r18为例，老的ndk版本比这更容易都在ndk-bundle/toolchains里放着需要修改的文件。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>复制ndk的toolschain里的llvm</div><div class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/toolchains/llvm Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm</div><div class="line"><span class="meta">#</span>删除prebuilt文件夹下的文件夹的bin和lib64，prebuilt文件夹下根据系统不同命名也不同</div><div class="line">rm -rf Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/bin</div><div class="line">rm -rf Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/lib64</div><div class="line"><span class="meta">#</span>把我们之前编译好的ollvm下的bin和lib移到我们刚才删除bin和lib64的目录下</div><div class="line">mv build/bin Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/bin</div><div class="line">mv build/lib Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/lib64</div><div class="line"><span class="meta">#</span>复制ndk-bundle⁩/⁨build⁩/⁨core⁩/⁨toolchains的文件夹，这里根据自己对CPU架构的需求自己复制然后修改</div><div class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/aarch64-linux-android-clang Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/aarch64-linux-android-clang-ollvm</div><div class="line"></div><div class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang⁩ Android/sdk/ndk/xx.x.xxxxxx/build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang-ollvm</div><div class="line"></div><div class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/x86_64-clang Android/sdk/ndk/xx.x.xxxxxx/build⁩/⁨core⁩/⁨toolchains/x86_64-clang-ollvm</div><div class="line"></div><div class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/x86-clang-clang⁩ Android/sdk/ndk/xx.x.xxxxxx/build⁩/⁨core⁩/⁨toolchains/x86-clang-ollvm</div></pre></td></tr></table></figure></p>
 <p>最后把xxxxxx-ollvm里的setup.mk文件进行修改</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">TOOLCHAIN_NAME := ollvm</div><div class="line">TOOLCHAIN_ROOT := $(call get-toolchain-root,$(TOOLCHAIN_NAME))</div><div class="line">TOOLCHAIN_PREFIX := $(TOOLCHAIN_ROOT)/bin</div></pre></td></tr></table></figure>
 <p>config.mk里是CPU架构,刚才是复制出来的所以不用修改，但如果要添加其他的自定义架构需要严格按照格式规范命名最初的文件夹，如mips的需要添加文件夹mipsel-linux-android-clang-ollvm，setup.mk和刚才的修改一样即可。</p>
@@ -521,26 +521,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
               </li>
              
@@ -557,31 +537,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">切面</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">架构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">统计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -597,15 +557,31 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">网络</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">切面</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -641,15 +617,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
+                <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
+                <a href="javascript:void(0)" class="js-tag color3">架构</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
+                <a href="javascript:void(0)" class="js-tag color3">统计</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -693,6 +669,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
               </li>
              
@@ -721,26 +705,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">构建</a>
               </li>
              
@@ -750,14 +714,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">WebView</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -793,7 +749,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">WebView</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -817,7 +801,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -834,6 +818,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GPUImage</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
               </li>
             
             <div class="clearfix"></div>
