@@ -118,7 +118,7 @@ rm -rf Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/lib64
 mv build/bin Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/bin
 mv build/lib Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/lib64
 #复制ndk-bundle⁩/⁨build⁩/⁨core⁩/⁨toolchains的文件夹，这里根据自己对CPU架构的需求自己复制然后修改
-cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang⁩ Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang-ollvm
+cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/aarch64-linux-android-clang Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/aarch64-linux-android-clang-ollvm
 
 cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang⁩ Android/sdk/ndk/xx.x.xxxxxx/build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang-ollvm
 
