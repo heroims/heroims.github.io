@@ -110,17 +110,24 @@ make -j7
 这里以修改最新的ndk r18为例，老的ndk版本比这更容易都在ndk-bundle/toolchains里放着需要修改的文件。
 ``` shell
 #复制ndk的toolschain里的llvm
-cp -r ndk-bundle/toolchains/llvm ndk-bundle/toolchains/ollvm
+cp -r Android/sdk/ndk/xx.x.xxxxxx/toolchains/llvm Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm
 #删除prebuilt文件夹下的文件夹的bin和lib64，prebuilt文件夹下根据系统不同命名也不同
-rm -rf ndk-bundle/toolchains/ollvm/prebuilt/darwin-x86_64/bin
-rm -rf ndk-bundle/toolchains/ollvm/prebuilt/darwin-x86_64/lib64
+rm -rf Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/bin
+rm -rf Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/lib64
 #把我们之前编译好的ollvm下的bin和lib移到我们刚才删除bin和lib64的目录下
-mv build/bin ndk-bundle/toolchains/ollvm/prebuilt/darwin-x86_64/
-mv build/lib ndk-bundle/toolchains/ollvm/prebuilt/darwin-x86_64/
+mv build/bin Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/bin
+mv build/lib Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/lib64
 #复制ndk-bundle⁩/⁨build⁩/⁨core⁩/⁨toolchains的文件夹，这里根据自己对CPU架构的需求自己复制然后修改
-cp -r ndk-bundle⁩/⁨build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang⁩ ndk-bundle⁩/⁨build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang-ollvm
+cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang⁩ Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang-ollvm
+
+cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang⁩ Android/sdk/ndk/xx.x.xxxxxx/build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang-ollvm
+
+cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/x86_64-clang Android/sdk/ndk/xx.x.xxxxxx/build⁩/⁨core⁩/⁨toolchains/x86_64-clang-ollvm
+
+cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/x86-clang-clang⁩ Android/sdk/ndk/xx.x.xxxxxx/build⁩/⁨core⁩/⁨toolchains/x86-clang-ollvm
+
 ```
-最后把arm-linux-androideabi-clang-ollvm里的setup.mk文件进行修改
+最后把xxxxxx-ollvm里的setup.mk文件进行修改
 
 ```
 TOOLCHAIN_NAME := ollvm
@@ -128,7 +135,25 @@ TOOLCHAIN_ROOT := $(call get-toolchain-root,$(TOOLCHAIN_NAME))
 TOOLCHAIN_PREFIX := $(TOOLCHAIN_ROOT)/bin
 ```
 config.mk里是CPU架构,刚才是复制出来的所以不用修改，但如果要添加其他的自定义架构需要严格按照格式规范命名最初的文件夹，如mips的需要添加文件夹mipsel-linux-android-clang-ollvm，setup.mk和刚才的修改一样即可。
+
+修改Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/setup-toolchain.mk里
+
+```
+ 		ifneq ($(words $(TARGET_TOOLCHAIN_LIST)),1)
+        $(call __ndk_error,Expected two items in TARGET_TOOLCHAIN_LIST, \
+            found "$(TARGET_TOOLCHAIN_LIST)")
+    endif
+```
+
+改为
+
+ 			ifneq ($(words $(TARGET_TOOLCHAIN_LIST)),2)
+ 	    		$(call __ndk_error,Expected two items in TARGET_TOOLCHAIN_LIST, \
+ 	        		found "$(TARGET_TOOLCHAIN_LIST)")
+ 			endif
+
 #### 项目中配置
+
 到了项目里还需要修改两个文件：
 在Android.mk 中添加混淆编译参数
 ```

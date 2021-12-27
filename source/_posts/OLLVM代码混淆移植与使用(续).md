@@ -60,3 +60,16 @@ mv /usr/local/Toolchains  /Library/Developer/
 然后在Build Settings里找到`C++ Language Dialect` 和 `C++ Standard Library`使用默认是为了直接走编译链构建的版本，如果你还加了其他的也需要注意一下别的确保都走你编译的版本
 ![build3.png](/assets/blogImage/3994053-11c43091e54007da.webp)
 
+### Android Studio4.x以后
+
+NDK都改为了默认CMake项目，直接复制`Android/sdk/ndk/xx.x.xxxxxx`文件夹修改一下名称,替换bin和lib64
+
+在build.gradle里添加个人修改的版本
+
+```
+android {
+    ndkVersion "major.minor.build" // e.g.,  ndkVersion "21.3.6528147"
+}
+```
+
+![build3.png](/assets/blogImage/WX20211228-021611@2x.png)
