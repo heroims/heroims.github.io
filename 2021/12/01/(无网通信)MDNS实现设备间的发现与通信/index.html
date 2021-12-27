@@ -214,8 +214,8 @@
 <p>通过上面代码就能实现iOS和Android发现彼此设备的IP和端口，只要你起好tcp的server就能进行连接通信，至于起server随便百度一下就有很多socket起服务的方法这里就不做赘述了我是直接用<a href="https://github.com/robbiehanson/CocoaAsyncSocket" target="_blank" rel="external">CocoaAsyncSocket</a>，我当时为了保险做成了混合式发现入网后还会定期udp广播一下其实没必要。</p>
 <h4 id="Network库"><a href="#Network库" class="headerlink" title="Network库"></a><a href="https://developer.apple.com/documentation/network?language=objc" target="_blank" rel="external">Network库</a></h4><p>这个没在官方找到什么好的示例代码所以直接就给出了官方文档，在网上看到过不少散装的，NSNetService对应NWConnection初始化用NWEndpoint来初始化，NSNetServiceBrowser对应NWBrowser</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> Network</div><div class="line"></div><div class="line"><span class="keyword">let</span> parameter = <span class="type">NWParameters</span>()</div><div class="line"><span class="comment">//之前的属性NSNetServiceBrowser NSNetService现在都用NWParameters这个对象来传递</span></div><div class="line">parameter.includePeerToPeer = <span class="literal">true</span></div><div class="line"><span class="keyword">let</span> browser = <span class="type">NWBrowser</span>(<span class="keyword">for</span>: .bonjour(type: <span class="string">"services.dns-sd."</span>, domain: <span class="literal">nil</span>), using: parameter)</div><div class="line"><span class="comment">//状态改变的时候回调</span></div><div class="line">browser.stateUpdateHandler = &#123; state <span class="keyword">in</span></div><div class="line">    <span class="keyword">switch</span> state &#123;</div><div class="line">    <span class="keyword">case</span> .ready:</div><div class="line">        <span class="built_in">print</span>(<span class="string">"ready"</span>)</div><div class="line">    <span class="keyword">case</span> .failed(<span class="keyword">let</span> error):</div><div class="line">        <span class="built_in">print</span>(<span class="string">"error:"</span>, error.localizedDescription)</div><div class="line">    <span class="keyword">default</span>:</div><div class="line">        <span class="keyword">break</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">//结果有变化的时候回调</span></div><div class="line">browser.browseResultsChangedHandler = &#123; result, changed <span class="keyword">in</span></div><div class="line">    result.forEach &#123; device <span class="keyword">in</span></div><div class="line">        <span class="comment">//endpoint中有netServiceName netServiceType </span></div><div class="line">        <span class="built_in">print</span>(device.endpoint)</div><div class="line">        <span class="built_in">print</span>(device.metadata)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">//主线程上启动搜索服务</span></div><div class="line">browser.start(queue: .main)</div></pre></td></tr></table></figure>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">   <span class="comment">//初始化tcp server，入参对应NSNetService初始化的</span></div><div class="line"><span class="keyword">self</span>.listener = <span class="keyword">try</span> <span class="type">NWListener</span>(using: .tcp, on :localPort)</div><div class="line">   <span class="keyword">self</span>.listener?.service = <span class="type">NWListener</span>.<span class="type">Service</span>(name:netServiceName, type: netServiceType, domain: serviceDomain, txtRecord: <span class="literal">nil</span>)</div><div class="line">   <span class="comment">//注册服务后回调，对应NSNetService发布服务成功后的回调</span></div><div class="line">   <span class="keyword">self</span>.listener?.serviceRegistrationUpdateHandler = &#123; (serviceChange) <span class="keyword">in</span></div><div class="line">     <span class="keyword">switch</span>(serviceChange) &#123;</div><div class="line">     <span class="keyword">case</span> .add(<span class="keyword">let</span> endpoint):<span class="comment">//设备加入</span></div><div class="line">       <span class="keyword">switch</span> endpoint &#123;</div><div class="line">       <span class="keyword">case</span> <span class="keyword">let</span> .service(name, type, domain, interface):</div><div class="line">         <span class="built_in">print</span>(<span class="string">"Service Name <span class="subst">\(name)</span> of type <span class="subst">\(type)</span> having domain: <span class="subst">\(domain)</span> and interface: <span class="subst">\(String(describing: interface?.debugDescription)</span>)"</span>)</div><div class="line">       <span class="keyword">default</span>:</div><div class="line">         <span class="keyword">break</span></div><div class="line">       &#125;</div><div class="line">     <span class="keyword">default</span>:</div><div class="line">       <span class="keyword">break</span></div><div class="line">     &#125;</div><div class="line">   &#125;</div><div class="line">   <span class="keyword">self</span>.listener?.stateUpdateHandler = &#123;(newState) <span class="keyword">in</span></div><div class="line">     <span class="keyword">switch</span> newState &#123;</div><div class="line">     <span class="keyword">case</span> .ready:</div><div class="line">         <span class="built_in">print</span>(<span class="string">"Bonjour TCP Listener: Bonjour listener state changed - ready"</span>)</div><div class="line">     <span class="keyword">default</span>:</div><div class="line">       <span class="keyword">break</span></div><div class="line">     &#125;</div><div class="line">   &#125;</div><div class="line">   <span class="keyword">self</span>.listener?.newConnectionHandler = &#123;(newConnection) <span class="keyword">in</span></div><div class="line">     newConnection.stateUpdateHandler = &#123;newState <span class="keyword">in</span></div><div class="line">       <span class="keyword">switch</span> newState &#123;</div><div class="line">       <span class="keyword">case</span> .ready:</div><div class="line">         <span class="built_in">print</span>(<span class="string">"Bonjour TCP Listener: new  connection state - ready"</span>)</div><div class="line"></div><div class="line">         </div><div class="line">       <span class="keyword">default</span>:</div><div class="line">         <span class="keyword">break</span></div><div class="line">       &#125;</div><div class="line">     &#125;</div><div class="line">     newConnection.start(queue: <span class="type">DispatchQueue</span>(label: <span class="string">"Bonjour TCP Listener: New Connection"</span>))</div><div class="line">   &#125;</div><div class="line"> &#125; <span class="keyword">catch</span> &#123;</div><div class="line">   <span class="built_in">print</span>(<span class="string">"Bonjour TCP Listener: Unable to create listener"</span>)</div><div class="line"> &#125;</div><div class="line"> <span class="keyword">self</span>.listener?.start(queue: .main)</div></pre></td></tr></table></figure>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//初始化tcp client</span></div><div class="line"><span class="keyword">self</span>.netConnect = <span class="type">NWConnection</span>(to: .service(name: netServiceName, type: netServiceType, domain: serviceDomain, interface: <span class="literal">nil</span>), port:localPort, using: .tcp)</div><div class="line"><span class="keyword">self</span>.netConnect?.stateUpdateHandler = &#123; (newState) <span class="keyword">in</span></div><div class="line">      <span class="built_in">print</span>(<span class="string">"bonjourToTCP: Connection details: <span class="subst">\(String(describing: <span class="keyword">self</span>.netConnect?.debugDescription)</span>)"</span>)</div><div class="line">    <span class="keyword">switch</span> (newState) &#123;</div><div class="line">    <span class="keyword">case</span> .ready:</div><div class="line">       <span class="keyword">self</span>.connectState = <span class="string">"Connection state: Ready"</span></div><div class="line">      <span class="built_in">print</span>(<span class="string">"bonjourToTCP: new TCP connection ready "</span>)</div><div class="line">    <span class="keyword">default</span>:</div><div class="line">      <span class="keyword">break</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">self</span>.netConnect?.start(queue: .main)</div></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">   <span class="comment">//初始化tcp server，入参对应NSNetService初始化的</span></div><div class="line"><span class="keyword">self</span>.listener = <span class="keyword">try</span> <span class="type">NWListener</span>(using: .tcp, on :localPort)</div><div class="line">   <span class="keyword">self</span>.listener?.service = <span class="type">NWListener</span>.<span class="type">Service</span>(name:netServiceName, type: netServiceType, domain: serviceDomain, txtRecord: <span class="literal">nil</span>)</div><div class="line">   <span class="comment">//注册服务后回调，对应NSNetService发布服务成功后的回调</span></div><div class="line">   <span class="keyword">self</span>.listener?.serviceRegistrationUpdateHandler = &#123; (serviceChange) <span class="keyword">in</span></div><div class="line">     <span class="keyword">switch</span>(serviceChange) &#123;</div><div class="line">     <span class="keyword">case</span> .add(<span class="keyword">let</span> endpoint):<span class="comment">//设备加入</span></div><div class="line">       <span class="keyword">switch</span> endpoint &#123;</div><div class="line">       <span class="keyword">case</span> <span class="keyword">let</span> .service(name, type, domain, interface):</div><div class="line">         <span class="built_in">print</span>(<span class="string">"Service Name \(name) of type \(type) having domain: \(domain) and interface: \(String(describing: interface?.debugDescription))"</span>)</div><div class="line">       <span class="keyword">default</span>:</div><div class="line">         <span class="keyword">break</span></div><div class="line">       &#125;</div><div class="line">     <span class="keyword">default</span>:</div><div class="line">       <span class="keyword">break</span></div><div class="line">     &#125;</div><div class="line">   &#125;</div><div class="line">   <span class="keyword">self</span>.listener?.stateUpdateHandler = &#123;(newState) <span class="keyword">in</span></div><div class="line">     <span class="keyword">switch</span> newState &#123;</div><div class="line">     <span class="keyword">case</span> .ready:</div><div class="line">         <span class="built_in">print</span>(<span class="string">"Bonjour TCP Listener: Bonjour listener state changed - ready"</span>)</div><div class="line">     <span class="keyword">default</span>:</div><div class="line">       <span class="keyword">break</span></div><div class="line">     &#125;</div><div class="line">   &#125;</div><div class="line">   <span class="keyword">self</span>.listener?.newConnectionHandler = &#123;(newConnection) <span class="keyword">in</span></div><div class="line">     newConnection.stateUpdateHandler = &#123;newState <span class="keyword">in</span></div><div class="line">       <span class="keyword">switch</span> newState &#123;</div><div class="line">       <span class="keyword">case</span> .ready:</div><div class="line">         <span class="built_in">print</span>(<span class="string">"Bonjour TCP Listener: new  connection state - ready"</span>)</div><div class="line"></div><div class="line">         </div><div class="line">       <span class="keyword">default</span>:</div><div class="line">         <span class="keyword">break</span></div><div class="line">       &#125;</div><div class="line">     &#125;</div><div class="line">     newConnection.start(queue: <span class="type">DispatchQueue</span>(label: <span class="string">"Bonjour TCP Listener: New Connection"</span>))</div><div class="line">   &#125;</div><div class="line"> &#125; <span class="keyword">catch</span> &#123;</div><div class="line">   <span class="built_in">print</span>(<span class="string">"Bonjour TCP Listener: Unable to create listener"</span>)</div><div class="line"> &#125;</div><div class="line"> <span class="keyword">self</span>.listener?.start(queue: .main)</div></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//初始化tcp client</span></div><div class="line"><span class="keyword">self</span>.netConnect = <span class="type">NWConnection</span>(to: .service(name: netServiceName, type: netServiceType, domain: serviceDomain, interface: <span class="literal">nil</span>), port:localPort, using: .tcp)</div><div class="line"><span class="keyword">self</span>.netConnect?.stateUpdateHandler = &#123; (newState) <span class="keyword">in</span></div><div class="line">      <span class="built_in">print</span>(<span class="string">"bonjourToTCP: Connection details: \(String(describing: self.netConnect?.debugDescription))"</span>)</div><div class="line">    <span class="keyword">switch</span> (newState) &#123;</div><div class="line">    <span class="keyword">case</span> .ready:</div><div class="line">       <span class="keyword">self</span>.connectState = <span class="string">"Connection state: Ready"</span></div><div class="line">      <span class="built_in">print</span>(<span class="string">"bonjourToTCP: new TCP connection ready "</span>)</div><div class="line">    <span class="keyword">default</span>:</div><div class="line">      <span class="keyword">break</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">self</span>.netConnect?.start(queue: .main)</div></pre></td></tr></table></figure>
 <p>新的Network库好处是直接把socket和注册广播服务整合了，这个也没真正测过在这里只是做个记录。</p>
 <h2 id="其他平台"><a href="#其他平台" class="headerlink" title="其他平台"></a>其他平台</h2><h3 id="Golang"><a href="#Golang" class="headerlink" title="Golang]"></a>Golang]</h3><h4 id="mDNS"><a href="#mDNS" class="headerlink" title="mDNS"></a><a href="https://github.com/hashicorp/mdns" target="_blank" rel="external">mDNS</a></h4><h4 id="bonjour"><a href="#bonjour" class="headerlink" title="bonjour"></a><a href="https://github.com/oleksandr/bonjour" target="_blank" rel="external">bonjour</a></h4><h3 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js]"></a>Node.js]</h3><h4 id="mDNS-1"><a href="#mDNS-1" class="headerlink" title="mDNS"></a><a href="https://github.com/agnat/node_mdns" target="_blank" rel="external">mDNS</a></h4><h3 id="C"><a href="#C" class="headerlink" title="C"></a>C</h3><h4 id="mDNS-2"><a href="#mDNS-2" class="headerlink" title="mDNS"></a><a href="https://github.com/mjansson/mdns" target="_blank" rel="external">mDNS</a></h4>
       
@@ -476,6 +476,94 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">切面</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">统计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Wifi Direct</a>
               </li>
              
@@ -508,78 +596,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">网络</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">切面</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">架构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">统计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">网络层</a>
               </li>
              
@@ -589,162 +605,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">构建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">编译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Mesh组网</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">异地组网</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OpenWRT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Libremesh</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">batman</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">bmx</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OpenVPN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">frp</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">WebView</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Scheme</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">预编译宏</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Configurations</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Preprocessor Macros</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">User-Defined-Setting</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -781,6 +641,146 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">蜂窝网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">构建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">WebView</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Mesh组网</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异地组网</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OpenWRT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Libremesh</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">batman</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">bmx</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OpenVPN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">frp</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Scheme</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">预编译宏</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Configurations</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Preprocessor Macros</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">User-Defined-Setting</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">

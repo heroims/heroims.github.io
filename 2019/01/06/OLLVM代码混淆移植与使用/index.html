@@ -36,7 +36,7 @@
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-9d9e6f40bfb9aff4.png">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-b86496d5219b2efd.png">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-7851701440866c65.png">
-<meta property="og:updated_time" content="2021-11-25T18:51:30.323Z">
+<meta property="og:updated_time" content="2021-12-27T18:09:23.430Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="OLLVM代码混淆移植与使用">
 <meta name="twitter:description" content="简介OLLVM(Obfuscator-LLVM)是瑞士西北应用科技大学安全实验室于2010年6月份发起的一个项目,该项目旨在提供一套开源的针对LLVM的代码混淆工具,以增加对逆向工程的难度。github上地址是https://github.com/obfuscator-llvm/obfuscator ，只不过仅更新到llvm的4.0，2017年开始就没在更新。 移植OLLVM如果自己想拿最新版的L">
@@ -219,11 +219,18 @@
 <p>上面说完模式下面讲一下几种使用方式</p>
 <h3 id="直接用二进制文件"><a href="#直接用二进制文件" class="headerlink" title="直接用二进制文件"></a>直接用二进制文件</h3><p>直接使用编译的二进制文件<code>build/bin/clang test.c -o test -mllvm -sub -mllvm -fla -mllvm -bcf</code></p>
 <h3 id="NDK集成"><a href="#NDK集成" class="headerlink" title="NDK集成"></a>NDK集成</h3><p>这里分为工具链的制作和项目里的配置。</p>
-<h4 id="制作Toolchains"><a href="#制作Toolchains" class="headerlink" title="制作Toolchains"></a>制作Toolchains</h4><p>这里以修改最新的ndk r18为例，老的ndk版本比这更容易都在ndk-bundle/toolchains里放着需要修改的文件。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>复制ndk的toolschain里的llvm</div><div class="line">cp -r ndk-bundle/toolchains/llvm ndk-bundle/toolchains/ollvm</div><div class="line"><span class="meta">#</span>删除prebuilt文件夹下的文件夹的bin和lib64，prebuilt文件夹下根据系统不同命名也不同</div><div class="line">rm -rf ndk-bundle/toolchains/ollvm/prebuilt/darwin-x86_64/bin</div><div class="line">rm -rf ndk-bundle/toolchains/ollvm/prebuilt/darwin-x86_64/lib64</div><div class="line"><span class="meta">#</span>把我们之前编译好的ollvm下的bin和lib移到我们刚才删除bin和lib64的目录下</div><div class="line">mv build/bin ndk-bundle/toolchains/ollvm/prebuilt/darwin-x86_64/</div><div class="line">mv build/lib ndk-bundle/toolchains/ollvm/prebuilt/darwin-x86_64/</div><div class="line"><span class="meta">#</span>复制ndk-bundle⁩/⁨build⁩/⁨core⁩/⁨toolchains的文件夹，这里根据自己对CPU架构的需求自己复制然后修改</div><div class="line">cp -r ndk-bundle⁩/⁨build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang⁩ ndk-bundle⁩/⁨build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang-ollvm</div></pre></td></tr></table></figure></p>
-<p>最后把arm-linux-androideabi-clang-ollvm里的setup.mk文件进行修改</p>
+<h4 id="制作Toolchains"><a href="#制作Toolchains" class="headerlink" title="制作Toolchains"></a>制作Toolchains</h4><p>这里以修改最新的ndk r18为例，老的ndk版本比这更容易都在ndk-bundle/toolchains里放着需要修改的文件。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>复制ndk的toolschain里的llvm</div><div class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/toolchains/llvm Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm</div><div class="line"><span class="meta">#</span>删除prebuilt文件夹下的文件夹的bin和lib64，prebuilt文件夹下根据系统不同命名也不同</div><div class="line">rm -rf Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/bin</div><div class="line">rm -rf Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/lib64</div><div class="line"><span class="meta">#</span>把我们之前编译好的ollvm下的bin和lib移到我们刚才删除bin和lib64的目录下</div><div class="line">mv build/bin Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/bin</div><div class="line">mv build/lib Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/lib64</div><div class="line"><span class="meta">#</span>复制ndk-bundle⁩/⁨build⁩/⁨core⁩/⁨toolchains的文件夹，这里根据自己对CPU架构的需求自己复制然后修改</div><div class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang⁩ Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang-ollvm</div><div class="line"></div><div class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang⁩ Android/sdk/ndk/xx.x.xxxxxx/build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang-ollvm</div><div class="line"></div><div class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/x86_64-clang Android/sdk/ndk/xx.x.xxxxxx/build⁩/⁨core⁩/⁨toolchains/x86_64-clang-ollvm</div><div class="line"></div><div class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/x86-clang-clang⁩ Android/sdk/ndk/xx.x.xxxxxx/build⁩/⁨core⁩/⁨toolchains/x86-clang-ollvm</div></pre></td></tr></table></figure></p>
+<p>最后把xxxxxx-ollvm里的setup.mk文件进行修改</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">TOOLCHAIN_NAME := ollvm</div><div class="line">TOOLCHAIN_ROOT := $(call get-toolchain-root,$(TOOLCHAIN_NAME))</div><div class="line">TOOLCHAIN_PREFIX := $(TOOLCHAIN_ROOT)/bin</div></pre></td></tr></table></figure>
 <p>config.mk里是CPU架构,刚才是复制出来的所以不用修改，但如果要添加其他的自定义架构需要严格按照格式规范命名最初的文件夹，如mips的需要添加文件夹mipsel-linux-android-clang-ollvm，setup.mk和刚才的修改一样即可。</p>
-<h4 id="项目中配置"><a href="#项目中配置" class="headerlink" title="项目中配置"></a>项目中配置</h4><p>到了项目里还需要修改两个文件：<br>在Android.mk 中添加混淆编译参数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">LOCAL_CFLAGS += -mllvm -sub -mllvm -bcf -mllvm -fla</div></pre></td></tr></table></figure></p>
+<p>修改Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/setup-toolchain.mk里</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ifneq ($(words $(TARGET_TOOLCHAIN_LIST)),1)</div><div class="line">     $(call __ndk_error,Expected two items in TARGET_TOOLCHAIN_LIST, \</div><div class="line">         found &quot;$(TARGET_TOOLCHAIN_LIST)&quot;)</div><div class="line"> endif</div></pre></td></tr></table></figure>
+<p>改为</p>
+<pre><code>ifneq ($(words $(TARGET_TOOLCHAIN_LIST)),2)
+    $(call __ndk_error,Expected two items in TARGET_TOOLCHAIN_LIST, \
+        found &quot;$(TARGET_TOOLCHAIN_LIST)&quot;)
+endif
+</code></pre><h4 id="项目中配置"><a href="#项目中配置" class="headerlink" title="项目中配置"></a>项目中配置</h4><p>到了项目里还需要修改两个文件：<br>在Android.mk 中添加混淆编译参数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">LOCAL_CFLAGS += -mllvm -sub -mllvm -bcf -mllvm -fla</div></pre></td></tr></table></figure></p>
 <p>Application.mk中配置NDK_TOOLCHAIN_VERSION<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#根据需要添加</div><div class="line">APP_ABI := x86 armeabi-v7a x86_64 arm64-v8a mips armeabi mips64</div><div class="line">#使用刚才我们做好的编译链</div><div class="line">NDK_TOOLCHAIN_VERSION := ollvm</div></pre></td></tr></table></figure></p>
 <h3 id="Visual-Studio集成"><a href="#Visual-Studio集成" class="headerlink" title="Visual Studio集成"></a>Visual Studio集成</h3><p>编译ollvm的时候，使用cmake-gui选择Visual Studio2015或者命令行选择<code>cmake -G &quot;Visual Studio 14 2015&quot; -DCMAKE_BUILD_TYPE=Release ../obfuscator/</code><br>然后cmake会产生一个visual studio工程，用vs编译即可！<br>至于将Visual Studio的默认编译器换成clang编译，参考<a href="https://www.ishani.org/projects/ClangVSX/" target="_blank" rel="external">https://www.ishani.org/projects/ClangVSX/</a></p>
 <p>Visual Studio2015起官方开始支持Clang，具体做法：<br>文件-&gt;新建-&gt;项目-&gt;已安装-&gt;Visual C++-&gt;跨平台-&gt;安装Clang with Microsoft CodeGen<br>Clang是一个完全不同的命令行工具链，这时候可以在工程配置中，平台工具集选项里找到Clang，然后使用ollvm的clang替换该clang即可。</p>
@@ -514,6 +521,94 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">切面</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">统计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Wifi Direct</a>
               </li>
              
@@ -546,78 +641,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">网络</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">切面</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">架构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">统计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">网络层</a>
               </li>
              
@@ -627,162 +650,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">构建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">编译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Mesh组网</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">异地组网</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OpenWRT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Libremesh</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">batman</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">bmx</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OpenVPN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">frp</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">WebView</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Scheme</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">预编译宏</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Configurations</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Preprocessor Macros</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">User-Defined-Setting</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -819,6 +686,146 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">蜂窝网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">构建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">WebView</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Mesh组网</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异地组网</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OpenWRT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Libremesh</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">batman</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">bmx</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OpenVPN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">frp</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Scheme</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">预编译宏</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Configurations</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Preprocessor Macros</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">User-Defined-Setting</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
