@@ -106,14 +106,15 @@ utils/update-checkout --tag mytagname
 ```
 
 最后执行build_toolchain或build_script,其中build_toolchain最简单，傻瓜式编译，全自动，先看看有没有错，不报错就可以做ollvm移植了。
-
-编译成功会如下图，多出两个文件夹两个tar.gz文件，里面都是.toolchain放`/Library/Developer/Toolchains`里Xcode就可以用了
-![image](/assets/blogImage/WX20220411-214257@2x.png)
-
 ```
 # 后面必须要跟个唯一标识
 utils/build_toolchain com.xxxx
 ```
+
+编译成功会如下图，多出两个文件夹两个tar.gz文件，里面都是.toolchain放`/Library/Developer/Toolchains`里Xcode就可以用了
+![image](/assets/blogImage/WX20220411-214257@2x.png)
+
+
 移植的话在`swift`同级目录有个`llvm-project`,这就是标准的llvm，之前怎么移植现在就怎么移植即可。比较简单的方式可以选择git patch文件或者找我swift-llvm-clang的分支用git cherry pick拉过去，这里的llvm都是指向的swift-llvm的。
 
 下面提供了git的patch具体命令
