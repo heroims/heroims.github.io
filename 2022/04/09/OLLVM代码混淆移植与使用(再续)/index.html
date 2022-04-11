@@ -26,7 +26,7 @@
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/WX20220411-153711@2x.png">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/WX20220411-153643@2x.png">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/WX20220410-211919@2x.png">
-<meta property="og:updated_time" content="2022-04-11T09:05:53.038Z">
+<meta property="og:updated_time" content="2022-04-11T10:01:33.692Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="OLLVM代码混淆移植与使用(再续)">
 <meta name="twitter:description" content="前言这波主要自己闲下来了，帮之前兼职区块链公司搞定了Android和iOS的BLE无网通信请了假，准备去自考本科最后四门，结果疫情太厉害直接取消了，本来还想着年中就可以申请毕业直接再准备一下考研请的是长假。。。结果计划永远赶不上变化，毕竟搞学历对现在的自己只是解个心结去个遗憾，对自己工作生活没啥用调整好情绪重新继续正经创业或工作吧，借着长假的时间思考思考人生，搞一搞之前没空处理的遗留项目。下面就直">
@@ -181,8 +181,9 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这波主要自己闲下来了，帮之前兼职区块链公司搞定了Android和iOS的BLE无网通信请了假，准备去自考本科最后四门，结果疫情太厉害直接取消了，本来还想着年中就可以申请毕业直接再准备一下考研请的是长假。。。结果计划永远赶不上变化，毕竟搞学历对现在的自己只是解个心结去个遗憾，对自己工作生活没啥用调整好情绪重新继续正经创业或工作吧，借着长假的时间思考思考人生，搞一搞之前没空处理的遗留项目。下面就直接进入主题把！</p>
-<h1 id="关键修改"><a href="#关键修改" class="headerlink" title="关键修改"></a>关键修改</h1><h3 id="14-0以后的修改"><a href="#14-0以后的修改" class="headerlink" title="14.0以后的修改"></a>14.0以后的修改</h3><p>主要是<code>StringObfuscation.cpp</code>里面的两个地方，第一个是宏的修改编译时机，第二个就是CreateGEP,CreateLoad等多个方法需要传递指针类型了，原来不传会设置为null到了13.0里就开始内部通过对象获取类型，就像修改的这样，到了14.0干脆就是强制你必须传类型了。<br><img src="/assets/blogImage/1649574671473.jpg" alt="image.png"><br><a id="more"></a></p>
-<h3 id="改为New-Pass-Manager"><a href="#改为New-Pass-Manager" class="headerlink" title="改为New Pass Manager"></a>改为New Pass Manager</h3><p>这个不好说修改了是好是坏，毕竟如果不修改，现在正常开启NEWPM编译完，利用-flegacy-pass-manager标识指定文件，再加上混淆指令可以针对单个文件混淆，但官方也说了在努力去除掉所有legacy pass manager，所以还是该准备一下。<br>这里只那两个Pass举例，因为改法都差不多，之所以是两个是因为一个是Function一个是Module,其实还有其他的好多种，只不过网上封装的混淆Pass也就用了这两种，想详细了解的，文档我反正没找到，但可以从源码中读逻辑。</p>
+<h1 id="关键修改"><a href="#关键修改" class="headerlink" title="关键修改"></a>关键修改</h1><h3 id="Legacy-PM模式不生效"><a href="#Legacy-PM模式不生效" class="headerlink" title="Legacy PM模式不生效"></a>Legacy PM模式不生效</h3><p>现在由于默认是NEW PM所以经常有人邮件我移植很完美编译也成功，就是没效果，这里做一下解答。主要两种方式解决，一种是在cmake的时候加一下<code>-DLLVM_USE_NEWPM=OFF</code>来禁用掉NEW PM，这样在编译完成后使用的时候就可以了，还有一种就是走默认开启这，然后用ollvm编译自己项目时加上-flegacy-pass-manager的cflag，再加-mllvm原来哪些就可以正常使用了</p>
+<h3 id="14-0以后的修改"><a href="#14-0以后的修改" class="headerlink" title="14.0以后的修改"></a>14.0以后的修改</h3><p>主要是<code>StringObfuscation.cpp</code>里面的两个地方，第一个是宏的修改编译时机，第二个就是CreateGEP,CreateLoad等多个方法需要传递指针类型了，原来不传会设置为null到了13.0里就开始内部通过对象获取类型，就像修改的这样，到了14.0干脆就是强制你必须传类型了。<br><img src="/assets/blogImage/1649574671473.jpg" alt="image.png"><br><a id="more"></a></p>
+<h3 id="改为New-Pass-Manager"><a href="#改为New-Pass-Manager" class="headerlink" title="改为New Pass Manager"></a>改为New Pass Manager</h3><p>这个不好说修改了是好是坏，毕竟如果不修改，现在正常开启NEWPM编译完，利用-flegacy-pass-manager标识才能混淆，官方也说了在努力去除掉所有legacy pass manager，所以还是该准备一下。<br>这里只那两个Pass举例，因为改法都差不多，之所以是两个是因为一个是Function一个是Module,其实还有其他的好多种，只不过网上封装的混淆Pass也就用了这两种，想详细了解的，文档我反正没找到，但可以从源码中读逻辑。</p>
 <h4 id="FunctionAnalysisManager"><a href="#FunctionAnalysisManager" class="headerlink" title="FunctionAnalysisManager"></a>FunctionAnalysisManager</h4><p>首先以BogusControlFlow为例在<code>.h</code>里添加<code>#include &quot;llvm/IR/PassManager.h&quot;</code>的头文件，然后创建如下的Pass类<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class BogusControlFlowPass : public PassInfoMixin&lt;BogusControlFlowPass&gt;&#123; </span><br><span class="line">    public:</span><br><span class="line">        PreservedAnalyses run(Function &amp;F, FunctionAnalysisManager &amp;AM);</span><br><span class="line"></span><br><span class="line">        static bool isRequired() &#123; return true; &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
 <p>在<code>.m</code>文件里先把之前初始化的方法包一层，为了在另一个Pass类里方便调用<br><img src="/assets/blogImage/WX20220411-141915@2x.png" alt="image.png"><br>把下面的代码加完补上之前定义的类的方法就完成了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">PreservedAnalyses BogusControlFlowPass::run(Function&amp; F, FunctionAnalysisManager&amp; AM) &#123;</span><br><span class="line">  BogusControlFlow bcf;</span><br><span class="line">  if (bcf.runOnCustomFunction(F))</span><br><span class="line">    return PreservedAnalyses::none();</span><br><span class="line">  return PreservedAnalyses::all();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h4 id="ModuleAnalysisManager"><a href="#ModuleAnalysisManager" class="headerlink" title="ModuleAnalysisManager"></a>ModuleAnalysisManager</h4><p>然后以StringObfuscation为例在<code>.h</code>里添加<code>#include &quot;llvm/IR/PassManager.h&quot;</code>的头文件，然后创建如下的Pass类<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class StringObfuscationPass : public PassInfoMixin&lt;StringObfuscationPass&gt;&#123; </span><br><span class="line">  public:</span><br><span class="line">      PreservedAnalyses run(Module &amp;M, ModuleAnalysisManager &amp;AM);</span><br><span class="line"></span><br><span class="line">      static bool isRequired() &#123; return true; &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
@@ -340,7 +341,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#关键修改"><span class="toc-number">2.</span> <span class="toc-text">关键修改</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#14-0以后的修改"><span class="toc-number">2.0.1.</span> <span class="toc-text">14.0以后的修改</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#改为New-Pass-Manager"><span class="toc-number">2.0.2.</span> <span class="toc-text">改为New Pass Manager</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#FunctionAnalysisManager"><span class="toc-number">2.0.2.1.</span> <span class="toc-text">FunctionAnalysisManager</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ModuleAnalysisManager"><span class="toc-number">2.0.2.2.</span> <span class="toc-text">ModuleAnalysisManager</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#注册-添加-Pass"><span class="toc-number">2.0.2.3.</span> <span class="toc-text">注册 添加 Pass</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Swift支持"><span class="toc-number">3.</span> <span class="toc-text">Swift支持</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Android-轻量编译"><span class="toc-number">4.</span> <span class="toc-text">Android 轻量编译</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#通用的轻量级编译"><span class="toc-number">5.</span> <span class="toc-text">通用的轻量级编译</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Legacy-Pass-Manager"><span class="toc-number">5.0.1.</span> <span class="toc-text">Legacy Pass Manager</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#New-Pass-Manager"><span class="toc-number">5.0.2.</span> <span class="toc-text">New Pass Manager</span></a></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#关键修改"><span class="toc-number">2.</span> <span class="toc-text">关键修改</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Legacy-PM模式不生效"><span class="toc-number">2.0.1.</span> <span class="toc-text">Legacy PM模式不生效</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-0以后的修改"><span class="toc-number">2.0.2.</span> <span class="toc-text">14.0以后的修改</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#改为New-Pass-Manager"><span class="toc-number">2.0.3.</span> <span class="toc-text">改为New Pass Manager</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#FunctionAnalysisManager"><span class="toc-number">2.0.3.1.</span> <span class="toc-text">FunctionAnalysisManager</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ModuleAnalysisManager"><span class="toc-number">2.0.3.2.</span> <span class="toc-text">ModuleAnalysisManager</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#注册-添加-Pass"><span class="toc-number">2.0.3.3.</span> <span class="toc-text">注册 添加 Pass</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Swift支持"><span class="toc-number">3.</span> <span class="toc-text">Swift支持</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Android-轻量编译"><span class="toc-number">4.</span> <span class="toc-text">Android 轻量编译</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#通用的轻量级编译"><span class="toc-number">5.</span> <span class="toc-text">通用的轻量级编译</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Legacy-Pass-Manager"><span class="toc-number">5.0.1.</span> <span class="toc-text">Legacy Pass Manager</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#New-Pass-Manager"><span class="toc-number">5.0.2.</span> <span class="toc-text">New Pass Manager</span></a></li></ol></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -450,7 +451,47 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">IOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -478,30 +519,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">网络</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
               </li>
              
@@ -519,6 +536,150 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">构建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Mesh组网</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异地组网</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OpenWRT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Libremesh</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">batman</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">bmx</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OpenVPN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">frp</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">WebView</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Scheme</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">预编译宏</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Configurations</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Preprocessor Macros</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">User-Defined-Setting</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">视频</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GPUImage</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -555,70 +716,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">蜂窝网络</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">构建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">编译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -667,102 +764,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">BLE</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">WebView</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Scheme</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">预编译宏</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Configurations</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Preprocessor Macros</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">User-Defined-Setting</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">视频</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GPUImage</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">动态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Framework</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Mesh组网</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">异地组网</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OpenWRT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Libremesh</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">batman</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">bmx</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OpenVPN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">frp</a>
               </li>
             
             <div class="clearfix"></div>
