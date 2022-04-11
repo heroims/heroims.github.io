@@ -263,4 +263,4 @@ llvmGetPassPluginInfo() {
   return getOllvmPluginInfo();
 }
 ```
-创建个AutoRegisterPass.cpp,放到Obfuscation里再改一下CMakeLists.txt，执行完cmake构建好项目可以单独编译这个Obfuscation模块，其实用这个方法也就不需要再修改llvm本身了，移植起来方便多了只需要添加文件即可。用patch也就基本见不到冲突了。
+创建个PMRegistration.cpp,放到Obfuscation里再改一下CMakeLists.txt，执行完cmake构建好项目可以单独编译这个Obfuscation模块，其实用这个方法也就不需要再修改llvm本身了，移植起来方便多了只需要添加文件即可。用patch也就基本见不到冲突了。
