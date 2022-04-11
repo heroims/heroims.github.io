@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>IOS 网络服务层自动化详解 | Heroims的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -15,6 +15,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/03/02/IOS 网络服务层自动化详解/index.html">
 <meta property="og:site_name" content="Heroims的博客">
 <meta property="og:description" content="前言之前的文章http://www.jianshu.com/p/7a3a387584c6 最后提到了网络服务层自动化，今天在详细说说。之前封装了ServerAPI，这套框架本身其实相当于定义了一套规范的。自动化的概念还是放最后，先讲清楚这框架，到了后面自动化概念自然而然就出来了。 #ServerAPI 分析与网络服务层构建框架本身构成主要有4部分 ServerAPI主要对后台的API接口做对应描述">
+<meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-254e821d28eb7c80.png">
 <meta property="og:updated_time" content="2021-07-08T09:20:31.220Z">
 <meta name="twitter:card" content="summary">
@@ -39,7 +40,7 @@
   
 
 </head>
-
+</html>
 <body>
   <div id="container" q-class="show:isCtnShow">
     <canvas id="anm-canvas" class="anm-canvas"></canvas>
@@ -170,17 +171,17 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>之前的文章<a href="http://www.jianshu.com/p/7a3a387584c6" target="_blank" rel="external">http://www.jianshu.com/p/7a3a387584c6</a> 最后提到了网络服务层自动化，今天在详细说说。之前封装了ServerAPI，这套框架本身其实相当于定义了一套规范的。<br>自动化的概念还是放最后，先讲清楚这框架，到了后面自动化概念自然而然就出来了。</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>之前的文章<a href="http://www.jianshu.com/p/7a3a387584c6" target="_blank" rel="noopener">http://www.jianshu.com/p/7a3a387584c6</a> 最后提到了网络服务层自动化，今天在详细说说。之前封装了ServerAPI，这套框架本身其实相当于定义了一套规范的。<br>自动化的概念还是放最后，先讲清楚这框架，到了后面自动化概念自然而然就出来了。</p>
 <p>#ServerAPI 分析与网络服务层构建<br>框架本身构成主要有4部分</p>
-<h3 id="ServerAPI"><a href="#ServerAPI" class="headerlink" title="ServerAPI"></a>ServerAPI</h3><p>主要对后台的API接口做对应描述，相当于网络请求的配置文件Model，定义了请求地址，重试次数，超时时间，返回数据类型，解析数据类型，上传方式等等，，除了常用描述还封装了常用方法算是个标准的胖Model<br>常用方法例如，请求地址这里也是拆分成host ，path ，pathParameter，parameter，内部封装了组合逻辑，下面4个属性<br>host：<a href="http://xxxx/" target="_blank" rel="external">http://xxxx/</a><br>path：module/{xxxmudleID}<br>pathParameter：xxxmudleID:xxxx<br>parameter：key:value<br>可以拼成<a href="http://xxxx/module/xxxmudleID?key=value" target="_blank" rel="external">http://xxxx/module/xxxmudleID?key=value</a> 这个url，还有自动为每一次请求生成唯一ID，对请求打Tag方便归类，包括发起请求这也提供了方法，不过实现当然不在这，毕竟他只负责描述</p>
+<h3 id="ServerAPI"><a href="#ServerAPI" class="headerlink" title="ServerAPI"></a>ServerAPI</h3><p>主要对后台的API接口做对应描述，相当于网络请求的配置文件Model，定义了请求地址，重试次数，超时时间，返回数据类型，解析数据类型，上传方式等等，，除了常用描述还封装了常用方法算是个标准的胖Model<br>常用方法例如，请求地址这里也是拆分成host ，path ，pathParameter，parameter，内部封装了组合逻辑，下面4个属性<br>host：<a href="http://xxxx/" target="_blank" rel="noopener">http://xxxx/</a><br>path：module/{xxxmudleID}<br>pathParameter：xxxmudleID:xxxx<br>parameter：key:value<br>可以拼成<a href="http://xxxx/module/xxxmudleID?key=value" target="_blank" rel="noopener">http://xxxx/module/xxxmudleID?key=value</a> 这个url，还有自动为每一次请求生成唯一ID，对请求打Tag方便归类，包括发起请求这也提供了方法，不过实现当然不在这，毕竟他只负责描述</p>
 <h3 id="ServerAPIManager"><a href="#ServerAPIManager" class="headerlink" title="ServerAPIManager"></a>ServerAPIManager</h3><p>主要负责管理请求和根据api发起请求，框架内他只是一个管理者逻辑，对发起的请求做归类管理，而发起请求包括缓存逻辑这里通过Category来实现，而具体要实现哪些，由最后面的协议类定义，这样框架本身不去对网络层实现，缓存层实现做干涉，方便更自由的定制化，例如网络层AFN，ASI，还是其他语言都跟框架本身无关，所以这里框架本身只是一个壳，移植性较高，同样的思想拿到其他平台依然适用</p>
 <h3 id="ServerResult"><a href="#ServerResult" class="headerlink" title="ServerResult"></a>ServerResult</h3><p>主要把返回的数据用通用型实体表示，包括发起的api，发起请求的request对象，返回的源数据，返回的格式化数据，返回的错误，状态等，由于牵扯到数据格式化，所以这里依然是通过Category实现对应方法，方便扩展</p>
 <p>ps：不支持扩展的语言，继承也可以<br><a id="more"></a></p>
-<h3 id="ServerAPIProtocol"><a href="#ServerAPIProtocol" class="headerlink" title="ServerAPIProtocol"></a>ServerAPIProtocol</h3><p>主要负责定义要在Category里实现的方法，这里我直接放源码，注释还算全，关键内容不多，这就是描述要实现哪些才能让框架跑起来，具体方法放那里具体怎么用每个人有每个人不同的想法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div></pre></td><td class="code"><pre><div class="line">//通过Category对ServerAPI实现对应的协议</div><div class="line"></div><div class="line">@class ServerAPI;</div><div class="line"></div><div class="line">typedef void  (^sap_requestFailHandle)(ServerResult *result, NSError* errInfo);</div><div class="line">typedef void  (^sap_requestSuccessHandle)(ServerResult *result);</div><div class="line"></div><div class="line">#pragma mark - 必须实现的协议</div><div class="line">@protocol ServerAPIManagerRequestProtocol &lt;NSObject&gt;</div><div class="line"></div><div class="line">@required</div><div class="line"></div><div class="line">/**</div><div class="line">发起请求逻辑实现 方便用AFN，ASI或自己写</div><div class="line">@param api 请求描述的ServerAPI</div><div class="line">@param completion 请求回调</div><div class="line">@param progressHandle 请求进度</div><div class="line">*/</div><div class="line">-(void)requestDataWithAPI:(ServerAPI*)api completion:(sap_requestCompletion)completion progressHandle:(sap_progressHandle)progressHandle;</div><div class="line"></div><div class="line">/**</div><div class="line">取消一个请求</div><div class="line">@param api 请求描述的ServerAPI</div><div class="line">*/</div><div class="line">-(void)cancelRequestWithAPI:(ServerAPI*)api;</div><div class="line"></div><div class="line">@optional</div><div class="line"></div><div class="line">/**</div><div class="line">发起请求逻辑实现 方便用AFN，ASI或自己写</div><div class="line">@param api 请求描述的ServerAPI</div><div class="line">@param successHandle 请求成功回调</div><div class="line">@param failHandle 请求失败回调</div><div class="line">@param progressHandle 请求进度</div><div class="line">*/</div><div class="line">-(void)requestDataWithAPI:(ServerAPI*)api successHandle:(sap_requestSuccessHandle)successHandle failHandle:(sap_requestFailHandle)failHandle progressHandle:(sap_progressHandle)progressHandle;</div><div class="line"></div><div class="line"></div><div class="line">/**</div><div class="line">根据requestID取消一个请求</div><div class="line">@param requestID 请求唯一ID</div><div class="line">*/</div><div class="line">-(void)cancelRequestWithRequestID:(NSString*)requestID;</div><div class="line"></div><div class="line">/**</div><div class="line">根据requestsTag取消某一类表示的请求</div><div class="line">@param requestsTag 请求分类标识</div><div class="line">*/</div><div class="line">-(void)cancelRequestWithRequestsTag:(NSString*)requestsTag;</div><div class="line"></div><div class="line">/**</div><div class="line">根据requestID数组取消相关请求</div><div class="line">@param requestList requestID的数组</div><div class="line">*/</div><div class="line">-(void)cancelRequestWithRequestIDList:(NSArray*)requestList;</div><div class="line"></div><div class="line">/**</div><div class="line">根据ServerAPI数组取消相关请求</div><div class="line">@param requestList ServerAPI的数组</div><div class="line">*/</div><div class="line">-(void)cancelRequestWithAPIList:(NSArray*)requestList;</div><div class="line"></div><div class="line">/**</div><div class="line">取消最后一个请求</div><div class="line">*/</div><div class="line">-(void)cancelLastRequest;</div><div class="line"></div><div class="line">/**</div><div class="line">取消第一个请求</div><div class="line">*/</div><div class="line">-(void)cancelFirstRequest;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@protocol ServerAPIResponseProtocol &lt;NSObject&gt;</div><div class="line"></div><div class="line">@required</div><div class="line"></div><div class="line">/**</div><div class="line">请求结束时间   最好设置时放到responseFormatWithData方法内</div><div class="line">@return 请求结束时间</div><div class="line">*/</div><div class="line">-(NSDate *)endDate;</div><div class="line"></div><div class="line">/**</div><div class="line">数据格式化处理</div><div class="line">@param data 数据源</div><div class="line">@param error 错误源</div><div class="line">@param completion 请求回调</div><div class="line">@param cacheData 缓存数据</div><div class="line">*/</div><div class="line">-(void)responseFormatWithData:(id)data error:(NSError*)error completion:(sap_requestCompletion)completion cacheData:(id)cacheData;</div><div class="line">@optional</div><div class="line"></div><div class="line">/**</div><div class="line">数据格式化后的处理 用于对ServerAPI实现Category加入部分业务逻辑</div><div class="line">@param result 格式化数据</div><div class="line">*/</div><div class="line">-(void)responseCustomDoInCategoryWithResult:(ServerResult*)result;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">#pragma mark - 可选协议</div><div class="line">@protocol ServerAPIManagerCacheProtocol &lt;NSObject&gt;</div><div class="line"></div><div class="line">@optional</div><div class="line"></div><div class="line">/**</div><div class="line">拉取缓存数据</div><div class="line">@param api 请求描述的ServerAPI</div><div class="line">@param completion 请求回调</div><div class="line">@param error 错误信息</div><div class="line">@return 缓存有无</div><div class="line">*/</div><div class="line">-(BOOL)fetchDataCacheWithAPI:(ServerAPI*)api completion:(sap_requestCompletion)completion error:(NSError*)error;</div><div class="line"></div><div class="line">/**</div><div class="line">拉取缓存数据</div><div class="line">@param api 请求描述的ServerAPI</div><div class="line">@param successHandle 请求成功回调</div><div class="line">@param failHandle 请求失败回调</div><div class="line">@param error 错误信息</div><div class="line">@return 缓存有无</div><div class="line">*/</div><div class="line">-(BOOL)fetchDataCacheWithAPI:(ServerAPI*)api successHandle:(sap_requestCompletion)successHandle failHandle:(sap_requestFailHandle)failHandle error:(NSError*)error;</div><div class="line"></div><div class="line">/**</div><div class="line">保存缓存</div><div class="line">@param api 请求描述的ServerAPI</div><div class="line">*/</div><div class="line">-(void)saveDataCacheWithResult:(ServerAPI*)api;</div><div class="line">@end</div><div class="line"></div><div class="line">/**</div><div class="line">与ServerAPIRequstProtocol的协议有重叠主要用于内部封装逻辑</div><div class="line">*/</div><div class="line">@protocol ServerAPIRequstOptionalProtocol &lt;NSObject&gt;</div><div class="line"></div><div class="line">@optional</div><div class="line">-(void)requestDataWithSuccessHandle:(sap_requestCompletion)successHandle failHandle:(sap_requestFailHandle)failHandle;</div><div class="line"></div><div class="line">+(ServerAPI*)newRequestDataWithSuccessHandle:(sap_requestSuccessHandle)successHandle failHandle:(sap_requestFailHandle)failHandle;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">/**</div><div class="line">与ServerAPIManagerRequestProtocol的协议有重叠主要用于内部封装逻辑</div><div class="line">*/</div><div class="line">@protocol ServerAPIManagerRequestOptionalProtocol &lt;NSObject&gt;</div><div class="line"></div><div class="line">@optional</div><div class="line">-(void)requestDataWithAPI:(ServerAPI*)api completion:(sap_requestCompletion)completion progressHandle:(sap_progressHandle)progressHandle;</div><div class="line"></div><div class="line">-(void)requestDataWithAPI:(ServerAPI*)api successHandle:(sap_requestSuccessHandle)successHandle failHandle:(sap_requestFailHandle)failHandle;</div><div class="line"></div><div class="line">-(void)cancelRequestWithAPI:(ServerAPI*)api;</div><div class="line">-(void)cancelRequestWithRequestID:(NSString*)requestID;</div><div class="line">-(void)cancelRequestWithRequestsTag:(NSString*)requestsTag;</div><div class="line">-(void)cancelRequestWithRequestIDList:(NSArray*)requestList;</div><div class="line">-(void)cancelRequestWithAPIList:(NSArray*)requestList;</div><div class="line">-(void)cancelLastRequest;</div><div class="line">-(void)cancelFirstRequest;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure></p>
-<p>源码地址：<a href="https://github.com/heroims/ServerAPI/" target="_blank" rel="external">https://github.com/heroims/ServerAPI/</a></p>
-<p>#ServerAPI使用<br>下面说说怎么用，按这种模式填充完自己定制的方法实现后，既可以当做离散型API用也会可以当做集约型API用，还可以直接用URL<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">//离散型API使用  一个请求是一个API类，用NSClassFromString主要为了省头文件引用懒得加头文件。。。           </div><div class="line">[NSClassFromString(@&quot;DemoAPI&quot;) newRequestDataWithCompletion:^(ServerResult *result, NSError *errInfo) &#123;</div><div class="line"></div><div class="line">&#125; requestParameters:nil requestTag:NSStringFromClass([self class])];</div><div class="line"></div><div class="line">ServerAPI *discreteApi=[[NSClassFromString(@&quot;DemoAPI&quot;) alloc] init];</div><div class="line">discreteApi.requestParameters=nil;</div><div class="line">discreteApi.requestTag=NSStringFromClass([self class]);</div><div class="line">[discreteApi requestDataWithCompletion:^(ServerResult *result, NSError *errInfo) &#123;</div><div class="line"></div><div class="line">&#125;];</div><div class="line"></div><div class="line">//集约型API使用  可以直接类扩展加静态方法设置，可以自行类扩展个更简洁通用的方法这里只距离</div><div class="line">ServerAPI *intensiveAPI=[[ServerAPI alloc] init];</div><div class="line">intensiveAPI.requestHost=@&quot;http://xxx.xxx.xxx&quot;;</div><div class="line">intensiveAPI.requestPath=@&quot;xxx&quot;;</div><div class="line">intensiveAPI.requestParameters=nil;</div><div class="line">intensiveAPI.requestTag=NSStringFromClass([self class]);</div><div class="line">intensiveAPI.accessType=APIAccessType_Get;</div><div class="line">intensiveAPI.resultFormat=APIResultFormat_JSON;</div><div class="line">intensiveAPI.timeOut=30;</div><div class="line">intensiveAPI.retryTimes=2;</div><div class="line">[intensiveAPI requestDataWithCompletion:^(ServerResult *result, NSError *errInfo) &#123;</div><div class="line"></div><div class="line">&#125;];</div><div class="line"></div><div class="line">//直接请求Url</div><div class="line">ServerAPI *urlAPI=[[ServerAPI alloc] init];</div><div class="line">urlAPI.requestURL=@&quot;http://xxx.xxx.xxx&quot;;</div><div class="line">urlAPI.requestTag=NSStringFromClass([self class]);</div><div class="line">[urlAPI requestDataWithCompletion:^(ServerResult *result, NSError *errInfo) &#123;</div><div class="line"></div><div class="line">&#125;];</div></pre></td></tr></table></figure></p>
+<h3 id="ServerAPIProtocol"><a href="#ServerAPIProtocol" class="headerlink" title="ServerAPIProtocol"></a>ServerAPIProtocol</h3><p>主要负责定义要在Category里实现的方法，这里我直接放源码，注释还算全，关键内容不多，这就是描述要实现哪些才能让框架跑起来，具体方法放那里具体怎么用每个人有每个人不同的想法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br></pre></td><td class="code"><pre><span class="line">//通过Category对ServerAPI实现对应的协议</span><br><span class="line"></span><br><span class="line">@class ServerAPI;</span><br><span class="line"></span><br><span class="line">typedef void  (^sap_requestFailHandle)(ServerResult *result, NSError* errInfo);</span><br><span class="line">typedef void  (^sap_requestSuccessHandle)(ServerResult *result);</span><br><span class="line"></span><br><span class="line">#pragma mark - 必须实现的协议</span><br><span class="line">@protocol ServerAPIManagerRequestProtocol &lt;NSObject&gt;</span><br><span class="line"></span><br><span class="line">@required</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">发起请求逻辑实现 方便用AFN，ASI或自己写</span><br><span class="line">@param api 请求描述的ServerAPI</span><br><span class="line">@param completion 请求回调</span><br><span class="line">@param progressHandle 请求进度</span><br><span class="line">*/</span><br><span class="line">-(void)requestDataWithAPI:(ServerAPI*)api completion:(sap_requestCompletion)completion progressHandle:(sap_progressHandle)progressHandle;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">取消一个请求</span><br><span class="line">@param api 请求描述的ServerAPI</span><br><span class="line">*/</span><br><span class="line">-(void)cancelRequestWithAPI:(ServerAPI*)api;</span><br><span class="line"></span><br><span class="line">@optional</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">发起请求逻辑实现 方便用AFN，ASI或自己写</span><br><span class="line">@param api 请求描述的ServerAPI</span><br><span class="line">@param successHandle 请求成功回调</span><br><span class="line">@param failHandle 请求失败回调</span><br><span class="line">@param progressHandle 请求进度</span><br><span class="line">*/</span><br><span class="line">-(void)requestDataWithAPI:(ServerAPI*)api successHandle:(sap_requestSuccessHandle)successHandle failHandle:(sap_requestFailHandle)failHandle progressHandle:(sap_progressHandle)progressHandle;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">根据requestID取消一个请求</span><br><span class="line">@param requestID 请求唯一ID</span><br><span class="line">*/</span><br><span class="line">-(void)cancelRequestWithRequestID:(NSString*)requestID;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">根据requestsTag取消某一类表示的请求</span><br><span class="line">@param requestsTag 请求分类标识</span><br><span class="line">*/</span><br><span class="line">-(void)cancelRequestWithRequestsTag:(NSString*)requestsTag;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">根据requestID数组取消相关请求</span><br><span class="line">@param requestList requestID的数组</span><br><span class="line">*/</span><br><span class="line">-(void)cancelRequestWithRequestIDList:(NSArray*)requestList;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">根据ServerAPI数组取消相关请求</span><br><span class="line">@param requestList ServerAPI的数组</span><br><span class="line">*/</span><br><span class="line">-(void)cancelRequestWithAPIList:(NSArray*)requestList;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">取消最后一个请求</span><br><span class="line">*/</span><br><span class="line">-(void)cancelLastRequest;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">取消第一个请求</span><br><span class="line">*/</span><br><span class="line">-(void)cancelFirstRequest;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@protocol ServerAPIResponseProtocol &lt;NSObject&gt;</span><br><span class="line"></span><br><span class="line">@required</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">请求结束时间   最好设置时放到responseFormatWithData方法内</span><br><span class="line">@return 请求结束时间</span><br><span class="line">*/</span><br><span class="line">-(NSDate *)endDate;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">数据格式化处理</span><br><span class="line">@param data 数据源</span><br><span class="line">@param error 错误源</span><br><span class="line">@param completion 请求回调</span><br><span class="line">@param cacheData 缓存数据</span><br><span class="line">*/</span><br><span class="line">-(void)responseFormatWithData:(id)data error:(NSError*)error completion:(sap_requestCompletion)completion cacheData:(id)cacheData;</span><br><span class="line">@optional</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">数据格式化后的处理 用于对ServerAPI实现Category加入部分业务逻辑</span><br><span class="line">@param result 格式化数据</span><br><span class="line">*/</span><br><span class="line">-(void)responseCustomDoInCategoryWithResult:(ServerResult*)result;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">#pragma mark - 可选协议</span><br><span class="line">@protocol ServerAPIManagerCacheProtocol &lt;NSObject&gt;</span><br><span class="line"></span><br><span class="line">@optional</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">拉取缓存数据</span><br><span class="line">@param api 请求描述的ServerAPI</span><br><span class="line">@param completion 请求回调</span><br><span class="line">@param error 错误信息</span><br><span class="line">@return 缓存有无</span><br><span class="line">*/</span><br><span class="line">-(BOOL)fetchDataCacheWithAPI:(ServerAPI*)api completion:(sap_requestCompletion)completion error:(NSError*)error;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">拉取缓存数据</span><br><span class="line">@param api 请求描述的ServerAPI</span><br><span class="line">@param successHandle 请求成功回调</span><br><span class="line">@param failHandle 请求失败回调</span><br><span class="line">@param error 错误信息</span><br><span class="line">@return 缓存有无</span><br><span class="line">*/</span><br><span class="line">-(BOOL)fetchDataCacheWithAPI:(ServerAPI*)api successHandle:(sap_requestCompletion)successHandle failHandle:(sap_requestFailHandle)failHandle error:(NSError*)error;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">保存缓存</span><br><span class="line">@param api 请求描述的ServerAPI</span><br><span class="line">*/</span><br><span class="line">-(void)saveDataCacheWithResult:(ServerAPI*)api;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">与ServerAPIRequstProtocol的协议有重叠主要用于内部封装逻辑</span><br><span class="line">*/</span><br><span class="line">@protocol ServerAPIRequstOptionalProtocol &lt;NSObject&gt;</span><br><span class="line"></span><br><span class="line">@optional</span><br><span class="line">-(void)requestDataWithSuccessHandle:(sap_requestCompletion)successHandle failHandle:(sap_requestFailHandle)failHandle;</span><br><span class="line"></span><br><span class="line">+(ServerAPI*)newRequestDataWithSuccessHandle:(sap_requestSuccessHandle)successHandle failHandle:(sap_requestFailHandle)failHandle;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">与ServerAPIManagerRequestProtocol的协议有重叠主要用于内部封装逻辑</span><br><span class="line">*/</span><br><span class="line">@protocol ServerAPIManagerRequestOptionalProtocol &lt;NSObject&gt;</span><br><span class="line"></span><br><span class="line">@optional</span><br><span class="line">-(void)requestDataWithAPI:(ServerAPI*)api completion:(sap_requestCompletion)completion progressHandle:(sap_progressHandle)progressHandle;</span><br><span class="line"></span><br><span class="line">-(void)requestDataWithAPI:(ServerAPI*)api successHandle:(sap_requestSuccessHandle)successHandle failHandle:(sap_requestFailHandle)failHandle;</span><br><span class="line"></span><br><span class="line">-(void)cancelRequestWithAPI:(ServerAPI*)api;</span><br><span class="line">-(void)cancelRequestWithRequestID:(NSString*)requestID;</span><br><span class="line">-(void)cancelRequestWithRequestsTag:(NSString*)requestsTag;</span><br><span class="line">-(void)cancelRequestWithRequestIDList:(NSArray*)requestList;</span><br><span class="line">-(void)cancelRequestWithAPIList:(NSArray*)requestList;</span><br><span class="line">-(void)cancelLastRequest;</span><br><span class="line">-(void)cancelFirstRequest;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
+<p>源码地址：<a href="https://github.com/heroims/ServerAPI/" target="_blank" rel="noopener">https://github.com/heroims/ServerAPI/</a></p>
+<p>#ServerAPI使用<br>下面说说怎么用，按这种模式填充完自己定制的方法实现后，既可以当做离散型API用也会可以当做集约型API用，还可以直接用URL<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">//离散型API使用  一个请求是一个API类，用NSClassFromString主要为了省头文件引用懒得加头文件。。。           </span><br><span class="line">[NSClassFromString(@&quot;DemoAPI&quot;) newRequestDataWithCompletion:^(ServerResult *result, NSError *errInfo) &#123;</span><br><span class="line"></span><br><span class="line">&#125; requestParameters:nil requestTag:NSStringFromClass([self class])];</span><br><span class="line"></span><br><span class="line">ServerAPI *discreteApi=[[NSClassFromString(@&quot;DemoAPI&quot;) alloc] init];</span><br><span class="line">discreteApi.requestParameters=nil;</span><br><span class="line">discreteApi.requestTag=NSStringFromClass([self class]);</span><br><span class="line">[discreteApi requestDataWithCompletion:^(ServerResult *result, NSError *errInfo) &#123;</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">//集约型API使用  可以直接类扩展加静态方法设置，可以自行类扩展个更简洁通用的方法这里只距离</span><br><span class="line">ServerAPI *intensiveAPI=[[ServerAPI alloc] init];</span><br><span class="line">intensiveAPI.requestHost=@&quot;http://xxx.xxx.xxx&quot;;</span><br><span class="line">intensiveAPI.requestPath=@&quot;xxx&quot;;</span><br><span class="line">intensiveAPI.requestParameters=nil;</span><br><span class="line">intensiveAPI.requestTag=NSStringFromClass([self class]);</span><br><span class="line">intensiveAPI.accessType=APIAccessType_Get;</span><br><span class="line">intensiveAPI.resultFormat=APIResultFormat_JSON;</span><br><span class="line">intensiveAPI.timeOut=30;</span><br><span class="line">intensiveAPI.retryTimes=2;</span><br><span class="line">[intensiveAPI requestDataWithCompletion:^(ServerResult *result, NSError *errInfo) &#123;</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">//直接请求Url</span><br><span class="line">ServerAPI *urlAPI=[[ServerAPI alloc] init];</span><br><span class="line">urlAPI.requestURL=@&quot;http://xxx.xxx.xxx&quot;;</span><br><span class="line">urlAPI.requestTag=NSStringFromClass([self class]);</span><br><span class="line">[urlAPI requestDataWithCompletion:^(ServerResult *result, NSError *errInfo) &#123;</span><br><span class="line"></span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure></p>
 <h1 id="ServerAPI自动化产出（离散型API好处）"><a href="#ServerAPI自动化产出（离散型API好处）" class="headerlink" title="ServerAPI自动化产出（离散型API好处）"></a>ServerAPI自动化产出（离散型API好处）</h1><p>当采用了离散型API时，调用的时候通常只需要初始化对应的API，传入后台要的参数，至此数据返回，一个请求完成。<br>通过继承ServerAPI，return 描述的固定值一个对应的API类就创建完成，然后回到之前的文章，如果服务端写的代码工整或有地方统一定义直接可以自动导出一套API的所有描述文件，也就是各各XXXAPI，哪怕代码不工整，API文档总该有吧，有点格式就可以读出来自动生成API，如果还没有，，，，好吧，那就帮他们规范化所以有了下面我用Swift写的工具 。</p>
-<h4 id="ServerAPICreator"><a href="#ServerAPICreator" class="headerlink" title="ServerAPICreator"></a>ServerAPICreator</h4><p><a href="https://github.com/heroims/ServerAPICreator" target="_blank" rel="external">https://github.com/heroims/ServerAPICreator</a><br>功能很简单，就是对API接口的描述，填完自动生成wiki.md和一堆XXXAPI.h,XXXAPI.m文件。<br>这种东西就是定制化比较高的东西了，所以代码也就看看吧，拿来直接用是不可能的，怎样都要改改，但思路相信看到这的人基本都有了</p>
+<h4 id="ServerAPICreator"><a href="#ServerAPICreator" class="headerlink" title="ServerAPICreator"></a>ServerAPICreator</h4><p><a href="https://github.com/heroims/ServerAPICreator" target="_blank" rel="noopener">https://github.com/heroims/ServerAPICreator</a><br>功能很简单，就是对API接口的描述，填完自动生成wiki.md和一堆XXXAPI.h,XXXAPI.m文件。<br>这种东西就是定制化比较高的东西了，所以代码也就看看吧，拿来直接用是不可能的，怎样都要改改，但思路相信看到这的人基本都有了</p>
 <p><img src="/assets/blogImage/3994053-254e821d28eb7c80.png" alt="687474703a2f2f6865726f696d732e6769746875622e696f2f53657276657241504943726561746f722f32414530344336422d364233422d343738332d393537322d4143423746333632314641432e706e67.png"></p>
 <h3 id="联想"><a href="#联想" class="headerlink" title="联想"></a>联想</h3><p>按照这种设计架构的方式很多层面的东西都会渐渐的用描述解决，开发一套东西需要的是脚本描述。核心引擎好了，想想人工智能是不是不断积累数据，产出脚本描述然后不断的自动写代码给自己打patch（随便一说扯扯淡）。。。。</p>
 
@@ -343,7 +344,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2021 Heroims
+    		&copy; 2022 Heroims
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -426,70 +427,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">切面</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Wifi Direct</a>
               </li>
              
@@ -522,6 +459,82 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">切面</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
               </li>
              
@@ -531,6 +544,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">统计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -570,43 +595,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">网络</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -654,6 +651,34 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">动态库</a>
               </li>
              
@@ -671,18 +696,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -706,10 +719,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
@@ -718,27 +727,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">视频</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GPUImage</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
               </li>
             
             <div class="clearfix"></div>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>(无网通信)MDNS实现设备间的发现与通信 | Heroims的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -15,6 +15,7 @@
 <meta property="og:url" content="http://yoursite.com/2021/12/01/(无网通信)MDNS实现设备间的发现与通信/index.html">
 <meta property="og:site_name" content="Heroims的博客">
 <meta property="og:description" content="简介这里无网通信指的是没有互联网的通信方式，之前在区块链公司是做这块，现在怕自己以后忘了写一遍，之前搞工业机器人实在太忙，整个博客停了，也不搞移动了，现在离职了，创业也败了，该恢复一下之前的技术调整心态继续找工作了。 所谓无网通信其实是不同设备互相发现然后连接进行通信，而互相发现的方式可以归纳成三种  两个设备连接在同一个WIFI 两个设备通过WLAN创建点对点连接 两个设备通过蓝牙BLE创建点对">
+<meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/WX20211206-012426@2x.png">
 <meta property="og:updated_time" content="2021-12-05T17:31:35.257Z">
 <meta name="twitter:card" content="summary">
@@ -39,7 +40,7 @@
   
 
 </head>
-
+</html>
 <body>
   <div id="container" q-class="show:isCtnShow">
     <canvas id="anm-canvas" class="anm-canvas"></canvas>
@@ -185,39 +186,39 @@
 <p><img src="/assets/blogImage/WX20211206-012426@2x.png" alt="Bonjour API" title="Bonjour API"></p>
 <a id="more"></a>
 <h2 id="Andoid"><a href="#Andoid" class="headerlink" title="Andoid"></a>Andoid</h2><p>安卓官网写的很详细非常友好</p>
-<h4 id="独立设备下Andoid-NSD"><a href="#独立设备下Andoid-NSD" class="headerlink" title="独立设备下Andoid NSD"></a><a href="https://developer.android.com/training/connect-devices-wirelessly/nsd-wifi-direct" target="_blank" rel="external">独立设备下Andoid NSD</a></h4><p>这里讲的是不加入到任何共同网络中的独立设备，通过android的Wifi Direct实现启动服务发现设备而且是有条件的发现，类似MDNS可以指定启动及发现服务的名称</p>
-<h4 id="在同一网络下Andoid-NSD"><a href="#在同一网络下Andoid-NSD" class="headerlink" title="在同一网络下Andoid NSD"></a><a href="https://developer.android.com/training/connect-devices-wirelessly/nsd" target="_blank" rel="external">在同一网络下Andoid NSD</a></h4><p>这里讲的是在设备加入到同一网络中发现设备，而这块则是最标准最通用的，遵循MDNS协议实现设备的发现解析出host，我们当时就是运用这个使得Android，iOS，其他设备都能在网络下互相发现我们的服务，其他设备用Golang的MDNS，github能搜到很多封装好的，而且区块链著名的二层网络Rainden Network的节点发现也有用到它。像智能设备的控制基本都可以选择这个方案解决</p>
-<h4 id="Andoid-WIFI直连"><a href="#Andoid-WIFI直连" class="headerlink" title="Andoid WIFI直连"></a><a href="https://developer.android.com/training/connect-devices-wirelessly/wifi-direct" target="_blank" rel="external">Andoid WIFI直连</a></h4><p>这里主要讲的是第一个类似，但他是无差别的去发现附近开启对等连接的设备，然后还讲了分组和连接有点对标iOS MutipeerConnectivity的意思。</p>
+<h4 id="独立设备下Andoid-NSD"><a href="#独立设备下Andoid-NSD" class="headerlink" title="独立设备下Andoid NSD"></a><a href="https://developer.android.com/training/connect-devices-wirelessly/nsd-wifi-direct" target="_blank" rel="noopener">独立设备下Andoid NSD</a></h4><p>这里讲的是不加入到任何共同网络中的独立设备，通过android的Wifi Direct实现启动服务发现设备而且是有条件的发现，类似MDNS可以指定启动及发现服务的名称</p>
+<h4 id="在同一网络下Andoid-NSD"><a href="#在同一网络下Andoid-NSD" class="headerlink" title="在同一网络下Andoid NSD"></a><a href="https://developer.android.com/training/connect-devices-wirelessly/nsd" target="_blank" rel="noopener">在同一网络下Andoid NSD</a></h4><p>这里讲的是在设备加入到同一网络中发现设备，而这块则是最标准最通用的，遵循MDNS协议实现设备的发现解析出host，我们当时就是运用这个使得Android，iOS，其他设备都能在网络下互相发现我们的服务，其他设备用Golang的MDNS，github能搜到很多封装好的，而且区块链著名的二层网络Rainden Network的节点发现也有用到它。像智能设备的控制基本都可以选择这个方案解决</p>
+<h4 id="Andoid-WIFI直连"><a href="#Andoid-WIFI直连" class="headerlink" title="Andoid WIFI直连"></a><a href="https://developer.android.com/training/connect-devices-wirelessly/wifi-direct" target="_blank" rel="noopener">Andoid WIFI直连</a></h4><p>这里主要讲的是第一个类似，但他是无差别的去发现附近开启对等连接的设备，然后还讲了分组和连接有点对标iOS MutipeerConnectivity的意思。</p>
 <h2 id="iOS"><a href="#iOS" class="headerlink" title="iOS"></a>iOS</h2><p>首先苹果官网想通过关键词搜索相关技术你没看过WWDC基本上搜不出来，尤其是近几年的东西你就算搜出来，越是抽象的API越是没啥注释，越是看注释就知道怎么用的，它还给你来个示例代码。下面开始详细说说:</p>
-<p>iOS主要提供了3个方式MutipeerConnectivity，<a href="https://developer.apple.com/documentation/network?language=objc" target="_blank" rel="external">Network库</a>，<a href="https://developer.apple.com/search/?q=NSNetService" target="_blank" rel="external">NSNetService相关</a>,而我当时用的是NSNetService因为那个时候还没有Network库，现在这些类都已经被淘汰了，而MutipeerConnectivity虽然方法封装的更好用而且同时支持蓝牙和wifi直连，但你没法控制代码去控制用哪个，而且由于太标准无法做和android的通信，但如果是仅仅iOS间通信聊天，却能直接轻松实现群组间的聊天。</p>
-<h4 id="MutipeerConnectivity"><a href="#MutipeerConnectivity" class="headerlink" title="MutipeerConnectivity"></a><a href="https://developer.apple.com/library/archive/navigation/#section=Technologies&amp;topic=MultipeerConnectivity" target="_blank" rel="external">MutipeerConnectivity</a></h4><p>这示例代码实现了无网聊天在不加入网络的情况下发现附近的群组加入进行聊天，但是直接看代码还是有点费劲不向上面Android的文档讲了关键的几个方法，所以我就依照示例和常用的挑出核心代码简单讲一下。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">//创建一个设备ID</div><div class="line">MCPeerID *peerID;</div><div class="line">  @try &#123;</div><div class="line">      peerID = [[MCPeerID alloc] initWithDisplayName:self.displayNameTextField.text];</div><div class="line">  &#125;</div><div class="line">  @catch (NSException *exception) &#123;</div><div class="line">      NSLog(@&quot;Invalid display name [%@]&quot;, self.displayNameTextField.text);</div><div class="line">      return NO;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">@try &#123;</div><div class="line">    	//创建广播对象，serviceType相当于房间名称，discoveryInfo是广播信息，这个方法相当于告诉附近的您愿意加入指定类型的回话,在委托里可以处理各种自定义逻辑</div><div class="line">      advertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:peerID discoveryInfo:nil serviceType:self.serviceTypeTextField.text];</div><div class="line">  &#125;</div><div class="line">  @catch (NSException *exception) &#123;</div><div class="line">      NSLog(@&quot;Invalid service type [%@]&quot;, self.serviceTypeTextField.text);</div><div class="line">      return NO;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">#pragma mark - MCNearbyServiceAdvertiserDelegate</div><div class="line">//可以通过invitationHandler传入accept进行连接会话结果过滤.</div><div class="line">- (void)            advertiser:(MCNearbyServiceAdvertiser *)advertiser</div><div class="line">  didReceiveInvitationFromPeer:(MCPeerID *)peerID</div><div class="line">                   withContext:(nullable NSData *)context</div><div class="line">             invitationHandler:(void (^)(BOOL accept, MCSession * __nullable session))invitationHandler;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"> // 开启广播</div><div class="line">[advertiser startAdvertisingPeer];</div><div class="line">// 停止广播</div><div class="line"> [advertiser stopAdvertisingPeer];</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//创建回话对象，用于存放当前连接的会话</div><div class="line">_session = [[MCSession alloc] initWithPeer:peerID securityIdentity:nil encryptionPreference:MCEncryptionRequired];</div><div class="line">// 设置 MCSessionDelegate </div><div class="line">_session.delegate = self;</div><div class="line">// 创建广播对象，和之前的不同在于提供了接收邀请的标准界面</div><div class="line">_advertiserAssistant = [[MCAdvertiserAssistant alloc] initWithServiceType:serviceType discoveryInfo:nil session:_session];</div><div class="line">// 开启广播</div><div class="line">[_advertiserAssistant start];</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">//停止广播</div><div class="line">  [_advertiserAssistant stop];</div><div class="line">	//断开会话连接</div><div class="line">  [_session disconnect];</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"> //发送消息给当前会话中的对象  </div><div class="line">[self.session sendData:messageData toPeers:self.session.connectedPeers withMode:MCSessionSendDataReliable error:&amp;error];</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">NSProgress *progress;</div><div class="line">  // 遍历连接的设备ID</div><div class="line">  for (MCPeerID *peerID in _session.connectedPeers) &#123;</div><div class="line">		//        imageUrl = [NSURL URLWithString:@&quot;http://images.apple.com/home/images/promo_logic_pro.jpg&quot;];</div><div class="line">      // 发送图片给对应设备</div><div class="line">      progress = [self.session sendResourceAtURL:imageUrl withName:[imageUrl lastPathComponent] toPeer:peerID withCompletionHandler:^(NSError *error) &#123;</div><div class="line">          // Implement this block to know when the sending resource transfer completes and if there is an error.</div><div class="line">          if (error) &#123;</div><div class="line">              NSLog(@&quot;Send resource to peer [%@] completed with Error [%@]&quot;, peerID.displayName, error);</div><div class="line">          &#125;</div><div class="line">          else &#123;</div><div class="line">              // Create an image transcript for this received image resource</div><div class="line">              Transcript *transcript = [[Transcript alloc] initWithPeerID:_session.myPeerID imageUrl:imageUrl direction:TRANSCRIPT_DIRECTION_SEND];</div><div class="line">              [self.delegate updateTranscript:transcript];</div><div class="line">          &#125;</div><div class="line">      &#125;];</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#pragma mark - MCSessionDelegate</div><div class="line">//会话接受数据的时候调用</div><div class="line">- (void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID</div><div class="line">&#123;</div><div class="line">    </div><div class="line">&#125;</div><div class="line">//会话状态发生改变的时候调用</div><div class="line">- (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state</div><div class="line">&#123;</div><div class="line">  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">	//创建搜索蓝牙设备控制器  </div><div class="line">MCBrowserViewController *browserViewController = [[MCBrowserViewController alloc] initWithServiceType:self.serviceType session:self.sessionContainer.session];</div><div class="line">                                                    </div><div class="line">browserViewController.delegate = self;</div><div class="line">  browserViewController.minimumNumberOfPeers = kMCSessionMinimumNumberOfPeers;</div><div class="line">  browserViewController.maximumNumberOfPeers = kMCSessionMaximumNumberOfPeers;</div><div class="line"></div><div class="line">  [self presentViewController:browserViewController animated:YES completion:nil];</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">#pragma mark - MCBrowserViewControllerDelegate</div><div class="line">//搜索到设备后进行筛选用的回调</div><div class="line">- (BOOL)browserViewController:(MCBrowserViewController *)browserViewController shouldPresentNearbyPeer:(MCPeerID *)peerID withDiscoveryInfo:(NSDictionary *)info</div><div class="line">&#123;</div><div class="line">    return YES;</div><div class="line">&#125;</div><div class="line"></div><div class="line">//搜索界面点击完成的时候调用</div><div class="line">- (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController</div><div class="line">&#123;</div><div class="line">    [browserViewController dismissViewControllerAnimated:YES completion:nil];</div><div class="line">&#125;</div><div class="line"></div><div class="line">//搜索界面点击取消的时候调用</div><div class="line">- (void)browserViewControllerWasCancelled:(MCBrowserViewController *)browserViewController</div><div class="line">&#123;</div><div class="line">    [browserViewController dismissViewControllerAnimated:YES completion:nil];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>iOS主要提供了3个方式MutipeerConnectivity，<a href="https://developer.apple.com/documentation/network?language=objc" target="_blank" rel="noopener">Network库</a>，<a href="https://developer.apple.com/search/?q=NSNetService" target="_blank" rel="noopener">NSNetService相关</a>,而我当时用的是NSNetService因为那个时候还没有Network库，现在这些类都已经被淘汰了，而MutipeerConnectivity虽然方法封装的更好用而且同时支持蓝牙和wifi直连，但你没法控制代码去控制用哪个，而且由于太标准无法做和android的通信，但如果是仅仅iOS间通信聊天，却能直接轻松实现群组间的聊天。</p>
+<h4 id="MutipeerConnectivity"><a href="#MutipeerConnectivity" class="headerlink" title="MutipeerConnectivity"></a><a href="https://developer.apple.com/library/archive/navigation/#section=Technologies&amp;topic=MultipeerConnectivity" target="_blank" rel="noopener">MutipeerConnectivity</a></h4><p>这示例代码实现了无网聊天在不加入网络的情况下发现附近的群组加入进行聊天，但是直接看代码还是有点费劲不向上面Android的文档讲了关键的几个方法，所以我就依照示例和常用的挑出核心代码简单讲一下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//创建一个设备ID</span><br><span class="line">MCPeerID *peerID;</span><br><span class="line">  @try &#123;</span><br><span class="line">      peerID = [[MCPeerID alloc] initWithDisplayName:self.displayNameTextField.text];</span><br><span class="line">  &#125;</span><br><span class="line">  @catch (NSException *exception) &#123;</span><br><span class="line">      NSLog(@&quot;Invalid display name [%@]&quot;, self.displayNameTextField.text);</span><br><span class="line">      return NO;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@try &#123;</span><br><span class="line">    	//创建广播对象，serviceType相当于房间名称，discoveryInfo是广播信息，这个方法相当于告诉附近的您愿意加入指定类型的回话,在委托里可以处理各种自定义逻辑</span><br><span class="line">      advertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:peerID discoveryInfo:nil serviceType:self.serviceTypeTextField.text];</span><br><span class="line">  &#125;</span><br><span class="line">  @catch (NSException *exception) &#123;</span><br><span class="line">      NSLog(@&quot;Invalid service type [%@]&quot;, self.serviceTypeTextField.text);</span><br><span class="line">      return NO;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark - MCNearbyServiceAdvertiserDelegate</span><br><span class="line">//可以通过invitationHandler传入accept进行连接会话结果过滤.</span><br><span class="line">- (void)            advertiser:(MCNearbyServiceAdvertiser *)advertiser</span><br><span class="line">  didReceiveInvitationFromPeer:(MCPeerID *)peerID</span><br><span class="line">                   withContext:(nullable NSData *)context</span><br><span class="line">             invitationHandler:(void (^)(BOOL accept, MCSession * __nullable session))invitationHandler;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> // 开启广播</span><br><span class="line">[advertiser startAdvertisingPeer];</span><br><span class="line">// 停止广播</span><br><span class="line"> [advertiser stopAdvertisingPeer];</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//创建回话对象，用于存放当前连接的会话</span><br><span class="line">_session = [[MCSession alloc] initWithPeer:peerID securityIdentity:nil encryptionPreference:MCEncryptionRequired];</span><br><span class="line">// 设置 MCSessionDelegate </span><br><span class="line">_session.delegate = self;</span><br><span class="line">// 创建广播对象，和之前的不同在于提供了接收邀请的标准界面</span><br><span class="line">_advertiserAssistant = [[MCAdvertiserAssistant alloc] initWithServiceType:serviceType discoveryInfo:nil session:_session];</span><br><span class="line">// 开启广播</span><br><span class="line">[_advertiserAssistant start];</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//停止广播</span><br><span class="line">  [_advertiserAssistant stop];</span><br><span class="line">	//断开会话连接</span><br><span class="line">  [_session disconnect];</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> //发送消息给当前会话中的对象  </span><br><span class="line">[self.session sendData:messageData toPeers:self.session.connectedPeers withMode:MCSessionSendDataReliable error:&amp;error];</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">NSProgress *progress;</span><br><span class="line">  // 遍历连接的设备ID</span><br><span class="line">  for (MCPeerID *peerID in _session.connectedPeers) &#123;</span><br><span class="line">		//        imageUrl = [NSURL URLWithString:@&quot;http://images.apple.com/home/images/promo_logic_pro.jpg&quot;];</span><br><span class="line">      // 发送图片给对应设备</span><br><span class="line">      progress = [self.session sendResourceAtURL:imageUrl withName:[imageUrl lastPathComponent] toPeer:peerID withCompletionHandler:^(NSError *error) &#123;</span><br><span class="line">          // Implement this block to know when the sending resource transfer completes and if there is an error.</span><br><span class="line">          if (error) &#123;</span><br><span class="line">              NSLog(@&quot;Send resource to peer [%@] completed with Error [%@]&quot;, peerID.displayName, error);</span><br><span class="line">          &#125;</span><br><span class="line">          else &#123;</span><br><span class="line">              // Create an image transcript for this received image resource</span><br><span class="line">              Transcript *transcript = [[Transcript alloc] initWithPeerID:_session.myPeerID imageUrl:imageUrl direction:TRANSCRIPT_DIRECTION_SEND];</span><br><span class="line">              [self.delegate updateTranscript:transcript];</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;];</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark - MCSessionDelegate</span><br><span class="line">//会话接受数据的时候调用</span><br><span class="line">- (void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID</span><br><span class="line">&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line">//会话状态发生改变的时候调用</span><br><span class="line">- (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state</span><br><span class="line">&#123;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">	//创建搜索蓝牙设备控制器  </span><br><span class="line">MCBrowserViewController *browserViewController = [[MCBrowserViewController alloc] initWithServiceType:self.serviceType session:self.sessionContainer.session];</span><br><span class="line">                                                    </span><br><span class="line">browserViewController.delegate = self;</span><br><span class="line">  browserViewController.minimumNumberOfPeers = kMCSessionMinimumNumberOfPeers;</span><br><span class="line">  browserViewController.maximumNumberOfPeers = kMCSessionMaximumNumberOfPeers;</span><br><span class="line"></span><br><span class="line">  [self presentViewController:browserViewController animated:YES completion:nil];</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark - MCBrowserViewControllerDelegate</span><br><span class="line">//搜索到设备后进行筛选用的回调</span><br><span class="line">- (BOOL)browserViewController:(MCBrowserViewController *)browserViewController shouldPresentNearbyPeer:(MCPeerID *)peerID withDiscoveryInfo:(NSDictionary *)info</span><br><span class="line">&#123;</span><br><span class="line">    return YES;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//搜索界面点击完成的时候调用</span><br><span class="line">- (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController</span><br><span class="line">&#123;</span><br><span class="line">    [browserViewController dismissViewControllerAnimated:YES completion:nil];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//搜索界面点击取消的时候调用</span><br><span class="line">- (void)browserViewControllerWasCancelled:(MCBrowserViewController *)browserViewController</span><br><span class="line">&#123;</span><br><span class="line">    [browserViewController dismissViewControllerAnimated:YES completion:nil];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>上面就是实现聊天功能的一些代码片段，但反过来想一下，这个功能主要是实现发现附近设备加入聊天室聊天，这场景其实比较奇怪，离得不远的话聊两句破冰了肯定流传了毕竟离得不远直接面对面不是更好，只有在游戏场景里这种近点通信才是一个比较好的交流方式，比如游戏道具的互换，游戏竞技比赛这类场景跟这类技术才会比较搭配，聊天的话真的就当个例子就好。。。</p>
-<h4 id="NSNetService"><a href="#NSNetService" class="headerlink" title="NSNetService"></a><a href="https://developer.apple.com/library/archive/samplecode/WiTap" target="_blank" rel="external">NSNetService</a></h4><p>这里示例代码实现的是使用NSNetService实现两个设备连接后点击色块反馈，现在这个类已经被弃用代替方法是Network库。</p>
+<h4 id="NSNetService"><a href="#NSNetService" class="headerlink" title="NSNetService"></a><a href="https://developer.apple.com/library/archive/samplecode/WiTap" target="_blank" rel="noopener">NSNetService</a></h4><p>这里示例代码实现的是使用NSNetService实现两个设备连接后点击色块反馈，现在这个类已经被弃用代替方法是Network库。</p>
 <p>这里简单简绍就不已经示例代码了，因为这块可以直接实现和安卓的互通所以就以我个人总结的几个关键地方为主。</p>
-<p>安卓方面使用就是 <a href="https://developer.android.com/training/connect-devices-wirelessly/nsd" target="_blank" rel="external">在同一网络下Andoid NSD</a> 叙述的设置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//初始化广播服务为了和Android通信Domain为空字符串，其他的Android上都有，至于port就是你起服务的Socket端口</div><div class="line">_netServiceServer = [[NSNetService alloc] initWithDomain:self.netServiceDomain</div><div class="line">                                                            type:self.netServiceType</div><div class="line">                                                            name:self.netServerName</div><div class="line">                                                            port:self.tcpSocketServer.localPort];</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">#pragma mark - Bonjour</div><div class="line"></div><div class="line">//发布服务</div><div class="line">- (BOOL) publishService &#123;</div><div class="line">    [self.netServiceServer scheduleInRunLoop:[NSRunLoop currentRunLoop]</div><div class="line">                                     forMode:NSRunLoopCommonModes];</div><div class="line">    [self.netServiceServer setDelegate:self];</div><div class="line">    [self.netServiceServer publish];</div><div class="line">    </div><div class="line">    return YES;</div><div class="line">&#125;</div><div class="line"></div><div class="line">//停止服务</div><div class="line">- (void) unpublishService &#123;</div><div class="line">    if (self.netServiceServer) &#123;</div><div class="line">        [self.netServiceServer stop];</div><div class="line">        [self.netServiceServer removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];</div><div class="line">        self.netServiceServer = nil;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">  //设置委托</div><div class="line">netService.delegate=self;</div><div class="line">//解析地址 超时时间为5秒</div><div class="line">  [netService resolveWithTimeout:5];</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">#pragma mark - NSNetServiceDelegate</div><div class="line">//发布服务失败的时候调用</div><div class="line">-(void)netService:(NSNetService *)sender didNotPublish:(NSDictionary&lt;NSString *,NSNumber *&gt; *)errorDict&#123;</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line">//地址解析完成的时候调用</div><div class="line">-(void)netServiceDidResolveAddress:(NSNetService *)sender&#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">//启动发现服务，之前测试停掉再启动就不生效了，所以每次都重新初始化</div><div class="line">- (BOOL)startWithServicesOfType:(NSString*)type inDomain:(NSString*)domain&#123;</div><div class="line">    if ( netServiceBrowser != nil ) &#123;</div><div class="line">        [self stop];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    netServiceBrowser = [[NSNetServiceBrowser alloc] init];</div><div class="line">    if( !netServiceBrowser ) &#123;</div><div class="line">        return NO;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    netServiceBrowser.delegate = self;</div><div class="line">  	//设置搜索的参数，与Android通信设置domain为空字符串</div><div class="line">    [netServiceBrowser searchForServicesOfType:type inDomain:domain];</div><div class="line">    </div><div class="line">    return YES;</div><div class="line">&#125;</div><div class="line"></div><div class="line">//停止发现服务</div><div class="line">- (void)stop &#123;</div><div class="line">    if ( netServiceBrowser == nil ) &#123;</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    [netServiceBrowser stop];</div><div class="line">    netServiceBrowser = nil;</div><div class="line">    </div><div class="line">    [_servers removeAllObjects];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>通过上面代码就能实现iOS和Android发现彼此设备的IP和端口，只要你起好tcp的server就能进行连接通信，至于起server随便百度一下就有很多socket起服务的方法这里就不做赘述了我是直接用<a href="https://github.com/robbiehanson/CocoaAsyncSocket" target="_blank" rel="external">CocoaAsyncSocket</a>，我当时为了保险做成了混合式发现入网后还会定期udp广播一下其实没必要。</p>
-<h4 id="Network库"><a href="#Network库" class="headerlink" title="Network库"></a><a href="https://developer.apple.com/documentation/network?language=objc" target="_blank" rel="external">Network库</a></h4><p>这个没在官方找到什么好的示例代码所以直接就给出了官方文档，在网上看到过不少散装的，NSNetService对应NWConnection初始化用NWEndpoint来初始化，NSNetServiceBrowser对应NWBrowser</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> Network</div><div class="line"></div><div class="line"><span class="keyword">let</span> parameter = <span class="type">NWParameters</span>()</div><div class="line"><span class="comment">//之前的属性NSNetServiceBrowser NSNetService现在都用NWParameters这个对象来传递</span></div><div class="line">parameter.includePeerToPeer = <span class="literal">true</span></div><div class="line"><span class="keyword">let</span> browser = <span class="type">NWBrowser</span>(<span class="keyword">for</span>: .bonjour(type: <span class="string">"services.dns-sd."</span>, domain: <span class="literal">nil</span>), using: parameter)</div><div class="line"><span class="comment">//状态改变的时候回调</span></div><div class="line">browser.stateUpdateHandler = &#123; state <span class="keyword">in</span></div><div class="line">    <span class="keyword">switch</span> state &#123;</div><div class="line">    <span class="keyword">case</span> .ready:</div><div class="line">        <span class="built_in">print</span>(<span class="string">"ready"</span>)</div><div class="line">    <span class="keyword">case</span> .failed(<span class="keyword">let</span> error):</div><div class="line">        <span class="built_in">print</span>(<span class="string">"error:"</span>, error.localizedDescription)</div><div class="line">    <span class="keyword">default</span>:</div><div class="line">        <span class="keyword">break</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">//结果有变化的时候回调</span></div><div class="line">browser.browseResultsChangedHandler = &#123; result, changed <span class="keyword">in</span></div><div class="line">    result.forEach &#123; device <span class="keyword">in</span></div><div class="line">        <span class="comment">//endpoint中有netServiceName netServiceType </span></div><div class="line">        <span class="built_in">print</span>(device.endpoint)</div><div class="line">        <span class="built_in">print</span>(device.metadata)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">//主线程上启动搜索服务</span></div><div class="line">browser.start(queue: .main)</div></pre></td></tr></table></figure>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">   <span class="comment">//初始化tcp server，入参对应NSNetService初始化的</span></div><div class="line"><span class="keyword">self</span>.listener = <span class="keyword">try</span> <span class="type">NWListener</span>(using: .tcp, on :localPort)</div><div class="line">   <span class="keyword">self</span>.listener?.service = <span class="type">NWListener</span>.<span class="type">Service</span>(name:netServiceName, type: netServiceType, domain: serviceDomain, txtRecord: <span class="literal">nil</span>)</div><div class="line">   <span class="comment">//注册服务后回调，对应NSNetService发布服务成功后的回调</span></div><div class="line">   <span class="keyword">self</span>.listener?.serviceRegistrationUpdateHandler = &#123; (serviceChange) <span class="keyword">in</span></div><div class="line">     <span class="keyword">switch</span>(serviceChange) &#123;</div><div class="line">     <span class="keyword">case</span> .add(<span class="keyword">let</span> endpoint):<span class="comment">//设备加入</span></div><div class="line">       <span class="keyword">switch</span> endpoint &#123;</div><div class="line">       <span class="keyword">case</span> <span class="keyword">let</span> .service(name, type, domain, interface):</div><div class="line">         <span class="built_in">print</span>(<span class="string">"Service Name \(name) of type \(type) having domain: \(domain) and interface: \(String(describing: interface?.debugDescription))"</span>)</div><div class="line">       <span class="keyword">default</span>:</div><div class="line">         <span class="keyword">break</span></div><div class="line">       &#125;</div><div class="line">     <span class="keyword">default</span>:</div><div class="line">       <span class="keyword">break</span></div><div class="line">     &#125;</div><div class="line">   &#125;</div><div class="line">   <span class="keyword">self</span>.listener?.stateUpdateHandler = &#123;(newState) <span class="keyword">in</span></div><div class="line">     <span class="keyword">switch</span> newState &#123;</div><div class="line">     <span class="keyword">case</span> .ready:</div><div class="line">         <span class="built_in">print</span>(<span class="string">"Bonjour TCP Listener: Bonjour listener state changed - ready"</span>)</div><div class="line">     <span class="keyword">default</span>:</div><div class="line">       <span class="keyword">break</span></div><div class="line">     &#125;</div><div class="line">   &#125;</div><div class="line">   <span class="keyword">self</span>.listener?.newConnectionHandler = &#123;(newConnection) <span class="keyword">in</span></div><div class="line">     newConnection.stateUpdateHandler = &#123;newState <span class="keyword">in</span></div><div class="line">       <span class="keyword">switch</span> newState &#123;</div><div class="line">       <span class="keyword">case</span> .ready:</div><div class="line">         <span class="built_in">print</span>(<span class="string">"Bonjour TCP Listener: new  connection state - ready"</span>)</div><div class="line"></div><div class="line">         </div><div class="line">       <span class="keyword">default</span>:</div><div class="line">         <span class="keyword">break</span></div><div class="line">       &#125;</div><div class="line">     &#125;</div><div class="line">     newConnection.start(queue: <span class="type">DispatchQueue</span>(label: <span class="string">"Bonjour TCP Listener: New Connection"</span>))</div><div class="line">   &#125;</div><div class="line"> &#125; <span class="keyword">catch</span> &#123;</div><div class="line">   <span class="built_in">print</span>(<span class="string">"Bonjour TCP Listener: Unable to create listener"</span>)</div><div class="line"> &#125;</div><div class="line"> <span class="keyword">self</span>.listener?.start(queue: .main)</div></pre></td></tr></table></figure>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//初始化tcp client</span></div><div class="line"><span class="keyword">self</span>.netConnect = <span class="type">NWConnection</span>(to: .service(name: netServiceName, type: netServiceType, domain: serviceDomain, interface: <span class="literal">nil</span>), port:localPort, using: .tcp)</div><div class="line"><span class="keyword">self</span>.netConnect?.stateUpdateHandler = &#123; (newState) <span class="keyword">in</span></div><div class="line">      <span class="built_in">print</span>(<span class="string">"bonjourToTCP: Connection details: \(String(describing: self.netConnect?.debugDescription))"</span>)</div><div class="line">    <span class="keyword">switch</span> (newState) &#123;</div><div class="line">    <span class="keyword">case</span> .ready:</div><div class="line">       <span class="keyword">self</span>.connectState = <span class="string">"Connection state: Ready"</span></div><div class="line">      <span class="built_in">print</span>(<span class="string">"bonjourToTCP: new TCP connection ready "</span>)</div><div class="line">    <span class="keyword">default</span>:</div><div class="line">      <span class="keyword">break</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">self</span>.netConnect?.start(queue: .main)</div></pre></td></tr></table></figure>
+<p>安卓方面使用就是 <a href="https://developer.android.com/training/connect-devices-wirelessly/nsd" target="_blank" rel="noopener">在同一网络下Andoid NSD</a> 叙述的设置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//初始化广播服务为了和Android通信Domain为空字符串，其他的Android上都有，至于port就是你起服务的Socket端口</span><br><span class="line">_netServiceServer = [[NSNetService alloc] initWithDomain:self.netServiceDomain</span><br><span class="line">                                                            type:self.netServiceType</span><br><span class="line">                                                            name:self.netServerName</span><br><span class="line">                                                            port:self.tcpSocketServer.localPort];</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark - Bonjour</span><br><span class="line"></span><br><span class="line">//发布服务</span><br><span class="line">- (BOOL) publishService &#123;</span><br><span class="line">    [self.netServiceServer scheduleInRunLoop:[NSRunLoop currentRunLoop]</span><br><span class="line">                                     forMode:NSRunLoopCommonModes];</span><br><span class="line">    [self.netServiceServer setDelegate:self];</span><br><span class="line">    [self.netServiceServer publish];</span><br><span class="line">    </span><br><span class="line">    return YES;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//停止服务</span><br><span class="line">- (void) unpublishService &#123;</span><br><span class="line">    if (self.netServiceServer) &#123;</span><br><span class="line">        [self.netServiceServer stop];</span><br><span class="line">        [self.netServiceServer removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];</span><br><span class="line">        self.netServiceServer = nil;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">  //设置委托</span><br><span class="line">netService.delegate=self;</span><br><span class="line">//解析地址 超时时间为5秒</span><br><span class="line">  [netService resolveWithTimeout:5];</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark - NSNetServiceDelegate</span><br><span class="line">//发布服务失败的时候调用</span><br><span class="line">-(void)netService:(NSNetService *)sender didNotPublish:(NSDictionary&lt;NSString *,NSNumber *&gt; *)errorDict&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//地址解析完成的时候调用</span><br><span class="line">-(void)netServiceDidResolveAddress:(NSNetService *)sender&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">//启动发现服务，之前测试停掉再启动就不生效了，所以每次都重新初始化</span><br><span class="line">- (BOOL)startWithServicesOfType:(NSString*)type inDomain:(NSString*)domain&#123;</span><br><span class="line">    if ( netServiceBrowser != nil ) &#123;</span><br><span class="line">        [self stop];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    netServiceBrowser = [[NSNetServiceBrowser alloc] init];</span><br><span class="line">    if( !netServiceBrowser ) &#123;</span><br><span class="line">        return NO;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    netServiceBrowser.delegate = self;</span><br><span class="line">  	//设置搜索的参数，与Android通信设置domain为空字符串</span><br><span class="line">    [netServiceBrowser searchForServicesOfType:type inDomain:domain];</span><br><span class="line">    </span><br><span class="line">    return YES;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//停止发现服务</span><br><span class="line">- (void)stop &#123;</span><br><span class="line">    if ( netServiceBrowser == nil ) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    [netServiceBrowser stop];</span><br><span class="line">    netServiceBrowser = nil;</span><br><span class="line">    </span><br><span class="line">    [_servers removeAllObjects];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过上面代码就能实现iOS和Android发现彼此设备的IP和端口，只要你起好tcp的server就能进行连接通信，至于起server随便百度一下就有很多socket起服务的方法这里就不做赘述了我是直接用<a href="https://github.com/robbiehanson/CocoaAsyncSocket" target="_blank" rel="noopener">CocoaAsyncSocket</a>，我当时为了保险做成了混合式发现入网后还会定期udp广播一下其实没必要。</p>
+<h4 id="Network库"><a href="#Network库" class="headerlink" title="Network库"></a><a href="https://developer.apple.com/documentation/network?language=objc" target="_blank" rel="noopener">Network库</a></h4><p>这个没在官方找到什么好的示例代码所以直接就给出了官方文档，在网上看到过不少散装的，NSNetService对应NWConnection初始化用NWEndpoint来初始化，NSNetServiceBrowser对应NWBrowser</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Network</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> parameter = <span class="type">NWParameters</span>()</span><br><span class="line"><span class="comment">//之前的属性NSNetServiceBrowser NSNetService现在都用NWParameters这个对象来传递</span></span><br><span class="line">parameter.includePeerToPeer = <span class="literal">true</span></span><br><span class="line"><span class="keyword">let</span> browser = <span class="type">NWBrowser</span>(<span class="keyword">for</span>: .bonjour(type: <span class="string">"services.dns-sd."</span>, domain: <span class="literal">nil</span>), using: parameter)</span><br><span class="line"><span class="comment">//状态改变的时候回调</span></span><br><span class="line">browser.stateUpdateHandler = &#123; state <span class="keyword">in</span></span><br><span class="line">    <span class="keyword">switch</span> state &#123;</span><br><span class="line">    <span class="keyword">case</span> .ready:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"ready"</span>)</span><br><span class="line">    <span class="keyword">case</span> .failed(<span class="keyword">let</span> error):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"error:"</span>, error.localizedDescription)</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//结果有变化的时候回调</span></span><br><span class="line">browser.browseResultsChangedHandler = &#123; result, changed <span class="keyword">in</span></span><br><span class="line">    result.forEach &#123; device <span class="keyword">in</span></span><br><span class="line">        <span class="comment">//endpoint中有netServiceName netServiceType </span></span><br><span class="line">        <span class="built_in">print</span>(device.endpoint)</span><br><span class="line">        <span class="built_in">print</span>(device.metadata)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//主线程上启动搜索服务</span></span><br><span class="line">browser.start(queue: .main)</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">   <span class="comment">//初始化tcp server，入参对应NSNetService初始化的</span></span><br><span class="line"><span class="keyword">self</span>.listener = <span class="keyword">try</span> <span class="type">NWListener</span>(using: .tcp, on :localPort)</span><br><span class="line">   <span class="keyword">self</span>.listener?.service = <span class="type">NWListener</span>.<span class="type">Service</span>(name:netServiceName, type: netServiceType, domain: serviceDomain, txtRecord: <span class="literal">nil</span>)</span><br><span class="line">   <span class="comment">//注册服务后回调，对应NSNetService发布服务成功后的回调</span></span><br><span class="line">   <span class="keyword">self</span>.listener?.serviceRegistrationUpdateHandler = &#123; (serviceChange) <span class="keyword">in</span></span><br><span class="line">     <span class="keyword">switch</span>(serviceChange) &#123;</span><br><span class="line">     <span class="keyword">case</span> .add(<span class="keyword">let</span> endpoint):<span class="comment">//设备加入</span></span><br><span class="line">       <span class="keyword">switch</span> endpoint &#123;</span><br><span class="line">       <span class="keyword">case</span> <span class="keyword">let</span> .service(name, type, domain, interface):</span><br><span class="line">         <span class="built_in">print</span>(<span class="string">"Service Name \(name) of type \(type) having domain: \(domain) and interface: \(String(describing: interface?.debugDescription))"</span>)</span><br><span class="line">       <span class="keyword">default</span>:</span><br><span class="line">         <span class="keyword">break</span></span><br><span class="line">       &#125;</span><br><span class="line">     <span class="keyword">default</span>:</span><br><span class="line">       <span class="keyword">break</span></span><br><span class="line">     &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">self</span>.listener?.stateUpdateHandler = &#123;(newState) <span class="keyword">in</span></span><br><span class="line">     <span class="keyword">switch</span> newState &#123;</span><br><span class="line">     <span class="keyword">case</span> .ready:</span><br><span class="line">         <span class="built_in">print</span>(<span class="string">"Bonjour TCP Listener: Bonjour listener state changed - ready"</span>)</span><br><span class="line">     <span class="keyword">default</span>:</span><br><span class="line">       <span class="keyword">break</span></span><br><span class="line">     &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">self</span>.listener?.newConnectionHandler = &#123;(newConnection) <span class="keyword">in</span></span><br><span class="line">     newConnection.stateUpdateHandler = &#123;newState <span class="keyword">in</span></span><br><span class="line">       <span class="keyword">switch</span> newState &#123;</span><br><span class="line">       <span class="keyword">case</span> .ready:</span><br><span class="line">         <span class="built_in">print</span>(<span class="string">"Bonjour TCP Listener: new  connection state - ready"</span>)</span><br><span class="line"></span><br><span class="line">         </span><br><span class="line">       <span class="keyword">default</span>:</span><br><span class="line">         <span class="keyword">break</span></span><br><span class="line">       &#125;</span><br><span class="line">     &#125;</span><br><span class="line">     newConnection.start(queue: <span class="type">DispatchQueue</span>(label: <span class="string">"Bonjour TCP Listener: New Connection"</span>))</span><br><span class="line">   &#125;</span><br><span class="line"> &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">   <span class="built_in">print</span>(<span class="string">"Bonjour TCP Listener: Unable to create listener"</span>)</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">self</span>.listener?.start(queue: .main)</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//初始化tcp client</span></span><br><span class="line"><span class="keyword">self</span>.netConnect = <span class="type">NWConnection</span>(to: .service(name: netServiceName, type: netServiceType, domain: serviceDomain, interface: <span class="literal">nil</span>), port:localPort, using: .tcp)</span><br><span class="line"><span class="keyword">self</span>.netConnect?.stateUpdateHandler = &#123; (newState) <span class="keyword">in</span></span><br><span class="line">      <span class="built_in">print</span>(<span class="string">"bonjourToTCP: Connection details: \(String(describing: self.netConnect?.debugDescription))"</span>)</span><br><span class="line">    <span class="keyword">switch</span> (newState) &#123;</span><br><span class="line">    <span class="keyword">case</span> .ready:</span><br><span class="line">       <span class="keyword">self</span>.connectState = <span class="string">"Connection state: Ready"</span></span><br><span class="line">      <span class="built_in">print</span>(<span class="string">"bonjourToTCP: new TCP connection ready "</span>)</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">      <span class="keyword">break</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">self</span>.netConnect?.start(queue: .main)</span><br></pre></td></tr></table></figure>
 <p>新的Network库好处是直接把socket和注册广播服务整合了，这个也没真正测过在这里只是做个记录。</p>
-<h2 id="其他平台"><a href="#其他平台" class="headerlink" title="其他平台"></a>其他平台</h2><h3 id="Golang"><a href="#Golang" class="headerlink" title="Golang]"></a>Golang]</h3><h4 id="mDNS"><a href="#mDNS" class="headerlink" title="mDNS"></a><a href="https://github.com/hashicorp/mdns" target="_blank" rel="external">mDNS</a></h4><h4 id="bonjour"><a href="#bonjour" class="headerlink" title="bonjour"></a><a href="https://github.com/oleksandr/bonjour" target="_blank" rel="external">bonjour</a></h4><h3 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js]"></a>Node.js]</h3><h4 id="mDNS-1"><a href="#mDNS-1" class="headerlink" title="mDNS"></a><a href="https://github.com/agnat/node_mdns" target="_blank" rel="external">mDNS</a></h4><h3 id="C"><a href="#C" class="headerlink" title="C"></a>C</h3><h4 id="mDNS-2"><a href="#mDNS-2" class="headerlink" title="mDNS"></a><a href="https://github.com/mjansson/mdns" target="_blank" rel="external">mDNS</a></h4>
+<h2 id="其他平台"><a href="#其他平台" class="headerlink" title="其他平台"></a>其他平台</h2><h3 id="Golang"><a href="#Golang" class="headerlink" title="Golang]"></a>Golang]</h3><h4 id="mDNS"><a href="#mDNS" class="headerlink" title="mDNS"></a><a href="https://github.com/hashicorp/mdns" target="_blank" rel="noopener">mDNS</a></h4><h4 id="bonjour"><a href="#bonjour" class="headerlink" title="bonjour"></a><a href="https://github.com/oleksandr/bonjour" target="_blank" rel="noopener">bonjour</a></h4><h3 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js]"></a>Node.js]</h3><h4 id="mDNS-1"><a href="#mDNS-1" class="headerlink" title="mDNS"></a><a href="https://github.com/agnat/node_mdns" target="_blank" rel="noopener">mDNS</a></h4><h3 id="C"><a href="#C" class="headerlink" title="C"></a>C</h3><h4 id="mDNS-2"><a href="#mDNS-2" class="headerlink" title="mDNS"></a><a href="https://github.com/mjansson/mdns" target="_blank" rel="noopener">mDNS</a></h4>
       
 
       
@@ -393,7 +394,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2021 Heroims
+    		&copy; 2022 Heroims
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -476,70 +477,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">切面</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Wifi Direct</a>
               </li>
              
@@ -572,6 +509,82 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">切面</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
               </li>
              
@@ -581,6 +594,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">统计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -620,43 +645,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">网络</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -704,6 +701,34 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">动态库</a>
               </li>
              
@@ -721,18 +746,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -756,10 +769,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
@@ -768,27 +777,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">视频</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GPUImage</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
               </li>
             
             <div class="clearfix"></div>

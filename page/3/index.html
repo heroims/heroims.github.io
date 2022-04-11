@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Heroims的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -12,6 +12,7 @@
 <meta property="og:title" content="Heroims的博客">
 <meta property="og:url" content="http://yoursite.com/page/3/index.html">
 <meta property="og:site_name" content="Heroims的博客">
+<meta property="og:locale" content="default">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Heroims的博客">
   
@@ -32,7 +33,7 @@
   
 
 </head>
-
+</html>
 <body>
   <div id="container" q-class="show:isCtnShow">
     <canvas id="anm-canvas" class="anm-canvas"></canvas>
@@ -145,6 +146,105 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Linux 构建:编译IOS:Mac程序" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/09/10/Linux 构建:编译IOS:Mac程序/">Linux 构建/编译IOS/Mac程序</a>
+    </h1>
+  
+
+        
+        <a href="/2017/09/10/Linux 构建:编译IOS:Mac程序/" class="archive-article-date">
+  	<time datetime="2017-09-09T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>理论上这是一个很好的想法，但真正落实到实践，简直坑的不要不要的！笔者最终在CentOS上实在搞不动了，只在Ubuntu上弄了，关键CentOS是公司环境也不敢太造次。</p>
+<p>整个东西写出来主要是让自己记住坑太多，不是实在想不开没事干，千万不要再搞。</p>
+<p>思路来源<a href="https://github.com/facebook/xcbuild/issues/37" target="_blank" rel="noopener">https://github.com/facebook/xcbuild/issues/37</a></p>
+<h1 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h1><p>做这个事情起初只是因为我司不提供Mac机器来做自动打包，但又想要让我做自动打包，能提供的也只有CentOS系统，不过很快就发现打包其实完全不可能，因为证书问题很难解决，然后想着跑跑CI的test也不错才继续研究了一下。。。。毕竟我们Model都是自动生成的，git提交后跑一下CI确保能各端运行正常还是很有用的，另外版本归档打tag的时候跑一下CocoaPods把完整可执行代码构建好拉下来归档也是挺不错的！</p>
+<p>现实是恐怕就CocoaPods构建是比较稳定100%没问题，编译这个完全不敢说ok。。。所以有条件的话还是建议用有台Mac专门来干这些事，不然实在太麻烦，哪怕ssh到一台同事电脑悄悄开个账户搞都比在linux上搞靠谱！</p>
+<p>如图实现，没mac和有mac简直就是天壤之别的恶心差距！</p>
+<p><img src="/assets/blogImage/3994053-fad34baa2afc46ac.png" alt="Untitled.png"></p>
+<h1 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h1><h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>ruby （为了支持CocoaPods）<br><a href="http://releases.llvm.org/download.html" target="_blank" rel="noopener">clang</a> 4.0或以上（为了支持IOS10，如果你准备的sdk版本不高，那就无所谓了，关键是对应上）<br><a href="https://opensource.apple.com/tarballs/clang/" target="_blank" rel="noopener">Apple clang</a>(用他的话妥妥的手动apt-get拯救不了你)<br><a href="https://github.com/tpoechtrager/cctools-port.git" target="_blank" rel="noopener">cctools-port</a> 生成ios工具链（ios-toolchain）回头替换掉Xcode里的<br><a href="https://github.com/ninja-build/ninja.git" target="_blank" rel="noopener">ninja</a><br><a href="https://github.com/facebook/xcbuild.git" target="_blank" rel="noopener">xcbuild</a><br>Xcode（确切的说其实只要三个文件夹但我很不放心用了整个）<br>
+        
+          <a class="article-more-a" href="/2017/09/10/Linux 构建:编译IOS:Mac程序/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">架构设计</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">构建</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">编译</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/09/10/Linux 构建:编译IOS:Mac程序/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-CocoaPods 动:静态库封装组件化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -170,7 +270,7 @@
 <h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>大型项目里来个尝试性swift过渡，首先就是pod加use_frameworks!来支持pod动态库，接着就是一大片的不支持动态库pod提示error，源码上看不dependency依赖静态库pod其实是不会有问题的，如果你的pod全是源码型也不会有任何问题！</p>
 <p>ps:其实我感觉这是bug。。。压根就不是啥问题</p>
 <p>正常的pod当静态库用的时候vendored_library，vendored_frameworks两个属性搞定一切。。。</p>
-<h3 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h3><h4 id="未来"><a href="#未来" class="headerlink" title="未来"></a>未来</h4><p>虽说是未来，但我估计也就只有几个月的事吧，CocoaPods马上就要可以加动静态库标签了！长期关注pods源码的估计不以为然，上个月就定下来1.4.0发布，然而现在是1.3.1。。。。。<br>那老哥们PR了好久<a href="https://github.com/CocoaPods/Core/pull/386" target="_blank" rel="external">https://github.com/CocoaPods/Core/pull/386</a><br>看源码写的用法每个pod是可以定义static_framework:true属性,这样其实对简单的小项目半点作用都没有，但大型项目简直是救世的存在！承接上边的问题，对指定pod加静态库标签瞬间解决！<br>
+<h3 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h3><h4 id="未来"><a href="#未来" class="headerlink" title="未来"></a>未来</h4><p>虽说是未来，但我估计也就只有几个月的事吧，CocoaPods马上就要可以加动静态库标签了！长期关注pods源码的估计不以为然，上个月就定下来1.4.0发布，然而现在是1.3.1。。。。。<br>那老哥们PR了好久<a href="https://github.com/CocoaPods/Core/pull/386" target="_blank" rel="noopener">https://github.com/CocoaPods/Core/pull/386</a><br>看源码写的用法每个pod是可以定义static_framework:true属性,这样其实对简单的小项目半点作用都没有，但大型项目简直是救世的存在！承接上边的问题，对指定pod加静态库标签瞬间解决！<br>
         
           <a class="article-more-a" href="/2017/08/15/CocoaPods 动:静态库封装组件化/#more">more >></a>
         
@@ -186,11 +286,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">工程管理</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">工程管理</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -266,7 +366,7 @@
 <h1 id="基础封装"><a href="#基础封装" class="headerlink" title="基础封装"></a>基础封装</h1><p>先从用第三方的来说，基本上就只是需要包个壳就ok了，建个manager，初始化sdk一封装，加几个常用统计方法基本ok。常见的方法就是传个event名再加个properties传扩展字典，用户登录状态绑定注销，通用字段增删改，基本上这就满足了大部分需求。。。</p>
 <p>如果是纯自己手写，上面说的壳放着，剩下的仿照sdk来，基本功能要实现异步队列记录往本地写数据，定期上传，处理好读写关系是关键，这里不多说不是这篇重点。</p>
 <p>ps:有个壳才敢放开手折腾优化</p>
-<h4 id="切面封装"><a href="#切面封装" class="headerlink" title="切面封装"></a>切面封装</h4><p>切面统计其实可以看我之前的<a href="http://www.jianshu.com/p/a9219e618ca2" target="_blank" rel="external">IOS 百行代码切面日志</a>，整个完成的就是切面的封装，看过的基本应该了解这套逻辑切面的时候不关心切面方法的参数的话会非常好用。<br>如果业务关联强的情况，虽然也能处理但要针对那些业务作出对应的逻辑，导致切面封装里夹杂很多特殊逻辑,下面的方法内部要对originAOP拆分取所有参，甚至要复制部分业务层逻辑过来最后完成一个统计。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">@interface NSObject (AOPLogger)</div><div class="line"></div><div class="line">/**</div><div class="line">替换或添加类方法，即使替换过也会替换，注意想单次替换使用dispatch_once保证，如果方法从未声明过则会添加失败</div><div class="line"></div><div class="line">@param originalSelector 原方法</div><div class="line">@param swizzledSelector 替换方法</div><div class="line">@param error 错误信息</div><div class="line">*/</div><div class="line">+(void)al_hookOrAddWithOriginClassSeletor:(SEL)originalSelector swizzledSelector:(SEL)swizzledSelector error:(NSError**)error;</div><div class="line"></div><div class="line"></div><div class="line">/**</div><div class="line">替换或添加实例方法，即使替换过也会替换，注意想单次替换使用dispatch_once保证，如果方法从未声明过则会添加失败</div><div class="line"></div><div class="line">@param originalSelector 原方法</div><div class="line">@param swizzledSelector 替换方法</div><div class="line">@param error 错误信息</div><div class="line">*/</div><div class="line">+(void)al_hookOrAddWithOriginSeletor:(SEL)originalSelector swizzledSelector:(SEL)swizzledSelector error:(NSError**)error;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure></p>
+<h4 id="切面封装"><a href="#切面封装" class="headerlink" title="切面封装"></a>切面封装</h4><p>切面统计其实可以看我之前的<a href="http://www.jianshu.com/p/a9219e618ca2" target="_blank" rel="noopener">IOS 百行代码切面日志</a>，整个完成的就是切面的封装，看过的基本应该了解这套逻辑切面的时候不关心切面方法的参数的话会非常好用。<br>如果业务关联强的情况，虽然也能处理但要针对那些业务作出对应的逻辑，导致切面封装里夹杂很多特殊逻辑,下面的方法内部要对originAOP拆分取所有参，甚至要复制部分业务层逻辑过来最后完成一个统计。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">@interface NSObject (AOPLogger)</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">替换或添加类方法，即使替换过也会替换，注意想单次替换使用dispatch_once保证，如果方法从未声明过则会添加失败</span><br><span class="line"></span><br><span class="line">@param originalSelector 原方法</span><br><span class="line">@param swizzledSelector 替换方法</span><br><span class="line">@param error 错误信息</span><br><span class="line">*/</span><br><span class="line">+(void)al_hookOrAddWithOriginClassSeletor:(SEL)originalSelector swizzledSelector:(SEL)swizzledSelector error:(NSError**)error;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">替换或添加实例方法，即使替换过也会替换，注意想单次替换使用dispatch_once保证，如果方法从未声明过则会添加失败</span><br><span class="line"></span><br><span class="line">@param originalSelector 原方法</span><br><span class="line">@param swizzledSelector 替换方法</span><br><span class="line">@param error 错误信息</span><br><span class="line">*/</span><br><span class="line">+(void)al_hookOrAddWithOriginSeletor:(SEL)originalSelector swizzledSelector:(SEL)swizzledSelector error:(NSError**)error;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
         
           <a class="article-more-a" href="/2017/08/02/IOS 切面统计事件解耦/#more">more >></a>
         
@@ -368,7 +468,7 @@
       
         <h1 id="AOPLogger"><a href="#AOPLogger" class="headerlink" title="AOPLogger"></a>AOPLogger</h1><h3 id="切面日志作用"><a href="#切面日志作用" class="headerlink" title="切面日志作用"></a>切面日志作用</h3><p>说到日志，切面的实现最大的好处也就是分离出来，单独开发，包括埋点，记录输出log都可以在不影响项目内逻辑的情况下完成，形成完全的一个独立模块。</p>
 <h4 id="这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。"><a href="#这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。" class="headerlink" title="这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。"></a>这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。</h4><p>在实现上用了Aspects这个库，主要就是hook方法，用它主要是对一些例外情况处理不错，自己写简单实现其实就只写写方法交换剩下的就不管了。。。</p>
-<p>下面说一下.h<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line">#import &lt;Foundation/Foundation.h&gt;</div><div class="line"></div><div class="line">extern NSString * const AOPLoggerMethod;//要统计的日志方法Key</div><div class="line">extern NSString * const AOPLoggerLogInfo;//要统计的日志信息Key</div><div class="line">extern NSString * const AOPLoggerPositionAfter;//方法执行后统计日志</div><div class="line">extern NSString * const AOPLoggerPositionBefore;//方法执行前统计日志</div><div class="line">extern NSString * const AOPLoggerPositionType;//执行日志统计的类型Key</div><div class="line"></div><div class="line">@protocol AOPLoggerGetConfigInfoProtocol &lt;NSObject&gt;</div><div class="line"></div><div class="line">@required</div><div class="line"></div><div class="line">/**</div><div class="line">创建类扩展如果使用此协议必须实现此方法</div><div class="line">此方法返回统计的配置信息，可以从网络取也可以从本地取</div><div class="line">@return 统计配置字典</div><div class="line">*/</div><div class="line">-(NSDictionary*)al_getConfigInfo;</div><div class="line"></div><div class="line">@end</div><div class="line">@protocol AOPLoggerBLLProtocol &lt;NSObject&gt;</div><div class="line"></div><div class="line">@required</div><div class="line"></div><div class="line">/**</div><div class="line">创建类扩展如果使用此协议必须实现此方法</div><div class="line">此方法主要来处理切面方法后的log信息处理可以存本地也可以使用其他任意第三方输出</div><div class="line">@param log 配置文件里定义的AOPLoggerLogInfo信息</div><div class="line">@param originAOP AspectInfo的方法信息，第三方库Aspect返回的切面方法的所有信息</div><div class="line">*/</div><div class="line">-(void)al_logger:(id)log originAOP:(id)originAOP;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@interface AOPLogger : NSObject</div><div class="line"></div><div class="line"></div><div class="line">/**</div><div class="line">开始读取日志Plist配置文件</div><div class="line">*/</div><div class="line">+(void)startAOPLoggerWithPlist;</div><div class="line"></div><div class="line">/**</div><div class="line">统计日志的调用方法</div><div class="line">（如果不想增加开机时间可以采取每个模块创建一个日志统计类适时调用，在该类里提供一个初始化方法，内部调用此即可）</div><div class="line">@param classString 类名</div><div class="line">@param methodString 方法名</div><div class="line">@param log 相当于AOPLoggerLogInfo信息</div><div class="line">*/</div><div class="line">+(void)AOPLoggerWithClassString:(NSString*)classString methodString:(NSString*)methodString log:(id)log;</div><div class="line"></div><div class="line">/**</div><div class="line">统计日志的调用方法</div><div class="line">（如果不想增加开机时间可以采取每个模块创建一个日志统计类适时调用，在该类里提供一个初始化方法，内部调用此即可）</div><div class="line">@param classString 类名</div><div class="line">@param methodString 方法名</div><div class="line">@param log 相当于AOPLoggerLogInfo信息</div><div class="line">@param logPosition 日志统计时位置，可放在方法运行前或运行后（默认运行后执行日志统计）</div><div class="line">*/</div><div class="line">+(void)AOPLoggerWithClassString:(NSString *)classString methodString:(NSString *)methodString log:(id)log logPosition:(NSString*)logPosition;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure></p>
+<p>下面说一下.h<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">extern NSString * const AOPLoggerMethod;//要统计的日志方法Key</span><br><span class="line">extern NSString * const AOPLoggerLogInfo;//要统计的日志信息Key</span><br><span class="line">extern NSString * const AOPLoggerPositionAfter;//方法执行后统计日志</span><br><span class="line">extern NSString * const AOPLoggerPositionBefore;//方法执行前统计日志</span><br><span class="line">extern NSString * const AOPLoggerPositionType;//执行日志统计的类型Key</span><br><span class="line"></span><br><span class="line">@protocol AOPLoggerGetConfigInfoProtocol &lt;NSObject&gt;</span><br><span class="line"></span><br><span class="line">@required</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">创建类扩展如果使用此协议必须实现此方法</span><br><span class="line">此方法返回统计的配置信息，可以从网络取也可以从本地取</span><br><span class="line">@return 统计配置字典</span><br><span class="line">*/</span><br><span class="line">-(NSDictionary*)al_getConfigInfo;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line">@protocol AOPLoggerBLLProtocol &lt;NSObject&gt;</span><br><span class="line"></span><br><span class="line">@required</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">创建类扩展如果使用此协议必须实现此方法</span><br><span class="line">此方法主要来处理切面方法后的log信息处理可以存本地也可以使用其他任意第三方输出</span><br><span class="line">@param log 配置文件里定义的AOPLoggerLogInfo信息</span><br><span class="line">@param originAOP AspectInfo的方法信息，第三方库Aspect返回的切面方法的所有信息</span><br><span class="line">*/</span><br><span class="line">-(void)al_logger:(id)log originAOP:(id)originAOP;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface AOPLogger : NSObject</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">开始读取日志Plist配置文件</span><br><span class="line">*/</span><br><span class="line">+(void)startAOPLoggerWithPlist;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">统计日志的调用方法</span><br><span class="line">（如果不想增加开机时间可以采取每个模块创建一个日志统计类适时调用，在该类里提供一个初始化方法，内部调用此即可）</span><br><span class="line">@param classString 类名</span><br><span class="line">@param methodString 方法名</span><br><span class="line">@param log 相当于AOPLoggerLogInfo信息</span><br><span class="line">*/</span><br><span class="line">+(void)AOPLoggerWithClassString:(NSString*)classString methodString:(NSString*)methodString log:(id)log;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">统计日志的调用方法</span><br><span class="line">（如果不想增加开机时间可以采取每个模块创建一个日志统计类适时调用，在该类里提供一个初始化方法，内部调用此即可）</span><br><span class="line">@param classString 类名</span><br><span class="line">@param methodString 方法名</span><br><span class="line">@param log 相当于AOPLoggerLogInfo信息</span><br><span class="line">@param logPosition 日志统计时位置，可放在方法运行前或运行后（默认运行后执行日志统计）</span><br><span class="line">*/</span><br><span class="line">+(void)AOPLoggerWithClassString:(NSString *)classString methodString:(NSString *)methodString log:(id)log logPosition:(NSString*)logPosition;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
         
           <a class="article-more-a" href="/2017/03/22/IOS 百行代码切面日志/#more">more >></a>
         
@@ -460,9 +560,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>之前的文章<a href="http://www.jianshu.com/p/7a3a387584c6" target="_blank" rel="external">http://www.jianshu.com/p/7a3a387584c6</a> 最后提到了网络服务层自动化，今天在详细说说。之前封装了ServerAPI，这套框架本身其实相当于定义了一套规范的。<br>自动化的概念还是放最后，先讲清楚这框架，到了后面自动化概念自然而然就出来了。</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>之前的文章<a href="http://www.jianshu.com/p/7a3a387584c6" target="_blank" rel="noopener">http://www.jianshu.com/p/7a3a387584c6</a> 最后提到了网络服务层自动化，今天在详细说说。之前封装了ServerAPI，这套框架本身其实相当于定义了一套规范的。<br>自动化的概念还是放最后，先讲清楚这框架，到了后面自动化概念自然而然就出来了。</p>
 <p>#ServerAPI 分析与网络服务层构建<br>框架本身构成主要有4部分</p>
-<h3 id="ServerAPI"><a href="#ServerAPI" class="headerlink" title="ServerAPI"></a>ServerAPI</h3><p>主要对后台的API接口做对应描述，相当于网络请求的配置文件Model，定义了请求地址，重试次数，超时时间，返回数据类型，解析数据类型，上传方式等等，，除了常用描述还封装了常用方法算是个标准的胖Model<br>常用方法例如，请求地址这里也是拆分成host ，path ，pathParameter，parameter，内部封装了组合逻辑，下面4个属性<br>host：<a href="http://xxxx/" target="_blank" rel="external">http://xxxx/</a><br>path：module/{xxxmudleID}<br>pathParameter：xxxmudleID:xxxx<br>parameter：key:value<br>可以拼成<a href="http://xxxx/module/xxxmudleID?key=value" target="_blank" rel="external">http://xxxx/module/xxxmudleID?key=value</a> 这个url，还有自动为每一次请求生成唯一ID，对请求打Tag方便归类，包括发起请求这也提供了方法，不过实现当然不在这，毕竟他只负责描述</p>
+<h3 id="ServerAPI"><a href="#ServerAPI" class="headerlink" title="ServerAPI"></a>ServerAPI</h3><p>主要对后台的API接口做对应描述，相当于网络请求的配置文件Model，定义了请求地址，重试次数，超时时间，返回数据类型，解析数据类型，上传方式等等，，除了常用描述还封装了常用方法算是个标准的胖Model<br>常用方法例如，请求地址这里也是拆分成host ，path ，pathParameter，parameter，内部封装了组合逻辑，下面4个属性<br>host：<a href="http://xxxx/" target="_blank" rel="noopener">http://xxxx/</a><br>path：module/{xxxmudleID}<br>pathParameter：xxxmudleID:xxxx<br>parameter：key:value<br>可以拼成<a href="http://xxxx/module/xxxmudleID?key=value" target="_blank" rel="noopener">http://xxxx/module/xxxmudleID?key=value</a> 这个url，还有自动为每一次请求生成唯一ID，对请求打Tag方便归类，包括发起请求这也提供了方法，不过实现当然不在这，毕竟他只负责描述</p>
 <h3 id="ServerAPIManager"><a href="#ServerAPIManager" class="headerlink" title="ServerAPIManager"></a>ServerAPIManager</h3><p>主要负责管理请求和根据api发起请求，框架内他只是一个管理者逻辑，对发起的请求做归类管理，而发起请求包括缓存逻辑这里通过Category来实现，而具体要实现哪些，由最后面的协议类定义，这样框架本身不去对网络层实现，缓存层实现做干涉，方便更自由的定制化，例如网络层AFN，ASI，还是其他语言都跟框架本身无关，所以这里框架本身只是一个壳，移植性较高，同样的思想拿到其他平台依然适用</p>
 <h3 id="ServerResult"><a href="#ServerResult" class="headerlink" title="ServerResult"></a>ServerResult</h3><p>主要把返回的数据用通用型实体表示，包括发起的api，发起请求的request对象，返回的源数据，返回的格式化数据，返回的错误，状态等，由于牵扯到数据格式化，所以这里依然是通过Category实现对应方法，方便扩展</p>
 <p>ps：不支持扩展的语言，继承也可以<br>
@@ -533,102 +633,6 @@
 
 
   
-    <article id="post-IOS百行代码全局语言本地化:国际化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/15/IOS百行代码全局语言本地化:国际化/">IOS百行代码全局语言本地化/国际化</a>
-    </h1>
-  
-
-        
-        <a href="/2017/02/15/IOS百行代码全局语言本地化:国际化/" class="archive-article-date">
-  	<time datetime="2017-02-14T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="IOS百行代码全局语言本地化-国际化"><a href="#IOS百行代码全局语言本地化-国际化" class="headerlink" title="IOS百行代码全局语言本地化/国际化"></a>IOS百行代码全局语言本地化/国际化</h1><p>废话不多说先把基本配置搞定图文一起来</p>
-<p><img src="/assets/blogImage/3994053-006976bd750f8324.jpeg" alt="3618569F-C518-4582-8580-9DC73F1E8B2E.png"><br>这里点个“+”直接就o了<br>剩下的就是创建strings文件也就是语言映射文件</p>
-<p><img src="/assets/blogImage/3994053-6172f40aabb17548.jpeg" alt="32E018FA-1E4C-4127-BD87-0AE0B0B1641D.png"></p>
-<p>划线的就是创建时候该点击的InfoPlist.strings就是定义CFBundleDisplayName来确定app的名字<br>Localizable.strings则是正经的语言映射表了<br>xib，storyboard和image也是一个套路看划线那点击就ok了<br><img src="/assets/blogImage/3994053-f2f6768c6d73d371.jpeg" alt="6DCE952A-4868-4652-AAB5-59C36DF129D5.png"></p>
-<h1 id="百行代码全局Hook完成本地化"><a href="#百行代码全局Hook完成本地化" class="headerlink" title="百行代码全局Hook完成本地化"></a>百行代码全局Hook完成本地化</h1><p>废话不多说先放代码在解释<br><a href="https://github.com/heroims/LocalizedEngine" target="_blank" rel="external">https://github.com/heroims/LocalizedEngine</a><br>
-        
-          <a class="article-more-a" href="/2017/02/15/IOS百行代码全局语言本地化:国际化/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">百行代码系列</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">切面</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">本地化/国际化</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">翻译</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/15/IOS百行代码全局语言本地化:国际化/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
@@ -643,7 +647,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2021 Heroims
+    		&copy; 2022 Heroims
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -726,70 +730,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">切面</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Wifi Direct</a>
               </li>
              
@@ -822,6 +762,82 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">切面</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
               </li>
              
@@ -831,6 +847,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">统计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -870,43 +898,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">网络</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -954,6 +954,34 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">动态库</a>
               </li>
              
@@ -971,18 +999,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1006,10 +1022,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
@@ -1018,27 +1030,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">视频</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GPUImage</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
               </li>
             
             <div class="clearfix"></div>

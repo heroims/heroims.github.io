@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Linux 构建/编译IOS/Mac程序 | Heroims的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -15,6 +15,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/09/10/Linux 构建:编译IOS:Mac程序/index.html">
 <meta property="og:site_name" content="Heroims的博客">
 <meta property="og:description" content="前言理论上这是一个很好的想法，但真正落实到实践，简直坑的不要不要的！笔者最终在CentOS上实在搞不动了，只在Ubuntu上弄了，关键CentOS是公司环境也不敢太造次。 整个东西写出来主要是让自己记住坑太多，不是实在想不开没事干，千万不要再搞。 思路来源https://github.com/facebook/xcbuild/issues/37 目的做这个事情起初只是因为我司不提供Mac机器来做自">
+<meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-fad34baa2afc46ac.png">
 <meta property="og:updated_time" content="2021-07-08T09:20:31.221Z">
 <meta name="twitter:card" content="summary">
@@ -39,7 +40,7 @@
   
 
 </head>
-
+</html>
 <body>
   <div id="container" q-class="show:isCtnShow">
     <canvas id="anm-canvas" class="anm-canvas"></canvas>
@@ -172,43 +173,43 @@
       
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>理论上这是一个很好的想法，但真正落实到实践，简直坑的不要不要的！笔者最终在CentOS上实在搞不动了，只在Ubuntu上弄了，关键CentOS是公司环境也不敢太造次。</p>
 <p>整个东西写出来主要是让自己记住坑太多，不是实在想不开没事干，千万不要再搞。</p>
-<p>思路来源<a href="https://github.com/facebook/xcbuild/issues/37" target="_blank" rel="external">https://github.com/facebook/xcbuild/issues/37</a></p>
+<p>思路来源<a href="https://github.com/facebook/xcbuild/issues/37" target="_blank" rel="noopener">https://github.com/facebook/xcbuild/issues/37</a></p>
 <h1 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h1><p>做这个事情起初只是因为我司不提供Mac机器来做自动打包，但又想要让我做自动打包，能提供的也只有CentOS系统，不过很快就发现打包其实完全不可能，因为证书问题很难解决，然后想着跑跑CI的test也不错才继续研究了一下。。。。毕竟我们Model都是自动生成的，git提交后跑一下CI确保能各端运行正常还是很有用的，另外版本归档打tag的时候跑一下CocoaPods把完整可执行代码构建好拉下来归档也是挺不错的！</p>
 <p>现实是恐怕就CocoaPods构建是比较稳定100%没问题，编译这个完全不敢说ok。。。所以有条件的话还是建议用有台Mac专门来干这些事，不然实在太麻烦，哪怕ssh到一台同事电脑悄悄开个账户搞都比在linux上搞靠谱！</p>
 <p>如图实现，没mac和有mac简直就是天壤之别的恶心差距！</p>
 <p><img src="/assets/blogImage/3994053-fad34baa2afc46ac.png" alt="Untitled.png"></p>
-<h1 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h1><h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>ruby （为了支持CocoaPods）<br><a href="http://releases.llvm.org/download.html" target="_blank" rel="external">clang</a> 4.0或以上（为了支持IOS10，如果你准备的sdk版本不高，那就无所谓了，关键是对应上）<br><a href="https://opensource.apple.com/tarballs/clang/" target="_blank" rel="external">Apple clang</a>(用他的话妥妥的手动apt-get拯救不了你)<br><a href="https://github.com/tpoechtrager/cctools-port.git" target="_blank" rel="external">cctools-port</a> 生成ios工具链（ios-toolchain）回头替换掉Xcode里的<br><a href="https://github.com/ninja-build/ninja.git" target="_blank" rel="external">ninja</a><br><a href="https://github.com/facebook/xcbuild.git" target="_blank" rel="external">xcbuild</a><br>Xcode（确切的说其实只要三个文件夹但我很不放心用了整个）<br><a id="more"></a></p>
-<h2 id="CocoaPods-安装"><a href="#CocoaPods-安装" class="headerlink" title="CocoaPods 安装"></a>CocoaPods 安装</h2><p>这里不得不提CocoaPods兼容性真心不错<br>CentOS<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo yum install ruby</div><div class="line">sudo gem install cocoapods</div></pre></td></tr></table></figure></p>
-<p>Ubuntu<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install ruby</div><div class="line">sudo gem install cocoapods</div></pre></td></tr></table></figure></p>
+<h1 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h1><h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>ruby （为了支持CocoaPods）<br><a href="http://releases.llvm.org/download.html" target="_blank" rel="noopener">clang</a> 4.0或以上（为了支持IOS10，如果你准备的sdk版本不高，那就无所谓了，关键是对应上）<br><a href="https://opensource.apple.com/tarballs/clang/" target="_blank" rel="noopener">Apple clang</a>(用他的话妥妥的手动apt-get拯救不了你)<br><a href="https://github.com/tpoechtrager/cctools-port.git" target="_blank" rel="noopener">cctools-port</a> 生成ios工具链（ios-toolchain）回头替换掉Xcode里的<br><a href="https://github.com/ninja-build/ninja.git" target="_blank" rel="noopener">ninja</a><br><a href="https://github.com/facebook/xcbuild.git" target="_blank" rel="noopener">xcbuild</a><br>Xcode（确切的说其实只要三个文件夹但我很不放心用了整个）<br><a id="more"></a></p>
+<h2 id="CocoaPods-安装"><a href="#CocoaPods-安装" class="headerlink" title="CocoaPods 安装"></a>CocoaPods 安装</h2><p>这里不得不提CocoaPods兼容性真心不错<br>CentOS<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install ruby</span><br><span class="line">sudo gem install cocoapods</span><br></pre></td></tr></table></figure></p>
+<p>Ubuntu<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install ruby</span><br><span class="line">sudo gem install cocoapods</span><br></pre></td></tr></table></figure></p>
 <p>就是如此简单！已经时可用状态了！</p>
-<h2 id="Clang-安装"><a href="#Clang-安装" class="headerlink" title="Clang 安装"></a>Clang 安装</h2><p>接下来就不细说CentOS了应为基本上大部分库都是要源码安装。。。<br>首先<code>clang --version</code>看看版本是不是自己想要，多半都不是然后直接删了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get autoremove clang</div></pre></td></tr></table></figure></p>
-<p>然后搞一下软件源<code>/etc/apt/sources.list</code>不然各种依赖包各种找不到让你爽歪歪<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">#deb cdrom:[Ubuntu 16.04.2 LTS _Xenial Xerus_ - Release amd64 (20170215.2)]/ xenial main restricted</div><div class="line"># See http://help.ubuntu.com/community/UpgradeNotes for how to upgrade to</div><div class="line"># newer versions of the distribution.</div><div class="line">deb http://us.archive.ubuntu.com/ubuntu/ xenial main restricted</div><div class="line"># deb-src http://us.archive.ubuntu.com/ubuntu/ xenial main restricted</div><div class="line">## Major bug fix updates produced after the final release of the</div><div class="line">## distribution.</div><div class="line">deb http://us.archive.ubuntu.com/ubuntu/ xenial-updates main restricted</div><div class="line"># deb-src http://us.archive.ubuntu.com/ubuntu/ xenial-updates main restricted</div><div class="line">## N.B. software from this repository is ENTIRELY UNSUPPORTED by the Ubuntu</div><div class="line">## team. Also, please note that software in universe WILL NOT receive any</div><div class="line">## review or updates from the Ubuntu security team.</div><div class="line">deb http://us.archive.ubuntu.com/ubuntu/ xenial universe</div><div class="line"># deb-src http://us.archive.ubuntu.com/ubuntu/ xenial universe</div><div class="line">deb http://us.archive.ubuntu.com/ubuntu/ xenial-updates universe</div><div class="line"># deb-src http://us.archive.ubuntu.com/ubuntu/ xenial-updates universe</div><div class="line">## N.B. software from this repository is ENTIRELY UNSUPPORTED by the Ubuntu </div><div class="line">## team, and may not be under a free licence. Please satisfy yourself as to </div><div class="line">## your rights to use the software. Also, please note that software in </div><div class="line">## multiverse WILL NOT receive any review or updates from the Ubuntu</div><div class="line">## security team.</div><div class="line">deb http://us.archive.ubuntu.com/ubuntu/ xenial multiverse</div><div class="line"># deb-src http://us.archive.ubuntu.com/ubuntu/ xenial multiverse</div><div class="line">deb http://us.archive.ubuntu.com/ubuntu/ xenial-updates multiverse</div><div class="line"># deb-src http://us.archive.ubuntu.com/ubuntu/ xenial-updates multiverse</div><div class="line">## N.B. software from this repository may not have been tested as</div><div class="line">## extensively as that contained in the main release, although it includes</div><div class="line">## newer versions of some applications which may provide useful features.</div><div class="line">## Also, please note that software in backports WILL NOT receive any review</div><div class="line">## or updates from the Ubuntu security team.</div><div class="line">deb http://us.archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe multiverse</div><div class="line"># deb-src http://us.archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe multiverse</div><div class="line">## Uncomment the following two lines to add software from Canonical&apos;s</div><div class="line">## &apos;partner&apos; repository.</div><div class="line">## This software is not part of Ubuntu, but is offered by Canonical and the</div><div class="line">## respective vendors as a service to Ubuntu users.</div><div class="line"># deb http://archive.canonical.com/ubuntu xenial partner</div><div class="line"># deb-src http://archive.canonical.com/ubuntu xenial partner</div><div class="line">deb http://security.ubuntu.com/ubuntu xenial-security main restricted</div><div class="line"># deb-src http://security.ubuntu.com/ubuntu xenial-security main restricted</div><div class="line">deb http://security.ubuntu.com/ubuntu xenial-security universe</div><div class="line"># deb-src http://security.ubuntu.com/ubuntu xenial-security universe</div><div class="line">deb http://security.ubuntu.com/ubuntu xenial-security multiverse</div><div class="line"># deb-src http://security.ubuntu.com/ubuntu xenial-security multiverse</div></pre></td></tr></table></figure></p>
-<p>下面大更新一波，安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo apt-get update</div><div class="line">sudo apt-get install git gcc cmake libssl-dev libtool autoconf automake clang-4.0</div></pre></td></tr></table></figure></p>
-<p>除了错误别找我，直接谷歌去找源<br>安装完<code>clang</code>看看位置如果不是<code>usr/bin</code><br>执行下面命令制作软链接，只为保险不是必需的。。。。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo ln -s /usr/bin/clang-4.0 /usr/bin/clang</div><div class="line">sudo ln -s /usr/bin/clang++-4.0 /usr/bin/clang++</div></pre></td></tr></table></figure></p>
+<h2 id="Clang-安装"><a href="#Clang-安装" class="headerlink" title="Clang 安装"></a>Clang 安装</h2><p>接下来就不细说CentOS了应为基本上大部分库都是要源码安装。。。<br>首先<code>clang --version</code>看看版本是不是自己想要，多半都不是然后直接删了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get autoremove clang</span><br></pre></td></tr></table></figure></p>
+<p>然后搞一下软件源<code>/etc/apt/sources.list</code>不然各种依赖包各种找不到让你爽歪歪<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">#deb cdrom:[Ubuntu 16.04.2 LTS _Xenial Xerus_ - Release amd64 (20170215.2)]/ xenial main restricted</span><br><span class="line"># See http://help.ubuntu.com/community/UpgradeNotes for how to upgrade to</span><br><span class="line"># newer versions of the distribution.</span><br><span class="line">deb http://us.archive.ubuntu.com/ubuntu/ xenial main restricted</span><br><span class="line"># deb-src http://us.archive.ubuntu.com/ubuntu/ xenial main restricted</span><br><span class="line">## Major bug fix updates produced after the final release of the</span><br><span class="line">## distribution.</span><br><span class="line">deb http://us.archive.ubuntu.com/ubuntu/ xenial-updates main restricted</span><br><span class="line"># deb-src http://us.archive.ubuntu.com/ubuntu/ xenial-updates main restricted</span><br><span class="line">## N.B. software from this repository is ENTIRELY UNSUPPORTED by the Ubuntu</span><br><span class="line">## team. Also, please note that software in universe WILL NOT receive any</span><br><span class="line">## review or updates from the Ubuntu security team.</span><br><span class="line">deb http://us.archive.ubuntu.com/ubuntu/ xenial universe</span><br><span class="line"># deb-src http://us.archive.ubuntu.com/ubuntu/ xenial universe</span><br><span class="line">deb http://us.archive.ubuntu.com/ubuntu/ xenial-updates universe</span><br><span class="line"># deb-src http://us.archive.ubuntu.com/ubuntu/ xenial-updates universe</span><br><span class="line">## N.B. software from this repository is ENTIRELY UNSUPPORTED by the Ubuntu </span><br><span class="line">## team, and may not be under a free licence. Please satisfy yourself as to </span><br><span class="line">## your rights to use the software. Also, please note that software in </span><br><span class="line">## multiverse WILL NOT receive any review or updates from the Ubuntu</span><br><span class="line">## security team.</span><br><span class="line">deb http://us.archive.ubuntu.com/ubuntu/ xenial multiverse</span><br><span class="line"># deb-src http://us.archive.ubuntu.com/ubuntu/ xenial multiverse</span><br><span class="line">deb http://us.archive.ubuntu.com/ubuntu/ xenial-updates multiverse</span><br><span class="line"># deb-src http://us.archive.ubuntu.com/ubuntu/ xenial-updates multiverse</span><br><span class="line">## N.B. software from this repository may not have been tested as</span><br><span class="line">## extensively as that contained in the main release, although it includes</span><br><span class="line">## newer versions of some applications which may provide useful features.</span><br><span class="line">## Also, please note that software in backports WILL NOT receive any review</span><br><span class="line">## or updates from the Ubuntu security team.</span><br><span class="line">deb http://us.archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe multiverse</span><br><span class="line"># deb-src http://us.archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe multiverse</span><br><span class="line">## Uncomment the following two lines to add software from Canonical&apos;s</span><br><span class="line">## &apos;partner&apos; repository.</span><br><span class="line">## This software is not part of Ubuntu, but is offered by Canonical and the</span><br><span class="line">## respective vendors as a service to Ubuntu users.</span><br><span class="line"># deb http://archive.canonical.com/ubuntu xenial partner</span><br><span class="line"># deb-src http://archive.canonical.com/ubuntu xenial partner</span><br><span class="line">deb http://security.ubuntu.com/ubuntu xenial-security main restricted</span><br><span class="line"># deb-src http://security.ubuntu.com/ubuntu xenial-security main restricted</span><br><span class="line">deb http://security.ubuntu.com/ubuntu xenial-security universe</span><br><span class="line"># deb-src http://security.ubuntu.com/ubuntu xenial-security universe</span><br><span class="line">deb http://security.ubuntu.com/ubuntu xenial-security multiverse</span><br><span class="line"># deb-src http://security.ubuntu.com/ubuntu xenial-security multiverse</span><br></pre></td></tr></table></figure></p>
+<p>下面大更新一波，安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install git gcc cmake libssl-dev libtool autoconf automake clang-4.0</span><br></pre></td></tr></table></figure></p>
+<p>除了错误别找我，直接谷歌去找源<br>安装完<code>clang</code>看看位置如果不是<code>usr/bin</code><br>执行下面命令制作软链接，只为保险不是必需的。。。。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo ln -s /usr/bin/clang-4.0 /usr/bin/clang</span><br><span class="line">sudo ln -s /usr/bin/clang++-4.0 /usr/bin/clang++</span><br></pre></td></tr></table></figure></p>
 <p>吐槽一波CentOS你更新了源也没用该没有的还是没有建议直接源码安装。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">#下载llvm源码</div><div class="line">wget http://llvm.org/releases/4.0.1/llvm-4.0.1.src.tar.xz</div><div class="line">tar xf llvm-4.0.1.src.tar.xz</div><div class="line">mv llvm-4.0.1.src llvm</div><div class="line"></div><div class="line">#下载clang源码</div><div class="line">cd llvm/tools</div><div class="line">wget http://llvm.org/releases/4.0.1/cfe-4.0.1.src.tar.xz</div><div class="line">tar xf cfe-4.0.1.src.tar.xz</div><div class="line">mv cfe-4.0.1.src clang</div><div class="line">cd ../..</div><div class="line"></div><div class="line">#下载clang-tools-extra源码  可选</div><div class="line">cd llvm/tools/clang/tools</div><div class="line">wget http://llvm.org/releases/4.0.1/clang-tools-extra-4.0.1.src.tar.xz</div><div class="line">tar xf clang-tools-extra-4.0.1.src.tar.xz</div><div class="line">mv clang-tools-extra-4.0.1.src  extra</div><div class="line">cd ../../../..</div><div class="line"></div><div class="line">#下载compiler-rt源码 可选</div><div class="line">cd llvm/projects</div><div class="line">wget http://llvm.org/releases/4.0.1/compiler-rt-4.0.1.src.tar.xz</div><div class="line">tar xf compiler-rt-4.0.1.src.tar.xz</div><div class="line">mv compiler-rt-4.0.1.src compiler-rt</div><div class="line">cd ../..</div><div class="line"></div><div class="line">mkdir llvmbuild</div><div class="line">cd llvmbuild</div><div class="line">#正常套路安装</div><div class="line">#设置配置</div><div class="line">#–prefix=directory — 设置llvm编译的安装路径(default/usr/local). </div><div class="line">#–enable-optimized — 是否选择优化(defaultis NO)，yes是指安装一个Release版本. </div><div class="line">#–enable-assertions — 是否断言检查(default is YES).</div><div class="line">../llvm/configure --enable-optimized --enable-targets=host-only --prefix=/usr/bin</div><div class="line">#构建</div><div class="line">cmake ../llvm</div><div class="line">make</div><div class="line">#安装</div><div class="line">sudo make install</div><div class="line"></div><div class="line">#ninja套路安装</div><div class="line">#设置配置</div><div class="line">cmake -G Ninja -DCMAKE_INSTALL_PREFIX=/usr/bin -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_FFI=ON -DLLVM_BUILD_LLVM_DYLIB=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DLLVM_TARGETS_TO_BUILD=&quot;host&quot; -Wno-dev ../llvm</div><div class="line">#构建想几核自己根据配置设置</div><div class="line">ninja -j4</div><div class="line">#安装</div><div class="line">ninja install</div></pre></td></tr></table></figure>
-<h2 id="Apple-Clang-安装"><a href="#Apple-Clang-安装" class="headerlink" title="Apple Clang 安装"></a>Apple Clang 安装</h2><p>步骤如上面CentOS源码安装Clang一样，只是把Clang地址改了下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">cd llvm/tools</div><div class="line">wget https://opensource.apple.com/tarballs/clang/clang-800.0.42.1.tar.gz</div><div class="line">tar xf clang-800.0.42.1.tar.gz</div><div class="line">mv clang-800.0.42.1 clang</div><div class="line">cd ../..</div></pre></td></tr></table></figure></p>
-<h2 id="cctools-port-制作ios-toolchain-的Clang"><a href="#cctools-port-制作ios-toolchain-的Clang" class="headerlink" title="cctools-port 制作ios-toolchain 的Clang"></a>cctools-port 制作ios-toolchain 的Clang</h2><h3 id="ios-sdk-打包"><a href="#ios-sdk-打包" class="headerlink" title="ios sdk 打包"></a>ios sdk 打包</h3><p>下载完Xcode直接执行下面命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">SDK=$(ls -l Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs | grep &quot; -&gt; iPhoneOS.sdk&quot; | head -n1 | awk &apos;&#123;print $9&#125;&apos;)</div><div class="line">cp -r Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk /tmp/$SDK 1&gt;/dev/null</div><div class="line">cp -r Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1 /tmp/$SDK/usr/include/c++ 1&gt;/dev/null</div><div class="line">pushd /tmp</div><div class="line">tar -cvzf $SDK.tar.gz $SDK</div><div class="line">rm -rf $SDK</div><div class="line">mv $SDK.tar.gz ~</div><div class="line">popd</div></pre></td></tr></table></figure></p>
-<h3 id="制作-iOS-armv7-工具链"><a href="#制作-iOS-armv7-工具链" class="headerlink" title="制作 iOS armv7 工具链"></a>制作 iOS armv7 工具链</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd cctools-port</div><div class="line">IPHONEOS_DEPLOYMENT_TARGET=5.0 usage_examples/ios_toolchain/build.sh ~/iPhoneOS10.0.sdk.tar.gz armv7</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">#下载llvm源码</span><br><span class="line">wget http://llvm.org/releases/4.0.1/llvm-4.0.1.src.tar.xz</span><br><span class="line">tar xf llvm-4.0.1.src.tar.xz</span><br><span class="line">mv llvm-4.0.1.src llvm</span><br><span class="line"></span><br><span class="line">#下载clang源码</span><br><span class="line">cd llvm/tools</span><br><span class="line">wget http://llvm.org/releases/4.0.1/cfe-4.0.1.src.tar.xz</span><br><span class="line">tar xf cfe-4.0.1.src.tar.xz</span><br><span class="line">mv cfe-4.0.1.src clang</span><br><span class="line">cd ../..</span><br><span class="line"></span><br><span class="line">#下载clang-tools-extra源码  可选</span><br><span class="line">cd llvm/tools/clang/tools</span><br><span class="line">wget http://llvm.org/releases/4.0.1/clang-tools-extra-4.0.1.src.tar.xz</span><br><span class="line">tar xf clang-tools-extra-4.0.1.src.tar.xz</span><br><span class="line">mv clang-tools-extra-4.0.1.src  extra</span><br><span class="line">cd ../../../..</span><br><span class="line"></span><br><span class="line">#下载compiler-rt源码 可选</span><br><span class="line">cd llvm/projects</span><br><span class="line">wget http://llvm.org/releases/4.0.1/compiler-rt-4.0.1.src.tar.xz</span><br><span class="line">tar xf compiler-rt-4.0.1.src.tar.xz</span><br><span class="line">mv compiler-rt-4.0.1.src compiler-rt</span><br><span class="line">cd ../..</span><br><span class="line"></span><br><span class="line">mkdir llvmbuild</span><br><span class="line">cd llvmbuild</span><br><span class="line">#正常套路安装</span><br><span class="line">#设置配置</span><br><span class="line">#–prefix=directory — 设置llvm编译的安装路径(default/usr/local). </span><br><span class="line">#–enable-optimized — 是否选择优化(defaultis NO)，yes是指安装一个Release版本. </span><br><span class="line">#–enable-assertions — 是否断言检查(default is YES).</span><br><span class="line">../llvm/configure --enable-optimized --enable-targets=host-only --prefix=/usr/bin</span><br><span class="line">#构建</span><br><span class="line">cmake ../llvm</span><br><span class="line">make</span><br><span class="line">#安装</span><br><span class="line">sudo make install</span><br><span class="line"></span><br><span class="line">#ninja套路安装</span><br><span class="line">#设置配置</span><br><span class="line">cmake -G Ninja -DCMAKE_INSTALL_PREFIX=/usr/bin -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_FFI=ON -DLLVM_BUILD_LLVM_DYLIB=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DLLVM_TARGETS_TO_BUILD=&quot;host&quot; -Wno-dev ../llvm</span><br><span class="line">#构建想几核自己根据配置设置</span><br><span class="line">ninja -j4</span><br><span class="line">#安装</span><br><span class="line">ninja install</span><br></pre></td></tr></table></figure>
+<h2 id="Apple-Clang-安装"><a href="#Apple-Clang-安装" class="headerlink" title="Apple Clang 安装"></a>Apple Clang 安装</h2><p>步骤如上面CentOS源码安装Clang一样，只是把Clang地址改了下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd llvm/tools</span><br><span class="line">wget https://opensource.apple.com/tarballs/clang/clang-800.0.42.1.tar.gz</span><br><span class="line">tar xf clang-800.0.42.1.tar.gz</span><br><span class="line">mv clang-800.0.42.1 clang</span><br><span class="line">cd ../..</span><br></pre></td></tr></table></figure></p>
+<h2 id="cctools-port-制作ios-toolchain-的Clang"><a href="#cctools-port-制作ios-toolchain-的Clang" class="headerlink" title="cctools-port 制作ios-toolchain 的Clang"></a>cctools-port 制作ios-toolchain 的Clang</h2><h3 id="ios-sdk-打包"><a href="#ios-sdk-打包" class="headerlink" title="ios sdk 打包"></a>ios sdk 打包</h3><p>下载完Xcode直接执行下面命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">SDK=$(ls -l Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs | grep &quot; -&gt; iPhoneOS.sdk&quot; | head -n1 | awk &apos;&#123;print $9&#125;&apos;)</span><br><span class="line">cp -r Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk /tmp/$SDK 1&gt;/dev/null</span><br><span class="line">cp -r Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1 /tmp/$SDK/usr/include/c++ 1&gt;/dev/null</span><br><span class="line">pushd /tmp</span><br><span class="line">tar -cvzf $SDK.tar.gz $SDK</span><br><span class="line">rm -rf $SDK</span><br><span class="line">mv $SDK.tar.gz ~</span><br><span class="line">popd</span><br></pre></td></tr></table></figure></p>
+<h3 id="制作-iOS-armv7-工具链"><a href="#制作-iOS-armv7-工具链" class="headerlink" title="制作 iOS armv7 工具链"></a>制作 iOS armv7 工具链</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd cctools-port</span><br><span class="line">IPHONEOS_DEPLOYMENT_TARGET=5.0 usage_examples/ios_toolchain/build.sh ~/iPhoneOS10.0.sdk.tar.gz armv7</span><br></pre></td></tr></table></figure>
 <p>制作工具链成功后会提示<strong><em> all done </em></strong></p>
-<p>将生成的工具链移到 /usr/local/ 目录并更名为 ios-armv7<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo mv usage_examples/ios_toolchain/target /usr/local/ios-armv7</div></pre></td></tr></table></figure></p>
-<p>将库文件拷贝一份，放进公共库 /usr/lib<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo cp /usr/local/ios-armv7/lib/libtapi.so /usr/lib</div></pre></td></tr></table></figure></p>
-<p>最后将工具链的 bin 目录加入PATH，方便调用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">export PATH=$PATH:/usr/local/ios-armv7/bin</div></pre></td></tr></table></figure></p>
-<h3 id="制作-iOS-arm64-工具链"><a href="#制作-iOS-arm64-工具链" class="headerlink" title="制作 iOS arm64 工具链"></a>制作 iOS arm64 工具链</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd cctools-port</div><div class="line">IPHONEOS_DEPLOYMENT_TARGET=5.0 usage_examples/ios_toolchain/build.sh ~/iPhoneOS10.0.sdk.tar.gz arm64</div></pre></td></tr></table></figure>
+<p>将生成的工具链移到 /usr/local/ 目录并更名为 ios-armv7<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mv usage_examples/ios_toolchain/target /usr/local/ios-armv7</span><br></pre></td></tr></table></figure></p>
+<p>将库文件拷贝一份，放进公共库 /usr/lib<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp /usr/local/ios-armv7/lib/libtapi.so /usr/lib</span><br></pre></td></tr></table></figure></p>
+<p>最后将工具链的 bin 目录加入PATH，方便调用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export PATH=$PATH:/usr/local/ios-armv7/bin</span><br></pre></td></tr></table></figure></p>
+<h3 id="制作-iOS-arm64-工具链"><a href="#制作-iOS-arm64-工具链" class="headerlink" title="制作 iOS arm64 工具链"></a>制作 iOS arm64 工具链</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd cctools-port</span><br><span class="line">IPHONEOS_DEPLOYMENT_TARGET=5.0 usage_examples/ios_toolchain/build.sh ~/iPhoneOS10.0.sdk.tar.gz arm64</span><br></pre></td></tr></table></figure>
 <p>制作工具链成功后会提示<strong><em> all done </em></strong></p>
-<p>将生成的工具链  /usr/local/ 目录并更名为 ios-arm64<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo mv usage_examples/ios_toolchain/target /usr/local/ios-arm64</div></pre></td></tr></table></figure></p>
-<p>使用 rename 命令重命名前缀以与 armv7 区分开来把 arm- 前缀改为 aarch64- 前缀<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">rename &apos;s/arm-/aarch64-/&apos; /usr/local/ios-arm64/bin/*</div><div class="line">sudo rm /usr/local/ios-arm64/aarch64-apple-darwin11-clang++</div><div class="line">sudo ln -s /usr/local/ios-arm64/aarch64-apple-darwin11-clang /usr/local/ios-arm64/aarch64-apple-darwin11-clang++</div></pre></td></tr></table></figure></p>
-<p>将库文件拷贝一份，放进公共库 /usr/lib<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo cp /usr/local/ios-arm64/lib/libtapi.so /usr/lib</div></pre></td></tr></table></figure></p>
-<p>最后将工具链的 bin 目录加入PATH，方便调用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">export PATH=$PATH:/usr/local/ios-arm64/bin</div></pre></td></tr></table></figure></p>
+<p>将生成的工具链  /usr/local/ 目录并更名为 ios-arm64<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mv usage_examples/ios_toolchain/target /usr/local/ios-arm64</span><br></pre></td></tr></table></figure></p>
+<p>使用 rename 命令重命名前缀以与 armv7 区分开来把 arm- 前缀改为 aarch64- 前缀<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rename &apos;s/arm-/aarch64-/&apos; /usr/local/ios-arm64/bin/*</span><br><span class="line">sudo rm /usr/local/ios-arm64/aarch64-apple-darwin11-clang++</span><br><span class="line">sudo ln -s /usr/local/ios-arm64/aarch64-apple-darwin11-clang /usr/local/ios-arm64/aarch64-apple-darwin11-clang++</span><br></pre></td></tr></table></figure></p>
+<p>将库文件拷贝一份，放进公共库 /usr/lib<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp /usr/local/ios-arm64/lib/libtapi.so /usr/lib</span><br></pre></td></tr></table></figure></p>
+<p>最后将工具链的 bin 目录加入PATH，方便调用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export PATH=$PATH:/usr/local/ios-arm64/bin</span><br></pre></td></tr></table></figure></p>
 <p>其实到这基本完活了，单跑.m文件已经没问题了，下面只是为了更加方便的编译项目</p>
 <p>这里已经可以跑个测试程序编译试试了如<code>arrch-apple-darwin11-clang helloworld.c -o helloworld</code>或<code>arm-apple-darwin11-clang helloworld.c -o helloworld</code></p>
 <h3 id="合并-armv7-和-arm64-工具链-可选"><a href="#合并-armv7-和-arm64-工具链-可选" class="headerlink" title="合并 armv7 和 arm64 工具链(可选)"></a>合并 armv7 和 arm64 工具链(可选)</h3><p>一般用<code>ar</code>命令做合并不过容易出问题</p>
 <h3 id="替换xctoolchain"><a href="#替换xctoolchain" class="headerlink" title="替换xctoolchain"></a>替换xctoolchain</h3><p>把最后想要用的生成的工具链clang 和 clang++文件替换到<code>usr/bin</code>下（不替换也可以达成目的即可），相当于回头编译的时候走我们产出的这套clang环境。总之就是思路就是让<code>xcbuild</code>走我们的这套clang去打包编译程序即可。如果你用Apple Clang或直接Clang能打包编译也就不用自己手动做这个事了。</p>
-<h2 id="Ninja-安装"><a href="#Ninja-安装" class="headerlink" title="Ninja 安装"></a>Ninja 安装</h2><p>Ubuntu一行命令解决。。。。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">apt-get install ninja-build</div></pre></td></tr></table></figure></p>
-<p>CentOS天坑模式开启不出意外先升级cmake<br>源码安装最新版<a href="https://gitlab.kitware.com/cmake/cmake.git" target="_blank" rel="external">cmake</a>解压执行<code>./bootstrap &amp;&amp; make &amp;&amp; make install</code> 就ok了，3个命令合一。<br>然后下载ninja源码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git clone git://github.com/ninja-build/ninja.git &amp;&amp; cd ninja</div><div class="line">git checkout release</div><div class="line">./configure.py --bootstrap</div></pre></td></tr></table></figure></p>
-<p>最后把Path加一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">export PATH=$PATH:/xxx/xxx/ninja</div></pre></td></tr></table></figure></p>
-<h2 id="xcbuild-安装"><a href="#xcbuild-安装" class="headerlink" title="xcbuild 安装"></a>xcbuild 安装</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/facebook/xcbuild</div><div class="line">cd xcbuild</div><div class="line">git submodule update --init</div><div class="line">make</div></pre></td></tr></table></figure>
-<p>最后把Path加一下和DEVELOPER_DIR<br>DEVELOPER_DIR就是Xcode的目录，Xcode其实只需要有三个文件夹<code>Xcode.app/Contents/PlugIns</code>，<code>Xcode.app/Contents/Developer/Toolchains</code>,<code>Xcode.app/Contents/Developer/Platforms</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">export PATH=$PATH:/xxx/xxx/xcbuild/build</div><div class="line">export DEVELOPER_DIR=/xxx/xxx/Xcode.app</div></pre></td></tr></table></figure></p>
+<h2 id="Ninja-安装"><a href="#Ninja-安装" class="headerlink" title="Ninja 安装"></a>Ninja 安装</h2><p>Ubuntu一行命令解决。。。。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install ninja-build</span><br></pre></td></tr></table></figure></p>
+<p>CentOS天坑模式开启不出意外先升级cmake<br>源码安装最新版<a href="https://gitlab.kitware.com/cmake/cmake.git" target="_blank" rel="noopener">cmake</a>解压执行<code>./bootstrap &amp;&amp; make &amp;&amp; make install</code> 就ok了，3个命令合一。<br>然后下载ninja源码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone git://github.com/ninja-build/ninja.git &amp;&amp; cd ninja</span><br><span class="line">git checkout release</span><br><span class="line">./configure.py --bootstrap</span><br></pre></td></tr></table></figure></p>
+<p>最后把Path加一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export PATH=$PATH:/xxx/xxx/ninja</span><br></pre></td></tr></table></figure></p>
+<h2 id="xcbuild-安装"><a href="#xcbuild-安装" class="headerlink" title="xcbuild 安装"></a>xcbuild 安装</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/facebook/xcbuild</span><br><span class="line">cd xcbuild</span><br><span class="line">git submodule update --init</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+<p>最后把Path加一下和DEVELOPER_DIR<br>DEVELOPER_DIR就是Xcode的目录，Xcode其实只需要有三个文件夹<code>Xcode.app/Contents/PlugIns</code>，<code>Xcode.app/Contents/Developer/Toolchains</code>,<code>Xcode.app/Contents/Developer/Platforms</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export PATH=$PATH:/xxx/xxx/xcbuild/build</span><br><span class="line">export DEVELOPER_DIR=/xxx/xxx/Xcode.app</span><br></pre></td></tr></table></figure></p>
 <h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>完全可以像在Mac下一样用没有任何区别，不过也就CocoaPods完全ok，xcbuild指令和xcodebuild用法完全一样直接用xcodebuild也没问题，只不过能不能编译成功就听天由命吧！坑很深，慎入！</p>
 
       
@@ -374,7 +375,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2021 Heroims
+    		&copy; 2022 Heroims
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -457,70 +458,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">切面</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Wifi Direct</a>
               </li>
              
@@ -553,6 +490,82 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">切面</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
               </li>
              
@@ -562,6 +575,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">统计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -601,43 +626,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">网络</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -685,6 +682,34 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">动态库</a>
               </li>
              
@@ -702,18 +727,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -737,10 +750,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
@@ -749,27 +758,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">视频</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GPUImage</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
               </li>
             
             <div class="clearfix"></div>

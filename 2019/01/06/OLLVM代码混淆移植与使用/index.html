@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>OLLVM代码混淆移植与使用 | Heroims的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -15,6 +15,7 @@
 <meta property="og:url" content="http://yoursite.com/2019/01/06/OLLVM代码混淆移植与使用/index.html">
 <meta property="og:site_name" content="Heroims的博客">
 <meta property="og:description" content="简介OLLVM(Obfuscator-LLVM)是瑞士西北应用科技大学安全实验室于2010年6月份发起的一个项目,该项目旨在提供一套开源的针对LLVM的代码混淆工具,以增加对逆向工程的难度。github上地址是https://github.com/obfuscator-llvm/obfuscator ，只不过仅更新到llvm的4.0，2017年开始就没在更新。 移植OLLVM如果自己想拿最新版的L">
+<meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-1d4286b24563a1db.png">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-3d3054a05c96b72a.png">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-e76e7039112a47c8.png">
@@ -59,7 +60,7 @@
   
 
 </head>
-
+</html>
 <body>
   <div id="container" q-class="show:isCtnShow">
     <canvas id="anm-canvas" class="anm-canvas"></canvas>
@@ -190,13 +191,13 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>OLLVM(Obfuscator-LLVM)是瑞士西北应用科技大学安全实验室于2010年6月份发起的一个项目,该项目旨在提供一套开源的针对LLVM的代码混淆工具,以增加对逆向工程的难度。github上地址是<a href="https://github.com/obfuscator-llvm/obfuscator" target="_blank" rel="external">https://github.com/obfuscator-llvm/obfuscator</a> ，只不过仅更新到llvm的4.0，2017年开始就没在更新。</p>
+        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>OLLVM(Obfuscator-LLVM)是瑞士西北应用科技大学安全实验室于2010年6月份发起的一个项目,该项目旨在提供一套开源的针对LLVM的代码混淆工具,以增加对逆向工程的难度。github上地址是<a href="https://github.com/obfuscator-llvm/obfuscator" target="_blank" rel="noopener">https://github.com/obfuscator-llvm/obfuscator</a> ，只不过仅更新到llvm的4.0，2017年开始就没在更新。</p>
 <h1 id="移植"><a href="#移植" class="headerlink" title="移植"></a>移植</h1><p>OLLVM如果自己想拿最新版的LLVM和Clang进行移植功能其实也并不是很难，整理一下其实改动很小，接下来将会讲一下移植的方法。</p>
-<h2 id="个人整理"><a href="#个人整理" class="headerlink" title="个人整理"></a>个人整理</h2><p>先放一下个人移植好的版本地址<a href="https://github.com/heroims/obfuscator.git" target="_blank" rel="external">https://github.com/heroims/obfuscator.git</a> ，个人fork原版后又加入了llvm5.0，6.0，7.0以及swift-llvm5.0的版本，应该能满足大部分需求了，如果有新版本下面的讲解，各位也可以自己动手去下载自己需要的llvm和clang进行移植。git上的提交每次都很独立如下图，方便各位cherry-pick。<br><a id="more"></a><br><img src="/assets/blogImage/3994053-1d4286b24563a1db.png" alt="image.png"></p>
-<h2 id="下载LLVM"><a href="#下载LLVM" class="headerlink" title="下载LLVM"></a>下载LLVM</h2><p>llvm地址：<a href="https://github.com/llvm-mirror" target="_blank" rel="external">https://github.com/llvm-mirror</a><br>swift-llvm地址：<a href="https://github.com/apple" target="_blank" rel="external">https://github.com/apple</a><br>大家可以从上面的地址下载最新的自己需要的llvm和clang</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>下载llvm源码</div><div class="line">wget https://codeload.github.com/llvm-mirror/llvm/zip/release_70</div><div class="line">unzip llvm-release_70.zip</div><div class="line">mv llvm-release_70 llvm</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">#</span>下载clang源码</div><div class="line">wget https://codeload.github.com/llvm-mirror/clang/zip/release_70</div><div class="line">unzip clang-release_70.zip</div><div class="line">mv clang-release_70 llvm/tools/clang</div></pre></td></tr></table></figure>
+<h2 id="个人整理"><a href="#个人整理" class="headerlink" title="个人整理"></a>个人整理</h2><p>先放一下个人移植好的版本地址<a href="https://github.com/heroims/obfuscator.git" target="_blank" rel="noopener">https://github.com/heroims/obfuscator.git</a> ，个人fork原版后又加入了llvm5.0，6.0，7.0以及swift-llvm5.0的版本，应该能满足大部分需求了，如果有新版本下面的讲解，各位也可以自己动手去下载自己需要的llvm和clang进行移植。git上的提交每次都很独立如下图，方便各位cherry-pick。<br><a id="more"></a><br><img src="/assets/blogImage/3994053-1d4286b24563a1db.png" alt="image.png"></p>
+<h2 id="下载LLVM"><a href="#下载LLVM" class="headerlink" title="下载LLVM"></a>下载LLVM</h2><p>llvm地址：<a href="https://github.com/llvm-mirror" target="_blank" rel="noopener">https://github.com/llvm-mirror</a><br>swift-llvm地址：<a href="https://github.com/apple" target="_blank" rel="noopener">https://github.com/apple</a><br>大家可以从上面的地址下载最新的自己需要的llvm和clang</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>下载llvm源码</span><br><span class="line">wget https://codeload.github.com/llvm-mirror/llvm/zip/release_70</span><br><span class="line">unzip llvm-release_70.zip</span><br><span class="line">mv llvm-release_70 llvm</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>下载clang源码</span><br><span class="line">wget https://codeload.github.com/llvm-mirror/clang/zip/release_70</span><br><span class="line">unzip clang-release_70.zip</span><br><span class="line">mv clang-release_70 llvm/tools/clang</span><br></pre></td></tr></table></figure>
 <h2 id="添加混淆代码"><a href="#添加混淆代码" class="headerlink" title="添加混淆代码"></a>添加混淆代码</h2><p>如果用git的话只需要执行<code>git cherry-pick xxxx</code>把xxxx换成对应的我的版本上的提交哈希填上即可。极度推荐用git搞定。</p>
-<p>如果手动一点点加的话，第一步就是把我改过的OLLVM文件夹里<code>/include/llvm/Transforms/Obfuscation</code>和<code>/lib/Transforms/Obfuscation</code>移动到刚才下载好的llvm源码文件夹相同的位置。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/heroims/obfuscator.git</div><div class="line">cd obfuscator</div><div class="line">git checkout llvm-7.0</div><div class="line">cp include/llvm/Transforms/Obfuscation llvm/include/llvm/Transforms/Obfuscation</div><div class="line">cp lib/Transforms/Obfuscation llvm/lib/Transforms/Obfuscation</div></pre></td></tr></table></figure></p>
+<p>如果手动一点点加的话，第一步就是把我改过的OLLVM文件夹里<code>/include/llvm/Transforms/Obfuscation</code>和<code>/lib/Transforms/Obfuscation</code>移动到刚才下载好的llvm源码文件夹相同的位置。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/heroims/obfuscator.git</span><br><span class="line">cd obfuscator</span><br><span class="line">git checkout llvm-7.0</span><br><span class="line">cp include/llvm/Transforms/Obfuscation llvm/include/llvm/Transforms/Obfuscation</span><br><span class="line">cp lib/Transforms/Obfuscation llvm/lib/Transforms/Obfuscation</span><br></pre></td></tr></table></figure></p>
 <p>然后手动修改8个文件如下：</p>
 <p><img src="/assets/blogImage/3994053-3d3054a05c96b72a.png" alt="image.png"></p>
 <p><img src="/assets/blogImage/3994053-e76e7039112a47c8.png" alt="image.png"></p>
@@ -206,7 +207,7 @@
 <p><img src="/assets/blogImage/3994053-e117da8394ea0169.png" alt="image.png"></p>
 <p><img src="/assets/blogImage/3994053-b6703baf65c2858c.png" alt="image.png"></p>
 <p><img src="/assets/blogImage/3994053-0e44f460d8fc63fa.png" alt="image.png"></p>
-<h1 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mkdir build</div><div class="line">cd build</div><div class="line">#如果不想跑测试用例加上-DLLVM_INCLUDE_TESTS=OFF </div><div class="line">cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_CREATE_XCODE_TOOLCHAIN=ON ../obfuscator/</div><div class="line">make -j7</div></pre></td></tr></table></figure>
+<h1 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mkdir build</span><br><span class="line">cd build</span><br><span class="line">#如果不想跑测试用例加上-DLLVM_INCLUDE_TESTS=OFF </span><br><span class="line">cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_CREATE_XCODE_TOOLCHAIN=ON ../obfuscator/</span><br><span class="line">make -j7</span><br></pre></td></tr></table></figure>
 <h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>这里原版提供了3种混淆方式分别是控制流扁平化,指令替换,虚假控制流程,用起来都是加cflags的方式。下面简单说下这几种模式。</p>
 <h3 id="控制流扁平化"><a href="#控制流扁平化" class="headerlink" title="控制流扁平化"></a>控制流扁平化</h3><p>这个模式主要是把一些if-else语句，嵌套成do-while语句</p>
 <p>-mllvm -fla：激活控制流扁平化<br>-mllvm -split：激活基本块分割。在一起使用时改善展平。<br>-mllvm -split_num=3：如果激活了传递，则在每个基本块上应用3次。默认值：1</p>
@@ -219,35 +220,35 @@
 <p>上面说完模式下面讲一下几种使用方式</p>
 <h3 id="直接用二进制文件"><a href="#直接用二进制文件" class="headerlink" title="直接用二进制文件"></a>直接用二进制文件</h3><p>直接使用编译的二进制文件<code>build/bin/clang test.c -o test -mllvm -sub -mllvm -fla -mllvm -bcf</code></p>
 <h3 id="NDK集成"><a href="#NDK集成" class="headerlink" title="NDK集成"></a>NDK集成</h3><p>这里分为工具链的制作和项目里的配置。</p>
-<h4 id="制作Toolchains"><a href="#制作Toolchains" class="headerlink" title="制作Toolchains"></a>制作Toolchains</h4><p>这里以修改最新的ndk r18为例，老的ndk版本比这更容易都在ndk-bundle/toolchains里放着需要修改的文件。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span>复制ndk的toolschain里的llvm</div><div class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/toolchains/llvm Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm</div><div class="line"><span class="meta">#</span>删除prebuilt文件夹下的文件夹的bin和lib64，prebuilt文件夹下根据系统不同命名也不同</div><div class="line">rm -rf Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/bin</div><div class="line">rm -rf Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/lib64</div><div class="line"><span class="meta">#</span>把我们之前编译好的ollvm下的bin和lib移到我们刚才删除bin和lib64的目录下</div><div class="line">mv build/bin Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/bin</div><div class="line">mv build/lib Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/lib64</div><div class="line"><span class="meta">#</span>复制ndk-bundle⁩/⁨build⁩/⁨core⁩/⁨toolchains的文件夹，这里根据自己对CPU架构的需求自己复制然后修改</div><div class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/aarch64-linux-android-clang Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/aarch64-linux-android-clang-ollvm</div><div class="line"></div><div class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang⁩ Android/sdk/ndk/xx.x.xxxxxx/build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang-ollvm</div><div class="line"></div><div class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/x86_64-clang Android/sdk/ndk/xx.x.xxxxxx/build⁩/⁨core⁩/⁨toolchains/x86_64-clang-ollvm</div><div class="line"></div><div class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/x86-clang-clang⁩ Android/sdk/ndk/xx.x.xxxxxx/build⁩/⁨core⁩/⁨toolchains/x86-clang-ollvm</div></pre></td></tr></table></figure></p>
+<h4 id="制作Toolchains"><a href="#制作Toolchains" class="headerlink" title="制作Toolchains"></a>制作Toolchains</h4><p>这里以修改最新的ndk r18为例，老的ndk版本比这更容易都在ndk-bundle/toolchains里放着需要修改的文件。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>复制ndk的toolschain里的llvm</span><br><span class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/toolchains/llvm Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm</span><br><span class="line"><span class="meta">#</span>删除prebuilt文件夹下的文件夹的bin和lib64，prebuilt文件夹下根据系统不同命名也不同</span><br><span class="line">rm -rf Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/bin</span><br><span class="line">rm -rf Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/lib64</span><br><span class="line"><span class="meta">#</span>把我们之前编译好的ollvm下的bin和lib移到我们刚才删除bin和lib64的目录下</span><br><span class="line">mv build/bin Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/bin</span><br><span class="line">mv build/lib Android/sdk/ndk/xx.x.xxxxxx/toolchains/ollvm/prebuilt/darwin-x86_64/lib64</span><br><span class="line"><span class="meta">#</span>复制ndk-bundle⁩/⁨build⁩/⁨core⁩/⁨toolchains的文件夹，这里根据自己对CPU架构的需求自己复制然后修改</span><br><span class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/aarch64-linux-android-clang Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/aarch64-linux-android-clang-ollvm</span><br><span class="line"></span><br><span class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang⁩ Android/sdk/ndk/xx.x.xxxxxx/build⁩/⁨core⁩/⁨toolchains/arm-linux-androideabi-clang-ollvm</span><br><span class="line"></span><br><span class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/x86_64-clang Android/sdk/ndk/xx.x.xxxxxx/build⁩/⁨core⁩/⁨toolchains/x86_64-clang-ollvm</span><br><span class="line"></span><br><span class="line">cp -r Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/x86-clang-clang⁩ Android/sdk/ndk/xx.x.xxxxxx/build⁩/⁨core⁩/⁨toolchains/x86-clang-ollvm</span><br></pre></td></tr></table></figure></p>
 <p>最后把xxxxxx-ollvm里的setup.mk文件进行修改</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">TOOLCHAIN_NAME := ollvm</div><div class="line">TOOLCHAIN_ROOT := $(call get-toolchain-root,$(TOOLCHAIN_NAME))</div><div class="line">TOOLCHAIN_PREFIX := $(TOOLCHAIN_ROOT)/bin</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">TOOLCHAIN_NAME := ollvm</span><br><span class="line">TOOLCHAIN_ROOT := $(call get-toolchain-root,$(TOOLCHAIN_NAME))</span><br><span class="line">TOOLCHAIN_PREFIX := $(TOOLCHAIN_ROOT)/bin</span><br></pre></td></tr></table></figure>
 <p>config.mk里是CPU架构,刚才是复制出来的所以不用修改，但如果要添加其他的自定义架构需要严格按照格式规范命名最初的文件夹，如mips的需要添加文件夹mipsel-linux-android-clang-ollvm，setup.mk和刚才的修改一样即可。</p>
 <p>修改Android/sdk/ndk/xx.x.xxxxxx/⁨build⁩/⁨core⁩/⁨toolchains/setup-toolchain.mk里</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ifneq ($(words $(TARGET_TOOLCHAIN_LIST)),1)</div><div class="line">     $(call __ndk_error,Expected two items in TARGET_TOOLCHAIN_LIST, \</div><div class="line">         found &quot;$(TARGET_TOOLCHAIN_LIST)&quot;)</div><div class="line"> endif</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ifneq ($(words $(TARGET_TOOLCHAIN_LIST)),1)</span><br><span class="line">     $(call __ndk_error,Expected two items in TARGET_TOOLCHAIN_LIST, \</span><br><span class="line">         found &quot;$(TARGET_TOOLCHAIN_LIST)&quot;)</span><br><span class="line"> endif</span><br></pre></td></tr></table></figure>
 <p>改为</p>
 <pre><code>ifneq ($(words $(TARGET_TOOLCHAIN_LIST)),2)
     $(call __ndk_error,Expected two items in TARGET_TOOLCHAIN_LIST, \
         found &quot;$(TARGET_TOOLCHAIN_LIST)&quot;)
 endif
-</code></pre><h4 id="项目中配置"><a href="#项目中配置" class="headerlink" title="项目中配置"></a>项目中配置</h4><p>到了项目里还需要修改两个文件：<br>在Android.mk 中添加混淆编译参数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">LOCAL_CFLAGS += -mllvm -sub -mllvm -bcf -mllvm -fla</div></pre></td></tr></table></figure></p>
-<p>Application.mk中配置NDK_TOOLCHAIN_VERSION<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#根据需要添加</div><div class="line">APP_ABI := x86 armeabi-v7a x86_64 arm64-v8a mips armeabi mips64</div><div class="line">#使用刚才我们做好的编译链</div><div class="line">NDK_TOOLCHAIN_VERSION := ollvm</div></pre></td></tr></table></figure></p>
-<h3 id="Visual-Studio集成"><a href="#Visual-Studio集成" class="headerlink" title="Visual Studio集成"></a>Visual Studio集成</h3><p>编译ollvm的时候，使用cmake-gui选择Visual Studio2015或者命令行选择<code>cmake -G &quot;Visual Studio 14 2015&quot; -DCMAKE_BUILD_TYPE=Release ../obfuscator/</code><br>然后cmake会产生一个visual studio工程，用vs编译即可！<br>至于将Visual Studio的默认编译器换成clang编译，参考<a href="https://www.ishani.org/projects/ClangVSX/" target="_blank" rel="external">https://www.ishani.org/projects/ClangVSX/</a></p>
+</code></pre><h4 id="项目中配置"><a href="#项目中配置" class="headerlink" title="项目中配置"></a>项目中配置</h4><p>到了项目里还需要修改两个文件：<br>在Android.mk 中添加混淆编译参数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LOCAL_CFLAGS += -mllvm -sub -mllvm -bcf -mllvm -fla</span><br></pre></td></tr></table></figure></p>
+<p>Application.mk中配置NDK_TOOLCHAIN_VERSION<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#根据需要添加</span><br><span class="line">APP_ABI := x86 armeabi-v7a x86_64 arm64-v8a mips armeabi mips64</span><br><span class="line">#使用刚才我们做好的编译链</span><br><span class="line">NDK_TOOLCHAIN_VERSION := ollvm</span><br></pre></td></tr></table></figure></p>
+<h3 id="Visual-Studio集成"><a href="#Visual-Studio集成" class="headerlink" title="Visual Studio集成"></a>Visual Studio集成</h3><p>编译ollvm的时候，使用cmake-gui选择Visual Studio2015或者命令行选择<code>cmake -G &quot;Visual Studio 14 2015&quot; -DCMAKE_BUILD_TYPE=Release ../obfuscator/</code><br>然后cmake会产生一个visual studio工程，用vs编译即可！<br>至于将Visual Studio的默认编译器换成clang编译，参考<a href="https://www.ishani.org/projects/ClangVSX/" target="_blank" rel="noopener">https://www.ishani.org/projects/ClangVSX/</a></p>
 <p>Visual Studio2015起官方开始支持Clang，具体做法：<br>文件-&gt;新建-&gt;项目-&gt;已安装-&gt;Visual C++-&gt;跨平台-&gt;安装Clang with Microsoft CodeGen<br>Clang是一个完全不同的命令行工具链，这时候可以在工程配置中，平台工具集选项里找到Clang，然后使用ollvm的clang替换该clang即可。</p>
 <h3 id="XCode集成"><a href="#XCode集成" class="headerlink" title="XCode集成"></a>XCode集成</h3><p>XCode里集成需要看版本，XCode10之前和之后是一个分水岭，XCode9之前和之后有一个小配置不同。</p>
-<h4 id="XCode10以前"><a href="#XCode10以前" class="headerlink" title="XCode10以前"></a>XCode10以前</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ cd /Applications/Xcode.app/Contents/PlugIns/Xcode3Core.ideplugin/Contents/SharedSupport/Developer/Library/Xcode/Plug-ins/</div><div class="line">$ sudo cp -r Clang\ LLVM\ 1.0.xcplugin/ Obfuscator.xcplugin</div><div class="line">$ cd Obfuscator.xcplugin/Contents/</div><div class="line">$ sudo plutil -convert xml1 Info.plist</div><div class="line">$ sudo vim Info.plist</div></pre></td></tr></table></figure>
-<p>修改:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;string&gt;com.apple.compilers.clang&lt;/string&gt; -&gt; &lt;string&gt;com.apple.compilers.obfuscator&lt;/string&gt;</div><div class="line">&lt;string&gt;Clang LLVM 1.0 Compiler Xcode Plug-in&lt;/string&gt; -&gt; &lt;string&gt;Obfuscator Xcode Plug-in&lt;/string&gt;</div></pre></td></tr></table></figure></p>
-<p>执行:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ sudo plutil -convert binary1 Info.plist</div><div class="line">$ cd Resources/</div><div class="line">$ sudo mv Clang\ LLVM\ 1.0.xcspec Obfuscator.xcspec</div><div class="line">$ sudo vim Obfuscator.xcspec</div></pre></td></tr></table></figure></p>
-<p>修改:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&lt;key&gt;Description&lt;/key&gt;</div><div class="line">&lt;string&gt;Apple LLVM 8.0 compiler&lt;/string&gt; -&gt; &lt;string&gt;Obfuscator 4.0 compiler&lt;/string&gt;</div><div class="line">&lt;key&gt;ExecPath&lt;/key&gt;</div><div class="line">&lt;string&gt;clang&lt;/string&gt; -&gt; &lt;string&gt;/path/to/obfuscator_bin/clang&lt;/string&gt;</div><div class="line">&lt;key&gt;Identifier&lt;/key&gt;</div><div class="line">&lt;string&gt;com.apple.compilers.llvm.clang.1_0&lt;/string&gt; -&gt; &lt;string&gt;com.apple.compilers.llvm.obfuscator.4_0&lt;/string&gt;</div><div class="line">&lt;key&gt;Name&lt;/key&gt;</div><div class="line">&lt;string&gt;Apple LLVM 8.0&lt;/string&gt; -&gt; &lt;string&gt;Obfuscator 4.0&lt;/string&gt;</div><div class="line">&lt;key&gt;Vendor&lt;/key&gt;</div><div class="line">&lt;string&gt;Apple&lt;/string&gt; -&gt; &lt;string&gt;HEIG-VD&lt;/string&gt;</div><div class="line">&lt;key&gt;Version&lt;/key&gt;</div><div class="line">&lt;string&gt;7.0&lt;/string&gt; -&gt; &lt;string&gt;4.0&lt;/string&gt;</div></pre></td></tr></table></figure></p>
-<p>执行:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ cd English.lproj/</div><div class="line">$ sudo mv Apple\ LLVM\ 5.1.strings &quot;Obfuscator 3.4.strings&quot;</div><div class="line">$ sudo plutil -convert xml1 Obfuscator\ 3.4.strings</div><div class="line">$ sudo vim Obfuscator\ 3.4.strings</div></pre></td></tr></table></figure></p>
-<p>修改:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;key&gt;Description&lt;/key&gt;</div><div class="line">&lt;string&gt;Apple LLVM 8.0 compiler&lt;/string&gt; -&gt; &lt;string&gt;Obfuscator 4.0 compiler&lt;/string&gt;</div><div class="line">&lt;key&gt;Name&lt;/key&gt;</div><div class="line">&lt;string&gt;Apple LLVM 8.0&lt;/string&gt; -&gt; &lt;string&gt;Obfuscator 4.0&lt;/string&gt;</div><div class="line">&lt;key&gt;Vendor&lt;/key&gt;</div><div class="line">&lt;string&gt;Apple&lt;/string&gt; -&gt; &lt;string&gt;HEIG-VD&lt;/string&gt;</div><div class="line">&lt;key&gt;Version&lt;/key&gt;</div><div class="line">&lt;string&gt;7.0&lt;/string&gt; -&gt; &lt;string&gt;4.0&lt;/string&gt;</div></pre></td></tr></table></figure></p>
-<p>执行:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo plutil -convert binary1 Obfuscator\ 3.4.strings</div></pre></td></tr></table></figure></p>
+<h4 id="XCode10以前"><a href="#XCode10以前" class="headerlink" title="XCode10以前"></a>XCode10以前</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ cd /Applications/Xcode.app/Contents/PlugIns/Xcode3Core.ideplugin/Contents/SharedSupport/Developer/Library/Xcode/Plug-ins/</span><br><span class="line">$ sudo cp -r Clang\ LLVM\ 1.0.xcplugin/ Obfuscator.xcplugin</span><br><span class="line">$ cd Obfuscator.xcplugin/Contents/</span><br><span class="line">$ sudo plutil -convert xml1 Info.plist</span><br><span class="line">$ sudo vim Info.plist</span><br></pre></td></tr></table></figure>
+<p>修改:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;string&gt;com.apple.compilers.clang&lt;/string&gt; -&gt; &lt;string&gt;com.apple.compilers.obfuscator&lt;/string&gt;</span><br><span class="line">&lt;string&gt;Clang LLVM 1.0 Compiler Xcode Plug-in&lt;/string&gt; -&gt; &lt;string&gt;Obfuscator Xcode Plug-in&lt;/string&gt;</span><br></pre></td></tr></table></figure></p>
+<p>执行:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ sudo plutil -convert binary1 Info.plist</span><br><span class="line">$ cd Resources/</span><br><span class="line">$ sudo mv Clang\ LLVM\ 1.0.xcspec Obfuscator.xcspec</span><br><span class="line">$ sudo vim Obfuscator.xcspec</span><br></pre></td></tr></table></figure></p>
+<p>修改:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;key&gt;Description&lt;/key&gt;</span><br><span class="line">&lt;string&gt;Apple LLVM 8.0 compiler&lt;/string&gt; -&gt; &lt;string&gt;Obfuscator 4.0 compiler&lt;/string&gt;</span><br><span class="line">&lt;key&gt;ExecPath&lt;/key&gt;</span><br><span class="line">&lt;string&gt;clang&lt;/string&gt; -&gt; &lt;string&gt;/path/to/obfuscator_bin/clang&lt;/string&gt;</span><br><span class="line">&lt;key&gt;Identifier&lt;/key&gt;</span><br><span class="line">&lt;string&gt;com.apple.compilers.llvm.clang.1_0&lt;/string&gt; -&gt; &lt;string&gt;com.apple.compilers.llvm.obfuscator.4_0&lt;/string&gt;</span><br><span class="line">&lt;key&gt;Name&lt;/key&gt;</span><br><span class="line">&lt;string&gt;Apple LLVM 8.0&lt;/string&gt; -&gt; &lt;string&gt;Obfuscator 4.0&lt;/string&gt;</span><br><span class="line">&lt;key&gt;Vendor&lt;/key&gt;</span><br><span class="line">&lt;string&gt;Apple&lt;/string&gt; -&gt; &lt;string&gt;HEIG-VD&lt;/string&gt;</span><br><span class="line">&lt;key&gt;Version&lt;/key&gt;</span><br><span class="line">&lt;string&gt;7.0&lt;/string&gt; -&gt; &lt;string&gt;4.0&lt;/string&gt;</span><br></pre></td></tr></table></figure></p>
+<p>执行:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ cd English.lproj/</span><br><span class="line">$ sudo mv Apple\ LLVM\ 5.1.strings &quot;Obfuscator 3.4.strings&quot;</span><br><span class="line">$ sudo plutil -convert xml1 Obfuscator\ 3.4.strings</span><br><span class="line">$ sudo vim Obfuscator\ 3.4.strings</span><br></pre></td></tr></table></figure></p>
+<p>修改:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;key&gt;Description&lt;/key&gt;</span><br><span class="line">&lt;string&gt;Apple LLVM 8.0 compiler&lt;/string&gt; -&gt; &lt;string&gt;Obfuscator 4.0 compiler&lt;/string&gt;</span><br><span class="line">&lt;key&gt;Name&lt;/key&gt;</span><br><span class="line">&lt;string&gt;Apple LLVM 8.0&lt;/string&gt; -&gt; &lt;string&gt;Obfuscator 4.0&lt;/string&gt;</span><br><span class="line">&lt;key&gt;Vendor&lt;/key&gt;</span><br><span class="line">&lt;string&gt;Apple&lt;/string&gt; -&gt; &lt;string&gt;HEIG-VD&lt;/string&gt;</span><br><span class="line">&lt;key&gt;Version&lt;/key&gt;</span><br><span class="line">&lt;string&gt;7.0&lt;/string&gt; -&gt; &lt;string&gt;4.0&lt;/string&gt;</span><br></pre></td></tr></table></figure></p>
+<p>执行:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo plutil -convert binary1 Obfuscator\ 3.4.strings</span><br></pre></td></tr></table></figure></p>
 <p>XCode9之后要设置<code>Enable Index-While-Building</code>成<code>NO</code></p>
 <p><img src="/assets/blogImage/3994053-07f0d5802141a7ae.png" alt="image.png"></p>
 <p><img src="/assets/blogImage/3994053-25ee66acdb89e0d2.png" alt="image.png"></p>
-<h4 id="XCode10之后"><a href="#XCode10之后" class="headerlink" title="XCode10之后"></a>XCode10之后</h4><p>xcode10之后无法使用添加ideplugin的方法，但添加编译链跑的依然可行，另外网上一些人说不能开bitcode，不能提交AppStore，用原版llvm改的ollvm的确有可能出现上述情况，所以我用苹果的swift-llvm改了一版暂时没去试着提交，或许可以，有兴趣的也可以自己下载使用试试<a href="https://github.com/heroims/obfuscator/tree/swift-llvm-5.0" target="_blank" rel="external">obfuscator</a>这版，特别备注由于修改没有针对swift部分所以用swift写的代码没混淆，回头有空的话再弄。</p>
-<p>创建XCode的toolchain然后把生成的文件夹放到<code>/Library/Developer/</code>下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">cd build</div><div class="line">sudo make install-xcode-toolchain</div><div class="line">mv /usr/local/Toolchains  /Library/Developer/</div></pre></td></tr></table></figure></p>
-<p>Toolchains下的.xctoolchain文件就是一个文件夹，进去修改info.plist<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;key&gt;CFBundleIdentifier&lt;/key&gt;</div><div class="line">&lt;string&gt;org.llvm.7.0.0svn&lt;/string&gt; -&gt; &lt;string&gt;org.ollvm-swift.5.0&lt;/string&gt;</div></pre></td></tr></table></figure></p>
+<h4 id="XCode10之后"><a href="#XCode10之后" class="headerlink" title="XCode10之后"></a>XCode10之后</h4><p>xcode10之后无法使用添加ideplugin的方法，但添加编译链跑的依然可行，另外网上一些人说不能开bitcode，不能提交AppStore，用原版llvm改的ollvm的确有可能出现上述情况，所以我用苹果的swift-llvm改了一版暂时没去试着提交，或许可以，有兴趣的也可以自己下载使用试试<a href="https://github.com/heroims/obfuscator/tree/swift-llvm-5.0" target="_blank" rel="noopener">obfuscator</a>这版，特别备注由于修改没有针对swift部分所以用swift写的代码没混淆，回头有空的话再弄。</p>
+<p>创建XCode的toolchain然后把生成的文件夹放到<code>/Library/Developer/</code>下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd build</span><br><span class="line">sudo make install-xcode-toolchain</span><br><span class="line">mv /usr/local/Toolchains  /Library/Developer/</span><br></pre></td></tr></table></figure></p>
+<p>Toolchains下的.xctoolchain文件就是一个文件夹，进去修改info.plist<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;key&gt;CFBundleIdentifier&lt;/key&gt;</span><br><span class="line">&lt;string&gt;org.llvm.7.0.0svn&lt;/string&gt; -&gt; &lt;string&gt;org.ollvm-swift.5.0&lt;/string&gt;</span><br></pre></td></tr></table></figure></p>
 <p>修改完在XCode的Toolchains下就会显示相应的名称</p>
 <p>然后如图打开XCode选择Toolchaiins</p>
 <p><img src="/assets/blogImage/3994053-110e3d513c3b7a6a.png" alt="image.png"></p>
@@ -258,7 +259,7 @@ endif
 <p>源码<br><img src="/assets/blogImage/3994053-09985d3c5f1764f0.png" alt="image.png"></p>
 <p>反编译未混淆代码<br><img src="/assets/blogImage/3994053-2624d222fb298087.png" alt="image.png"></p>
 <p>反编译混淆后代码<br><img src="/assets/blogImage/3994053-7137938cc9101b7c.png" alt="image.png"></p>
-<h2 id="扩展：字符串混淆"><a href="#扩展：字符串混淆" class="headerlink" title="扩展：字符串混淆"></a>扩展：字符串混淆</h2><p>原版是没有这功能的本来,<a href="https://github.com/GoSSIP-SJTU/Armariris" target="_blank" rel="external">Armariris</a> 提供了这个功能，我这也移植过来了，毕竟不难。<br>首先把<code>StringObfuscation</code>的.h,.cpp文件放到对应的<code>Obfuscation</code>文件夹下，然后分别修改下面的文件。<br><img src="/assets/blogImage/3994053-49e94a40169f202f.png" alt="image.png"></p>
+<h2 id="扩展：字符串混淆"><a href="#扩展：字符串混淆" class="headerlink" title="扩展：字符串混淆"></a>扩展：字符串混淆</h2><p>原版是没有这功能的本来,<a href="https://github.com/GoSSIP-SJTU/Armariris" target="_blank" rel="noopener">Armariris</a> 提供了这个功能，我这也移植过来了，毕竟不难。<br>首先把<code>StringObfuscation</code>的.h,.cpp文件放到对应的<code>Obfuscation</code>文件夹下，然后分别修改下面的文件。<br><img src="/assets/blogImage/3994053-49e94a40169f202f.png" alt="image.png"></p>
 <h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><p>-mllvm -sobf：编译时候添加选项开启字符串加密<br>-mllvm -seed=0xdeadbeaf：指定随机数生成器种子</p>
 <h3 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h3><p>看个添加了<code>-mllvm -sub -mllvm -sobf -mllvm -fla -mllvm -bcf</code>这么一串的效果。</p>
 <p>源码</p>
@@ -438,7 +439,7 @@ endif
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2021 Heroims
+    		&copy; 2022 Heroims
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -521,70 +522,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">切面</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Wifi Direct</a>
               </li>
              
@@ -617,6 +554,82 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">切面</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
               </li>
              
@@ -626,6 +639,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">统计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -665,43 +690,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">网络</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -749,6 +746,34 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">动态库</a>
               </li>
              
@@ -766,18 +791,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -801,10 +814,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
@@ -813,27 +822,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">视频</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GPUImage</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
               </li>
             
             <div class="clearfix"></div>

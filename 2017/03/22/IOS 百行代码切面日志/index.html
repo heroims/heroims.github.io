@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>IOS 百行代码切面日志 | Heroims的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -15,6 +15,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/03/22/IOS 百行代码切面日志/index.html">
 <meta property="og:site_name" content="Heroims的博客">
 <meta property="og:description" content="AOPLogger切面日志作用说到日志，切面的实现最大的好处也就是分离出来，单独开发，包括埋点，记录输出log都可以在不影响项目内逻辑的情况下完成，形成完全的一个独立模块。 这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。在实现上用了Aspects这个库，主要就是hook">
+<meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/3994053-46f6bef1c87511f6.png">
 <meta property="og:updated_time" content="2021-07-08T09:20:31.220Z">
 <meta name="twitter:card" content="summary">
@@ -39,7 +40,7 @@
   
 
 </head>
-
+</html>
 <body>
   <div id="container" q-class="show:isCtnShow">
     <canvas id="anm-canvas" class="anm-canvas"></canvas>
@@ -172,15 +173,15 @@
       
         <h1 id="AOPLogger"><a href="#AOPLogger" class="headerlink" title="AOPLogger"></a>AOPLogger</h1><h3 id="切面日志作用"><a href="#切面日志作用" class="headerlink" title="切面日志作用"></a>切面日志作用</h3><p>说到日志，切面的实现最大的好处也就是分离出来，单独开发，包括埋点，记录输出log都可以在不影响项目内逻辑的情况下完成，形成完全的一个独立模块。</p>
 <h4 id="这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。"><a href="#这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。" class="headerlink" title="这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。"></a>这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。</h4><p>在实现上用了Aspects这个库，主要就是hook方法，用它主要是对一些例外情况处理不错，自己写简单实现其实就只写写方法交换剩下的就不管了。。。</p>
-<p>下面说一下.h<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line">#import &lt;Foundation/Foundation.h&gt;</div><div class="line"></div><div class="line">extern NSString * const AOPLoggerMethod;//要统计的日志方法Key</div><div class="line">extern NSString * const AOPLoggerLogInfo;//要统计的日志信息Key</div><div class="line">extern NSString * const AOPLoggerPositionAfter;//方法执行后统计日志</div><div class="line">extern NSString * const AOPLoggerPositionBefore;//方法执行前统计日志</div><div class="line">extern NSString * const AOPLoggerPositionType;//执行日志统计的类型Key</div><div class="line"></div><div class="line">@protocol AOPLoggerGetConfigInfoProtocol &lt;NSObject&gt;</div><div class="line"></div><div class="line">@required</div><div class="line"></div><div class="line">/**</div><div class="line">创建类扩展如果使用此协议必须实现此方法</div><div class="line">此方法返回统计的配置信息，可以从网络取也可以从本地取</div><div class="line">@return 统计配置字典</div><div class="line">*/</div><div class="line">-(NSDictionary*)al_getConfigInfo;</div><div class="line"></div><div class="line">@end</div><div class="line">@protocol AOPLoggerBLLProtocol &lt;NSObject&gt;</div><div class="line"></div><div class="line">@required</div><div class="line"></div><div class="line">/**</div><div class="line">创建类扩展如果使用此协议必须实现此方法</div><div class="line">此方法主要来处理切面方法后的log信息处理可以存本地也可以使用其他任意第三方输出</div><div class="line">@param log 配置文件里定义的AOPLoggerLogInfo信息</div><div class="line">@param originAOP AspectInfo的方法信息，第三方库Aspect返回的切面方法的所有信息</div><div class="line">*/</div><div class="line">-(void)al_logger:(id)log originAOP:(id)originAOP;</div><div class="line"></div><div class="line">@end</div><div class="line"></div><div class="line">@interface AOPLogger : NSObject</div><div class="line"></div><div class="line"></div><div class="line">/**</div><div class="line">开始读取日志Plist配置文件</div><div class="line">*/</div><div class="line">+(void)startAOPLoggerWithPlist;</div><div class="line"></div><div class="line">/**</div><div class="line">统计日志的调用方法</div><div class="line">（如果不想增加开机时间可以采取每个模块创建一个日志统计类适时调用，在该类里提供一个初始化方法，内部调用此即可）</div><div class="line">@param classString 类名</div><div class="line">@param methodString 方法名</div><div class="line">@param log 相当于AOPLoggerLogInfo信息</div><div class="line">*/</div><div class="line">+(void)AOPLoggerWithClassString:(NSString*)classString methodString:(NSString*)methodString log:(id)log;</div><div class="line"></div><div class="line">/**</div><div class="line">统计日志的调用方法</div><div class="line">（如果不想增加开机时间可以采取每个模块创建一个日志统计类适时调用，在该类里提供一个初始化方法，内部调用此即可）</div><div class="line">@param classString 类名</div><div class="line">@param methodString 方法名</div><div class="line">@param log 相当于AOPLoggerLogInfo信息</div><div class="line">@param logPosition 日志统计时位置，可放在方法运行前或运行后（默认运行后执行日志统计）</div><div class="line">*/</div><div class="line">+(void)AOPLoggerWithClassString:(NSString *)classString methodString:(NSString *)methodString log:(id)log logPosition:(NSString*)logPosition;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure></p>
+<p>下面说一下.h<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">extern NSString * const AOPLoggerMethod;//要统计的日志方法Key</span><br><span class="line">extern NSString * const AOPLoggerLogInfo;//要统计的日志信息Key</span><br><span class="line">extern NSString * const AOPLoggerPositionAfter;//方法执行后统计日志</span><br><span class="line">extern NSString * const AOPLoggerPositionBefore;//方法执行前统计日志</span><br><span class="line">extern NSString * const AOPLoggerPositionType;//执行日志统计的类型Key</span><br><span class="line"></span><br><span class="line">@protocol AOPLoggerGetConfigInfoProtocol &lt;NSObject&gt;</span><br><span class="line"></span><br><span class="line">@required</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">创建类扩展如果使用此协议必须实现此方法</span><br><span class="line">此方法返回统计的配置信息，可以从网络取也可以从本地取</span><br><span class="line">@return 统计配置字典</span><br><span class="line">*/</span><br><span class="line">-(NSDictionary*)al_getConfigInfo;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line">@protocol AOPLoggerBLLProtocol &lt;NSObject&gt;</span><br><span class="line"></span><br><span class="line">@required</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">创建类扩展如果使用此协议必须实现此方法</span><br><span class="line">此方法主要来处理切面方法后的log信息处理可以存本地也可以使用其他任意第三方输出</span><br><span class="line">@param log 配置文件里定义的AOPLoggerLogInfo信息</span><br><span class="line">@param originAOP AspectInfo的方法信息，第三方库Aspect返回的切面方法的所有信息</span><br><span class="line">*/</span><br><span class="line">-(void)al_logger:(id)log originAOP:(id)originAOP;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface AOPLogger : NSObject</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">开始读取日志Plist配置文件</span><br><span class="line">*/</span><br><span class="line">+(void)startAOPLoggerWithPlist;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">统计日志的调用方法</span><br><span class="line">（如果不想增加开机时间可以采取每个模块创建一个日志统计类适时调用，在该类里提供一个初始化方法，内部调用此即可）</span><br><span class="line">@param classString 类名</span><br><span class="line">@param methodString 方法名</span><br><span class="line">@param log 相当于AOPLoggerLogInfo信息</span><br><span class="line">*/</span><br><span class="line">+(void)AOPLoggerWithClassString:(NSString*)classString methodString:(NSString*)methodString log:(id)log;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">统计日志的调用方法</span><br><span class="line">（如果不想增加开机时间可以采取每个模块创建一个日志统计类适时调用，在该类里提供一个初始化方法，内部调用此即可）</span><br><span class="line">@param classString 类名</span><br><span class="line">@param methodString 方法名</span><br><span class="line">@param log 相当于AOPLoggerLogInfo信息</span><br><span class="line">@param logPosition 日志统计时位置，可放在方法运行前或运行后（默认运行后执行日志统计）</span><br><span class="line">*/</span><br><span class="line">+(void)AOPLoggerWithClassString:(NSString *)classString methodString:(NSString *)methodString log:(id)log logPosition:(NSString*)logPosition;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
 <a id="more"></a>
 <p>这里提供了两种方式一种直接读取自定义的Plist，一种就是调用类方法，而即使调用类方法，也是单独建一个类，某个模块的日志类负责记录，传入类名方法名统计信息即可，而plist得形式在初期还好，后期统计曾多可就真的太扯了毕竟要在初始化的时候加载遍历执行<br><img src="/assets/blogImage/3994053-46f6bef1c87511f6.png" alt="QQ20170306-012628.png"></p>
-<h1 id="定制扩展"><a href="#定制扩展" class="headerlink" title="定制扩展"></a>定制扩展</h1><p>由于每个项目想要做的事情或逻辑都会有不同，这里就可以根据我的协议实现对应的方法，来完成自己的业务需求<br>如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">import &quot;AOPLogger+Custom.h&quot;</div><div class="line">#import &quot;Aspects.h&quot;</div><div class="line">#import &lt;objc/runtime.h&gt;</div><div class="line"></div><div class="line">@implementation AOPLogger (Custom)</div><div class="line"></div><div class="line">-(void)al_logger:(id)log originAOP:(id)originAOP&#123;</div><div class="line">if ([log isKindOfClass:[NSString class]]) &#123;</div><div class="line">NSLog(@&quot;event:%@&quot;,log);</div><div class="line">&#125;</div><div class="line">if ([log isKindOfClass:[NSDictionary class]]) &#123;</div><div class="line">NSLog(@&quot;eventName:%@\neventLabel:%@\neventTime:%@&quot;,log[@&quot;EventName&quot;],log[@&quot;EventLabel&quot;],[log[@&quot;EventTime&quot;] boolValue]?[NSDate date]:@&quot;不用获取&quot;);</div><div class="line">&#125;</div><div class="line">if (originAOP&amp;&amp;[originAOP conformsToProtocol:objc_getProtocol(&quot;AspectInfo&quot;)]) &#123;</div><div class="line">id&lt;AspectInfo&gt; aspectInfo=originAOP;</div><div class="line">NSLog(@&quot;originClass:%@\noriginSel:%@&quot;,NSStringFromClass([aspectInfo.originalInvocation.target class]),NSStringFromSelector(aspectInfo.originalInvocation.selector));</div><div class="line"></div><div class="line">for (NSInteger i=0; i&lt;aspectInfo.arguments.count; i++) &#123;</div><div class="line">NSLog(@&quot;argument:%@&quot;,aspectInfo.arguments[i]);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure></p>
+<h1 id="定制扩展"><a href="#定制扩展" class="headerlink" title="定制扩展"></a>定制扩展</h1><p>由于每个项目想要做的事情或逻辑都会有不同，这里就可以根据我的协议实现对应的方法，来完成自己的业务需求<br>如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">import &quot;AOPLogger+Custom.h&quot;</span><br><span class="line">#import &quot;Aspects.h&quot;</span><br><span class="line">#import &lt;objc/runtime.h&gt;</span><br><span class="line"></span><br><span class="line">@implementation AOPLogger (Custom)</span><br><span class="line"></span><br><span class="line">-(void)al_logger:(id)log originAOP:(id)originAOP&#123;</span><br><span class="line">if ([log isKindOfClass:[NSString class]]) &#123;</span><br><span class="line">NSLog(@&quot;event:%@&quot;,log);</span><br><span class="line">&#125;</span><br><span class="line">if ([log isKindOfClass:[NSDictionary class]]) &#123;</span><br><span class="line">NSLog(@&quot;eventName:%@\neventLabel:%@\neventTime:%@&quot;,log[@&quot;EventName&quot;],log[@&quot;EventLabel&quot;],[log[@&quot;EventTime&quot;] boolValue]?[NSDate date]:@&quot;不用获取&quot;);</span><br><span class="line">&#125;</span><br><span class="line">if (originAOP&amp;&amp;[originAOP conformsToProtocol:objc_getProtocol(&quot;AspectInfo&quot;)]) &#123;</span><br><span class="line">id&lt;AspectInfo&gt; aspectInfo=originAOP;</span><br><span class="line">NSLog(@&quot;originClass:%@\noriginSel:%@&quot;,NSStringFromClass([aspectInfo.originalInvocation.target class]),NSStringFromSelector(aspectInfo.originalInvocation.selector));</span><br><span class="line"></span><br><span class="line">for (NSInteger i=0; i&lt;aspectInfo.arguments.count; i++) &#123;</span><br><span class="line">NSLog(@&quot;argument:%@&quot;,aspectInfo.arguments[i]);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
 <p>这里只是做了简单的NSLog操作，而当某个业务模块下需要不同处理的时候，不妨就直接hook这个方法添加逻辑，用法完全靠个人想像吧，其实用起来经常能处理很多神奇的逻辑，里面的originAOP如果用过Aspects这个库的话可能会很快明白为什么要选这个库不是自己写了，因为它的这块封装可以让我拿到对应方法执行完后返回的值，当然你得指定这个log是在原方法执行完成后执行，同理如果放在执行前执行log我们通过这个对象还可以拿到方法传递的参数。</p>
-<p>再看.m的源码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div></pre></td><td class="code"><pre><div class="line">#import &quot;AOPLogger.h&quot;</div><div class="line">#import &quot;Aspects.h&quot;</div><div class="line">#import &lt;objc/runtime.h&gt;</div><div class="line"></div><div class="line">NSString * const AOPLoggerMethod=@&quot;AOPLoggerMethod&quot;;</div><div class="line">NSString * const AOPLoggerLogInfo=@&quot;AOPLoggerLogInfo&quot;;</div><div class="line">NSString * const AOPLoggerPositionAfter=@&quot;AOPLoggerPositionAfter&quot;;</div><div class="line">NSString * const AOPLoggerPositionBefore=@&quot;AOPLoggerPositionBefore&quot;;</div><div class="line">NSString * const AOPLoggerPositionType=@&quot;AOPLoggerPositionType&quot;;</div><div class="line"></div><div class="line">@implementation AOPLogger</div><div class="line"></div><div class="line">+ (AOPLogger *)sharedAOPLogger &#123;</div><div class="line">static AOPLogger *sharedAOPLogger = nil;</div><div class="line">static dispatch_once_t onceToken;</div><div class="line">dispatch_once(&amp;onceToken, ^&#123;</div><div class="line">sharedAOPLogger = [[self alloc] init];</div><div class="line">&#125;);</div><div class="line">return sharedAOPLogger;</div><div class="line">&#125;</div><div class="line"></div><div class="line">+(void)startAOPLoggerWithPlist&#123;</div><div class="line">NSDictionary *loggerConfigInfo=nil;</div><div class="line">if ([[AOPLogger sharedAOPLogger] conformsToProtocol:objc_getProtocol(&quot;AOPLoggerGetConfigInfoProtocol&quot;)]) &#123;</div><div class="line">loggerConfigInfo=[(AOPLogger&lt;AOPLoggerGetConfigInfoProtocol&gt;*)[AOPLogger sharedAOPLogger] al_getConfigInfo];</div><div class="line">&#125;</div><div class="line">else&#123;</div><div class="line">loggerConfigInfo=[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@&quot;AOPLoggerConfig&quot; ofType:@&quot;plist&quot;]];</div><div class="line">&#125;</div><div class="line"></div><div class="line">for (NSString *className in loggerConfigInfo) &#123;</div><div class="line">for (NSDictionary *eventInfo in loggerConfigInfo[className]) &#123;</div><div class="line">Class clazz = NSClassFromString(className);</div><div class="line">SEL selector = NSSelectorFromString(eventInfo[AOPLoggerMethod]);</div><div class="line">AspectOptions positionOptions=AspectPositionAfter;</div><div class="line">if ([loggerConfigInfo[AOPLoggerPositionType] isEqualToString:AOPLoggerPositionAfter]) &#123;</div><div class="line">positionOptions=AspectPositionAfter;</div><div class="line">&#125;</div><div class="line">if ([loggerConfigInfo[AOPLoggerPositionType] isEqualToString:AOPLoggerPositionBefore]) &#123;</div><div class="line">positionOptions=AspectPositionBefore;</div><div class="line">&#125;</div><div class="line"></div><div class="line">[clazz aspect_hookSelector:selector</div><div class="line">withOptions:AspectPositionAfter</div><div class="line">usingBlock:^(id&lt;AspectInfo&gt; aspectInfo) &#123;</div><div class="line">id log=eventInfo[AOPLoggerLogInfo];</div><div class="line"></div><div class="line">if ([[AOPLogger sharedAOPLogger] conformsToProtocol:objc_getProtocol(&quot;AOPLoggerBLLProtocol&quot;)]) &#123;</div><div class="line">[(AOPLogger&lt;AOPLoggerBLLProtocol&gt;*)[AOPLogger sharedAOPLogger] al_logger:log originAOP:aspectInfo];</div><div class="line">&#125;</div><div class="line">else&#123;</div><div class="line">if ([log isKindOfClass:[NSString class]]) &#123;</div><div class="line">NSLog(@&quot;AOPLogger:%@&quot;,log);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">&#125; error:NULL];</div><div class="line"></div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">+(void)AOPLoggerWithClassString:(NSString *)classString methodString:(NSString *)methodString log:(id)log&#123;</div><div class="line">[self AOPLoggerWithClassString:classString methodString:methodString log:log logPosition:nil];</div><div class="line">&#125;</div><div class="line"></div><div class="line">+(void)AOPLoggerWithClassString:(NSString *)classString methodString:(NSString *)methodString log:(id)log logPosition:(NSString*)logPosition&#123;</div><div class="line">Class clazz = NSClassFromString(classString);</div><div class="line">SEL selector = NSSelectorFromString(methodString);</div><div class="line">AspectOptions positionOptions=AspectPositionAfter;</div><div class="line">if ([logPosition isEqualToString:AOPLoggerPositionAfter]) &#123;</div><div class="line">positionOptions=AspectPositionAfter;</div><div class="line">&#125;</div><div class="line">if ([logPosition isEqualToString:AOPLoggerPositionBefore]) &#123;</div><div class="line">positionOptions=AspectPositionBefore;</div><div class="line">&#125;</div><div class="line"></div><div class="line">[clazz aspect_hookSelector:selector</div><div class="line">withOptions:positionOptions</div><div class="line">usingBlock:^(id&lt;AspectInfo&gt; aspectInfo) &#123;</div><div class="line">if ([[AOPLogger sharedAOPLogger] conformsToProtocol:objc_getProtocol(&quot;AOPLoggerBLLProtocol&quot;)]) &#123;</div><div class="line">[(AOPLogger&lt;AOPLoggerBLLProtocol&gt;*)[AOPLogger sharedAOPLogger] al_logger:log originAOP:aspectInfo];</div><div class="line">&#125;</div><div class="line">else&#123;</div><div class="line">if ([log isKindOfClass:[NSString class]]) &#123;</div><div class="line">NSLog(@&quot;AOPLogger:%@&quot;,log);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">&#125; error:NULL];</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>再看.m的源码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;AOPLogger.h&quot;</span><br><span class="line">#import &quot;Aspects.h&quot;</span><br><span class="line">#import &lt;objc/runtime.h&gt;</span><br><span class="line"></span><br><span class="line">NSString * const AOPLoggerMethod=@&quot;AOPLoggerMethod&quot;;</span><br><span class="line">NSString * const AOPLoggerLogInfo=@&quot;AOPLoggerLogInfo&quot;;</span><br><span class="line">NSString * const AOPLoggerPositionAfter=@&quot;AOPLoggerPositionAfter&quot;;</span><br><span class="line">NSString * const AOPLoggerPositionBefore=@&quot;AOPLoggerPositionBefore&quot;;</span><br><span class="line">NSString * const AOPLoggerPositionType=@&quot;AOPLoggerPositionType&quot;;</span><br><span class="line"></span><br><span class="line">@implementation AOPLogger</span><br><span class="line"></span><br><span class="line">+ (AOPLogger *)sharedAOPLogger &#123;</span><br><span class="line">static AOPLogger *sharedAOPLogger = nil;</span><br><span class="line">static dispatch_once_t onceToken;</span><br><span class="line">dispatch_once(&amp;onceToken, ^&#123;</span><br><span class="line">sharedAOPLogger = [[self alloc] init];</span><br><span class="line">&#125;);</span><br><span class="line">return sharedAOPLogger;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+(void)startAOPLoggerWithPlist&#123;</span><br><span class="line">NSDictionary *loggerConfigInfo=nil;</span><br><span class="line">if ([[AOPLogger sharedAOPLogger] conformsToProtocol:objc_getProtocol(&quot;AOPLoggerGetConfigInfoProtocol&quot;)]) &#123;</span><br><span class="line">loggerConfigInfo=[(AOPLogger&lt;AOPLoggerGetConfigInfoProtocol&gt;*)[AOPLogger sharedAOPLogger] al_getConfigInfo];</span><br><span class="line">&#125;</span><br><span class="line">else&#123;</span><br><span class="line">loggerConfigInfo=[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@&quot;AOPLoggerConfig&quot; ofType:@&quot;plist&quot;]];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">for (NSString *className in loggerConfigInfo) &#123;</span><br><span class="line">for (NSDictionary *eventInfo in loggerConfigInfo[className]) &#123;</span><br><span class="line">Class clazz = NSClassFromString(className);</span><br><span class="line">SEL selector = NSSelectorFromString(eventInfo[AOPLoggerMethod]);</span><br><span class="line">AspectOptions positionOptions=AspectPositionAfter;</span><br><span class="line">if ([loggerConfigInfo[AOPLoggerPositionType] isEqualToString:AOPLoggerPositionAfter]) &#123;</span><br><span class="line">positionOptions=AspectPositionAfter;</span><br><span class="line">&#125;</span><br><span class="line">if ([loggerConfigInfo[AOPLoggerPositionType] isEqualToString:AOPLoggerPositionBefore]) &#123;</span><br><span class="line">positionOptions=AspectPositionBefore;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">[clazz aspect_hookSelector:selector</span><br><span class="line">withOptions:AspectPositionAfter</span><br><span class="line">usingBlock:^(id&lt;AspectInfo&gt; aspectInfo) &#123;</span><br><span class="line">id log=eventInfo[AOPLoggerLogInfo];</span><br><span class="line"></span><br><span class="line">if ([[AOPLogger sharedAOPLogger] conformsToProtocol:objc_getProtocol(&quot;AOPLoggerBLLProtocol&quot;)]) &#123;</span><br><span class="line">[(AOPLogger&lt;AOPLoggerBLLProtocol&gt;*)[AOPLogger sharedAOPLogger] al_logger:log originAOP:aspectInfo];</span><br><span class="line">&#125;</span><br><span class="line">else&#123;</span><br><span class="line">if ([log isKindOfClass:[NSString class]]) &#123;</span><br><span class="line">NSLog(@&quot;AOPLogger:%@&quot;,log);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125; error:NULL];</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+(void)AOPLoggerWithClassString:(NSString *)classString methodString:(NSString *)methodString log:(id)log&#123;</span><br><span class="line">[self AOPLoggerWithClassString:classString methodString:methodString log:log logPosition:nil];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+(void)AOPLoggerWithClassString:(NSString *)classString methodString:(NSString *)methodString log:(id)log logPosition:(NSString*)logPosition&#123;</span><br><span class="line">Class clazz = NSClassFromString(classString);</span><br><span class="line">SEL selector = NSSelectorFromString(methodString);</span><br><span class="line">AspectOptions positionOptions=AspectPositionAfter;</span><br><span class="line">if ([logPosition isEqualToString:AOPLoggerPositionAfter]) &#123;</span><br><span class="line">positionOptions=AspectPositionAfter;</span><br><span class="line">&#125;</span><br><span class="line">if ([logPosition isEqualToString:AOPLoggerPositionBefore]) &#123;</span><br><span class="line">positionOptions=AspectPositionBefore;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">[clazz aspect_hookSelector:selector</span><br><span class="line">withOptions:positionOptions</span><br><span class="line">usingBlock:^(id&lt;AspectInfo&gt; aspectInfo) &#123;</span><br><span class="line">if ([[AOPLogger sharedAOPLogger] conformsToProtocol:objc_getProtocol(&quot;AOPLoggerBLLProtocol&quot;)]) &#123;</span><br><span class="line">[(AOPLogger&lt;AOPLoggerBLLProtocol&gt;*)[AOPLogger sharedAOPLogger] al_logger:log originAOP:aspectInfo];</span><br><span class="line">&#125;</span><br><span class="line">else&#123;</span><br><span class="line">if ([log isKindOfClass:[NSString class]]) &#123;</span><br><span class="line">NSLog(@&quot;AOPLogger:%@&quot;,log);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125; error:NULL];</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>核心处理.m直接不到百行，主要逻辑就是 单例初始化， 读取plist并格式化出执行的类 ·方法·log信息，最后就是利用AOP,切面hook对应方法插入我们统计逻辑。</p>
 <p>有了这个库完全可以日志动态话统计，前提你要做好热更新或使用plist形式。</p>
-<p>源码地址：<a href="https://github.com/heroims/AOPLogger" target="_blank" rel="external">https://github.com/heroims/AOPLogger</a></p>
+<p>源码地址：<a href="https://github.com/heroims/AOPLogger" target="_blank" rel="noopener">https://github.com/heroims/AOPLogger</a></p>
 
       
 
@@ -345,7 +346,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2021 Heroims
+    		&copy; 2022 Heroims
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -428,70 +429,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">切面</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Wifi Direct</a>
               </li>
              
@@ -524,6 +461,82 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">切面</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
               </li>
              
@@ -533,6 +546,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">统计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -572,43 +597,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">网络</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -656,6 +653,34 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">动态库</a>
               </li>
              
@@ -673,18 +698,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -708,10 +721,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
@@ -720,27 +729,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">视频</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GPUImage</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
               </li>
             
             <div class="clearfix"></div>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Mesh组网与智能路由器系统 | Heroims的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -15,6 +15,7 @@
 <meta property="og:url" content="http://yoursite.com/2021/12/06/Mesh组网与智能路由器系统/index.html">
 <meta property="og:site_name" content="Heroims的博客">
 <meta property="og:description" content="Mesh路由系统这里首先记录下当时调研的一些路由器系统，这方面的资料再网上比较少。 开源的智能路由系统其实挺多不少这个后面再说，比较偏向专业Mesh组网的智能路由系统比较少下面就列一下我了解到的几个还不错的。  1.libremesh http://libremesh.org/支持各种漫游协议，各种连接方法，固件支持常见路由，但7620系统无线有bug，mini系统有简易配置页面，全系统可设置更改">
+<meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/83356518.png">
 <meta property="og:updated_time" content="2021-12-07T17:52:57.893Z">
 <meta name="twitter:card" content="summary">
@@ -39,7 +40,7 @@
   
 
 </head>
-
+</html>
 <body>
   <div id="container" q-class="show:isCtnShow">
     <canvas id="anm-canvas" class="anm-canvas"></canvas>
@@ -174,15 +175,15 @@
 <p>开源的智能路由系统其实挺多不少这个后面再说，比较偏向专业Mesh组网的智能路由系统比较少下面就列一下我了解到的几个还不错的。</p>
 <p><img src="/assets/blogImage/83356518.png" alt="image.png"></p>
 <p>1.libremesh</p>
-<p><a href="http://libremesh.org/" target="_blank" rel="external">http://libremesh.org/</a><br>支持各种漫游协议，各种连接方法，固件支持常见路由，但7620系统无线有bug，mini系统有简易配置页面，全系统可设置更改全面协议，理论上只要设备足，覆盖一个城都没有问题，而且最牛逼的是持续更新开发者都很活跃，参与人较多，文档较全，而且有每月互动email可以演习。我们当时户外版就是采用的这个系统，这倒是跟区块链很配绝对去中心，而且是完全自治独立于现有互联网的平行网络。</p>
+<p><a href="http://libremesh.org/" target="_blank" rel="noopener">http://libremesh.org/</a><br>支持各种漫游协议，各种连接方法，固件支持常见路由，但7620系统无线有bug，mini系统有简易配置页面，全系统可设置更改全面协议，理论上只要设备足，覆盖一个城都没有问题，而且最牛逼的是持续更新开发者都很活跃，参与人较多，文档较全，而且有每月互动email可以演习。我们当时户外版就是采用的这个系统，这倒是跟区块链很配绝对去中心，而且是完全自治独立于现有互联网的平行网络。</p>
 <a id="more"></a>
 <p>2.qMp,quik mesh project </p>
-<p><a href="http://qmp.cat/Home" target="_blank" rel="external">http://qmp.cat/Home</a><br>基本属于傻瓜式设置，只需要配置一下无线频道及无线属性就能连接，信息页面较少，无法全面了解连接情况，固件支持常见路由，test版本基本向libremesh靠拢，但似乎和老版本不兼容。</p>
-<p>3.openwisp<br><a href="http://openwisp.org/" target="_blank" rel="external">http://openwisp.org/</a><br>这个看名字就能看出是干什么的，基于olsr协议，固件支持ramips、ar71xx以及x86，固件支持8M以上，太大了。</p>
+<p><a href="http://qmp.cat/Home" target="_blank" rel="noopener">http://qmp.cat/Home</a><br>基本属于傻瓜式设置，只需要配置一下无线频道及无线属性就能连接，信息页面较少，无法全面了解连接情况，固件支持常见路由，test版本基本向libremesh靠拢，但似乎和老版本不兼容。</p>
+<p>3.openwisp<br><a href="http://openwisp.org/" target="_blank" rel="noopener">http://openwisp.org/</a><br>这个看名字就能看出是干什么的，基于olsr协议，固件支持ramips、ar71xx以及x86，固件支持8M以上，太大了。</p>
 <p>4.gluon</p>
-<p> <a href="https://github.com/freifunk-gluon/gluon" target="_blank" rel="external">https://github.com/freifunk-gluon/gluon</a></p>
+<p> <a href="https://github.com/freifunk-gluon/gluon" target="_blank" rel="noopener">https://github.com/freifunk-gluon/gluon</a></p>
 <p>这个是我在github上推荐看见的也是个主攻mesh的智能路由系统，而且里面还提供了MeshVPN,而且也是一直有更新，看样子很厉害由于是后来发现的所以没深入了解，但看起来这算是一个不错的新选择，再有空搞Mesh相关的肯定会首选这个。</p>
-<h1 id="OpenWRT"><a href="#OpenWRT" class="headerlink" title="OpenWRT"></a><a href="https://github.com/openwrt/openwrt" target="_blank" rel="external">OpenWRT</a></h1><p>OpenWRT不同于其他许多用于路由器的发行版，它是一个从零开始编写的、功能齐全的、容易修改的路由器操作系统。实际上，这意味着您能够使用您想要的功能而不加进其他的累赘，而支持这些功能工作的linux kernel又远比绝大多数发行版来得新。</p>
+<h1 id="OpenWRT"><a href="#OpenWRT" class="headerlink" title="OpenWRT"></a><a href="https://github.com/openwrt/openwrt" target="_blank" rel="noopener">OpenWRT</a></h1><p>OpenWRT不同于其他许多用于路由器的发行版，它是一个从零开始编写的、功能齐全的、容易修改的路由器操作系统。实际上，这意味着您能够使用您想要的功能而不加进其他的累赘，而支持这些功能工作的linux kernel又远比绝大多数发行版来得新。</p>
 <p>OpenWRT支持各种处理器架构，无论是对ARM，X86，PowerPC或者MIPS都有很好的支持。 其多达3000多种软件包，囊括从工具链(toolchain)，到内核(linux kernel)，到软件包(packages)，再到根文件系统(rootfs)整个体系，使得用户只需简单的一个make命令即可方便快速地定制一个具有特定功能的嵌入式系统来制作固件。<br>一般嵌入式 Linux 的开发过程, 无论是 ARM, PowerPC 或 MIPS 的处理器, 都必需经过以下的开发过程：</p>
 <ol>
 <li>创建 Linux 交叉编译环境；</li>
@@ -194,9 +195,9 @@
 </ol>
 <p>熟悉这些嵌入式 Linux 的基本开发流程后，不再局限于 MIPS 处理器和无线路由器, 可以尝试在其它处理器, 或者非无线路由器的系统移植嵌入式 Linux, 定制合适自己的应用软件, 并建立一个完整的嵌入式产品。</p>
 <p>现在还把各种分支版本吸收了进去可以说智能路由器系统的大成之作。</p>
-<h3 id="Mesh组网"><a href="#Mesh组网" class="headerlink" title="Mesh组网"></a>Mesh组网</h3><p>OpenWRT上提供了多种Mesh组网的方式，官网介绍了非常详细的三种，主要有<a href="https://openwrt.org/docs/guide-user/network/wifi/mesh/olsr" target="_blank" rel="external">OLSR</a>，<a href="https://openwrt.org/docs/guide-user/network/wifi/mesh/batman" target="_blank" rel="external">batman-adv</a>，<a href="https://openwrt.org/docs/guide-user/network/wifi/mesh/80211s" target="_blank" rel="external">802.11s</a>，除了这三种还有<a href="https://github.com/bmx-routing/bmx6" target="_blank" rel="external">BMX6</a>，<a href="https://github.com/bmx-routing/bmx7" target="_blank" rel="external">BMX7</a>也是比较有名好用的。到这里算是比较常见的组网方式，并且适配也比较广泛，还是开头提到的系统的前身，但不能在互联网中远程与其他设备Mesh组网。</p>
-<h3 id="异地组网"><a href="#异地组网" class="headerlink" title="异地组网"></a>异地组网</h3><p>首先有要看看有没有真实IP，没有的话要先解决透传问题。<a href="https://github.com/fatedier/frp" target="_blank" rel="external">frp</a>是个不错的选择，配合<a href="https://github.com/OpenVPN/openvpn" target="_blank" rel="external">OpenVPN</a>可以比较简单的实现异地组网，但这种组网很明显有着一个弊端就是中心化，首先是frp依赖着1台拥有公网真实IP的机器要部署frp server在上面，使用者则要部署frp client，其次OpenVPN也是要分OpenVPN server和client。简单的说就是这个方案缺少Mesh的特性。</p>
-<p>后来也就是最近本来找了人投了钱我们想结合区块链做一个这种带有异地Mesh组网功能的系统，怎奈币圈大涨投资人觉得项目再好也不让买币好久就行了资金，在这就简单说一下这项目对标的就是filecoin，frp server通过区块链记录配置信息，用二层网络从链上同步可用的frp配置到client上，至于OpenVPN我们则设计了MeshVPN,有点<a href="https://github.com/peervpn/peervpn" target="_blank" rel="external">peervpn</a>的意思，而VPN的配置信息也是二层网络从链上同步，配置上就可以加入对应的网络中，这样就实现了异地Mesh组网，而提供服务的人也都能自然而然的收到奖励，相当于挖矿但这种矿机要比传统没有任何实际贡献的矿机有意义的多，它促使Mesh网络的部署。</p>
+<h3 id="Mesh组网"><a href="#Mesh组网" class="headerlink" title="Mesh组网"></a>Mesh组网</h3><p>OpenWRT上提供了多种Mesh组网的方式，官网介绍了非常详细的三种，主要有<a href="https://openwrt.org/docs/guide-user/network/wifi/mesh/olsr" target="_blank" rel="noopener">OLSR</a>，<a href="https://openwrt.org/docs/guide-user/network/wifi/mesh/batman" target="_blank" rel="noopener">batman-adv</a>，<a href="https://openwrt.org/docs/guide-user/network/wifi/mesh/80211s" target="_blank" rel="noopener">802.11s</a>，除了这三种还有<a href="https://github.com/bmx-routing/bmx6" target="_blank" rel="noopener">BMX6</a>，<a href="https://github.com/bmx-routing/bmx7" target="_blank" rel="noopener">BMX7</a>也是比较有名好用的。到这里算是比较常见的组网方式，并且适配也比较广泛，还是开头提到的系统的前身，但不能在互联网中远程与其他设备Mesh组网。</p>
+<h3 id="异地组网"><a href="#异地组网" class="headerlink" title="异地组网"></a>异地组网</h3><p>首先有要看看有没有真实IP，没有的话要先解决透传问题。<a href="https://github.com/fatedier/frp" target="_blank" rel="noopener">frp</a>是个不错的选择，配合<a href="https://github.com/OpenVPN/openvpn" target="_blank" rel="noopener">OpenVPN</a>可以比较简单的实现异地组网，但这种组网很明显有着一个弊端就是中心化，首先是frp依赖着1台拥有公网真实IP的机器要部署frp server在上面，使用者则要部署frp client，其次OpenVPN也是要分OpenVPN server和client。简单的说就是这个方案缺少Mesh的特性。</p>
+<p>后来也就是最近本来找了人投了钱我们想结合区块链做一个这种带有异地Mesh组网功能的系统，怎奈币圈大涨投资人觉得项目再好也不让买币好久就行了资金，在这就简单说一下这项目对标的就是filecoin，frp server通过区块链记录配置信息，用二层网络从链上同步可用的frp配置到client上，至于OpenVPN我们则设计了MeshVPN,有点<a href="https://github.com/peervpn/peervpn" target="_blank" rel="noopener">peervpn</a>的意思，而VPN的配置信息也是二层网络从链上同步，配置上就可以加入对应的网络中，这样就实现了异地Mesh组网，而提供服务的人也都能自然而然的收到奖励，相当于挖矿但这种矿机要比传统没有任何实际贡献的矿机有意义的多，它促使Mesh网络的部署。</p>
 
       
 
@@ -308,6 +309,15 @@
   
 <nav id="article-nav">
   
+    <a href="/2022/04/09/OLLVM代码混淆移植与使用(再续)/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          OLLVM代码混淆移植与使用(再续)
+        
+      </div>
+    </a>
+  
   
     <a href="/2021/12/01/(无网通信)MDNS实现设备间的发现与通信/" id="article-nav-older" class="article-nav-link-wrap">
       <div class="article-nav-title">(无网通信)MDNS实现设备间的发现与通信</div>
@@ -364,7 +374,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2021 Heroims
+    		&copy; 2022 Heroims
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -447,70 +457,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">切面</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">日志</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Wifi Direct</a>
               </li>
              
@@ -543,6 +489,82 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">切面</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">AOP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
               </li>
              
@@ -552,6 +574,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">统计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -591,43 +625,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">网络</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -675,6 +681,34 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">动态库</a>
               </li>
              
@@ -692,18 +726,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -727,10 +749,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
@@ -739,27 +757,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">视频</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GPUImage</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
               </li>
             
             <div class="clearfix"></div>
