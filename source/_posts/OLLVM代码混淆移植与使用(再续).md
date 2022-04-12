@@ -84,7 +84,7 @@ PreservedAnalyses StringObfuscationPass::run(Module &M, ModuleAnalysisManager& A
 ![image.png](/assets/blogImage/WX20220411-153643@2x.png)
 
 # Swift支持
-想支持swift的混淆直接用我之前的swift分支是不现实的，因为苹果大量的修改想直接编译llvm就支持基本不可能，但如果直接选择编译swift的工具链来实现就简单的多，这个时候只需要下载[Swift](https://github.com/apple/swift)的源码，它在编译Toolchain时下载的llvm上把我之前的修改移植过来，然后编译出来就可以直接支持swift的混淆了。
+想支持swift的混淆直接用我之前的swift分支是不现实的，因为苹果大量的修改想直接编译llvm就支持基本不可能，但如果直接选择编译swift的工具链来实现就简单的多，这个时候只需要下载[Swift](https://github.com/apple/swift)的源码，它在编译Toolchain时下载的llvm上把我之前的修改移植过来，然后编译出来就可以直接支持swift的混淆了。<font color='red'>(后来认真编译了几次，结果都是不报错混淆无效果，但整体思路应该没错下面写的没兴趣可以略过了。。。)</font>
 
 根据[Xcode Wiki](https://en.wikipedia.org/wiki/Xcode)上的对应去切换git上的branch对应版本，有一点要注意通常你当前Xcode版本编译不了你当前Xcode用的，只能用上个版本编译你当前Xcode对应的，不过你也可以不管对应直接就用master的版本编译最新的。
 
