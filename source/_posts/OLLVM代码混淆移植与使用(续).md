@@ -49,10 +49,10 @@ typora-root-url: ../
 
 ### XCode12 以后
 
-首先编译要多加几个项目，根据自己需要可以多填几个
+首先编译要多加几个项目，根据自己需要可以多填几个,10.0以后llvm向内放了一层
 ```
 cd build
-cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_CREATE_XCODE_TOOLCHAIN=ON -DLLVM_ENABLE_PROJECTS="clang;libcxx;libcxxabi" ../obfuscator/
+cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_CREATE_XCODE_TOOLCHAIN=ON -DLLVM_ENABLE_PROJECTS="clang;libcxx;libcxxabi" ../obfuscator/llvm
 make -j7
 sudo make install-xcode-toolchain
 mv /usr/local/Toolchains  /Library/Developer/
