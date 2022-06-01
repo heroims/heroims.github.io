@@ -16,7 +16,7 @@ typora-root-url: ../
 
 # 关键修改
 ### Legacy PM模式不生效
-现在由于默认是NEW PM所以经常有人邮件我移植很完美编译也成功，就是没效果，这里做一下解答。主要两种方式解决，一种是在cmake的时候加一下`-DLLVM_USE_NEWPM=OFF`来禁用掉NEW PM，这样在编译完成后使用的时候就可以了，还有一种就是走默认开启这，然后用ollvm编译自己项目时加上-flegacy-pass-manager的cflag，再加-mllvm原来哪些就可以正常使用了
+现在由于默认是NEW PM所以经常有人邮件我移植很完美编译也成功，就是没效果，这里做一下解答。主要两种方式解决，一种是在cmake的时候加一下`-DLLVM_ENABLE_NEW_PASS_MANAGER=OFF`来禁用掉NEW PM，这样在编译完成后使用的时候就可以了，还有一种就是走默认开启这，然后用ollvm编译自己项目时加上-flegacy-pass-manager的cflag，再加-mllvm原来哪些就可以正常使用了
 
 ### 14.0以后的修改
 主要是`StringObfuscation.cpp`里面的两个地方，第一个是宏的修改编译时机，第二个就是CreateGEP,CreateLoad等多个方法需要传递指针类型了，原来不传会设置为null到了13.0里就开始内部通过对象获取类型，就像修改的这样，到了14.0干脆就是强制你必须传类型了。
