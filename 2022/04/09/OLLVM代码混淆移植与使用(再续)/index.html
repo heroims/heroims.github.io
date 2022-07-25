@@ -27,7 +27,7 @@
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/WX20220411-153643@2x.png">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/WX20220410-211919@2x.png">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/WX20220411-214257@2x.png">
-<meta property="og:updated_time" content="2022-06-01T08:18:50.359Z">
+<meta property="og:updated_time" content="2022-07-25T02:09:40.803Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="OLLVM代码混淆移植与使用(再续)">
 <meta name="twitter:description" content="前言这波主要自己闲下来了，帮之前兼职区块链公司搞定了Android和iOS的BLE无网通信请了假，准备去自考本科最后四门，结果疫情太厉害直接取消了，本来还想着年中就可以申请毕业直接再准备一下考研请的是长假。。。结果计划永远赶不上变化，毕竟搞学历对现在的自己只是解个心结去个遗憾，对自己工作生活没啥用调整好情绪重新继续正经创业或工作吧，借着长假的时间思考思考人生，搞一搞之前没空处理的遗留项目。下面就直">
@@ -205,8 +205,9 @@
 <h1 id="Android-轻量编译"><a href="#Android-轻量编译" class="headerlink" title="Android 轻量编译"></a>Android 轻量编译</h1><p>之前我都是直接看一眼当前用的版本对应<a href="https://android.googlesource.com/toolchain/llvm-project" target="_blank" rel="noopener">google llvm</a>的版本就去下载切到对应commit位置，直接移植ollvm整体编译，后来看网上<a href="https://github.com/LeadroyaL/llvm-pass-tutorial" target="_blank" rel="noopener">有个套路</a>居然能利用ndk编译个Pass的.so文件直接搞定，所以记录一下。<br>对方也有些文章具体讲述<a href="https://www.leadroyal.cn/p/1008/" target="_blank" rel="noopener">这里</a>和<a href="https://xz.aliyun.com/t/6643" target="_blank" rel="noopener">这里</a>都有。</p>
 <h1 id="通用的轻量级编译"><a href="#通用的轻量级编译" class="headerlink" title="通用的轻量级编译"></a>通用的轻量级编译</h1><p>根据上面的套路，其实核心是Legacy Pass提供了自动注册功能，然后编译一个独立的动态加载的Pass，这样不需要对llvm本身进行修改，只是扩展一个模块，由此有了下边的代码分别对应Legacy Pass和New Pass两种模式的自动注册。</p>
 <h3 id="Legacy-Pass-Manager"><a href="#Legacy-Pass-Manager" class="headerlink" title="Legacy Pass Manager"></a>Legacy Pass Manager</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;Transforms/Obfuscation/BogusControlFlow.h&quot;</span><br><span class="line">#include &quot;Transforms/Obfuscation/Flattening.h&quot;</span><br><span class="line">#include &quot;Transforms/Obfuscation/Split.h&quot;</span><br><span class="line">#include &quot;Transforms/Obfuscation/Substitution.h&quot;</span><br><span class="line">#include &quot;Transforms/Obfuscation/StringObfuscation.h&quot;</span><br><span class="line">#include &quot;llvm/IR/LegacyPassManager.h&quot;</span><br><span class="line">#include &quot;llvm/Transforms/IPO/PassManagerBuilder.h&quot;</span><br><span class="line"></span><br><span class="line">using namespace llvm;</span><br><span class="line"></span><br><span class="line">static void registerOllvmPass(const PassManagerBuilder &amp;,</span><br><span class="line">                              legacy::PassManagerBase &amp;PM) &#123;</span><br><span class="line"></span><br><span class="line">    PM.add(createBogus(true));</span><br><span class="line">#if LLVM_VERSION_MAJOR &gt;= 9</span><br><span class="line">    PM.add(createLowerSwitchPass());</span><br><span class="line">#endif</span><br><span class="line">    PM.add(createFlattening(true));</span><br><span class="line">    PM.add(createSplitBasicBlock(true));</span><br><span class="line">    PM.add(createSubstitution(true));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">static void registerOllvmModulePass(const PassManagerBuilder &amp;,</span><br><span class="line">                              legacy::PassManagerBase &amp;PM) &#123;</span><br><span class="line">    PM.add(createStringObfuscation(true));</span><br><span class="line">&#125;</span><br><span class="line">static RegisterStandardPasses</span><br><span class="line">        RegisterMyPass1(PassManagerBuilder::EP_EnabledOnOptLevel0,</span><br><span class="line">                       registerOllvmModulePass);</span><br><span class="line">static RegisterStandardPasses</span><br><span class="line">        RegisterMyPass2(PassManagerBuilder::EP_OptimizerLast,</span><br><span class="line">                        registerOllvmModulePass);</span><br><span class="line">static RegisterStandardPasses</span><br><span class="line">        RegisterMyPass3(PassManagerBuilder::EP_EarlyAsPossible,</span><br><span class="line">                       registerOllvmFunctionPass);</span><br></pre></td></tr></table></figure>
-<h3 id="New-Pass-Manager"><a href="#New-Pass-Manager" class="headerlink" title="New Pass Manager"></a>New Pass Manager</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;Transforms/Obfuscation/BogusControlFlow.h&quot;</span><br><span class="line">#include &quot;Transforms/Obfuscation/Flattening.h&quot;</span><br><span class="line">#include &quot;Transforms/Obfuscation/Split.h&quot;</span><br><span class="line">#include &quot;Transforms/Obfuscation/Substitution.h&quot;</span><br><span class="line">#include &quot;Transforms/Obfuscation/StringObfuscation.h&quot;</span><br><span class="line">#include &quot;llvm/Passes/PassBuilder.h&quot;</span><br><span class="line">#include &quot;llvm/Passes/PassPlugin.h&quot;</span><br><span class="line"></span><br><span class="line">llvm::PassPluginLibraryInfo getOllvmPluginInfo() &#123;</span><br><span class="line">  return &#123;</span><br><span class="line">    LLVM_PLUGIN_API_VERSION, &quot;OpcodeCounter&quot;, LLVM_VERSION_STRING,</span><br><span class="line">        [](PassBuilder &amp;PB) &#123;</span><br><span class="line"></span><br><span class="line">            // #1 注册标记 &quot;opt -passes=obf-bcf&quot;</span><br><span class="line">            PB.registerPipelineParsingCallback(</span><br><span class="line">              [&amp;](StringRef Name, FunctionPassManager &amp;FPM,</span><br><span class="line">                  ArrayRef&lt;PassBuilder::PipelineElement&gt;) &#123;</span><br><span class="line">                if (Name == &quot;obf-bcf&quot;) &#123;</span><br><span class="line">                  FPM.addPass(BogusControlFlowPass());</span><br><span class="line">                  return true;</span><br><span class="line">                &#125;</span><br><span class="line">                if(Name == &quot;obf-fla&quot;)&#123;</span><br><span class="line">                  FPM.addPass(FlatteningPass());</span><br><span class="line">                  return true;</span><br><span class="line">                &#125;</span><br><span class="line">                if(Name == &quot;obf-sub&quot;)&#123;</span><br><span class="line">                  FPM.addPass(SubstitutionPass());</span><br><span class="line">                  return true;</span><br><span class="line">                &#125;</span><br><span class="line">                if(Name == &quot;obf-split&quot;)&#123;</span><br><span class="line">                  FPM.addPass(SplitBasicBlockPass());</span><br><span class="line">                  return true;</span><br><span class="line">                &#125;</span><br><span class="line">                return false;</span><br><span class="line">              &#125;);</span><br><span class="line">            PB.registerPipelineParsingCallback(</span><br><span class="line">              [&amp;](StringRef Name, ModulePassManager &amp;MPM,</span><br><span class="line">                  ArrayRef&lt;PassBuilder::PipelineElement&gt;) &#123;</span><br><span class="line">                if (Name == &quot;obf-str&quot;) &#123;</span><br><span class="line">                  MPM.addPass(StringObfuscationPass());</span><br><span class="line">                  return true;</span><br><span class="line">                &#125;</span><br><span class="line">                return false;</span><br><span class="line">              &#125;);</span><br><span class="line"></span><br><span class="line">            // #2 找到具体时机插入pass</span><br><span class="line">            //registerVectorizerStartEPCallback这个方法插入需要加-O1的flag不然可能不生效会被跳过</span><br><span class="line">            PB.registerPipelineStartEPCallback(</span><br><span class="line">              [](llvm::FunctionPassManager &amp;PM,</span><br><span class="line">                 llvm::PassBuilder::OptimizationLevel Level) &#123;</span><br><span class="line">                PM.addPass(SplitBasicBlockPass());</span><br><span class="line">                PM.addPass(BogusControlFlowPass());</span><br><span class="line">                #if LLVM_VERSION_MAJOR &gt;= 9</span><br><span class="line">                    PM.addPass(LowerSwitchPass());</span><br><span class="line">                #endif</span><br><span class="line">                PM.addPass(FlatteningPass());</span><br><span class="line">                PM.addPass(SubstitutionPass());</span><br><span class="line">                </span><br><span class="line">              &#125;);</span><br><span class="line">            PB.registerOptimizerLastEPCallback(</span><br><span class="line">              [](llvm::ModulePassManager &amp;PM,</span><br><span class="line">                 llvm::PassBuilder::OptimizationLevel Level) &#123;</span><br><span class="line">                PM.addPass(StringObfuscationPass());</span><br><span class="line">              &#125;);</span><br><span class="line">          </span><br><span class="line">        &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">extern &quot;C&quot; LLVM_ATTRIBUTE_WEAK ::llvm::PassPluginLibraryInfo</span><br><span class="line">llvmGetPassPluginInfo() &#123;</span><br><span class="line">  return getOllvmPluginInfo();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="New-Pass-Manager"><a href="#New-Pass-Manager" class="headerlink" title="New Pass Manager"></a>New Pass Manager</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;Transforms/Obfuscation/BogusControlFlow.h&quot;</span><br><span class="line">#include &quot;Transforms/Obfuscation/Flattening.h&quot;</span><br><span class="line">#include &quot;Transforms/Obfuscation/Split.h&quot;</span><br><span class="line">#include &quot;Transforms/Obfuscation/Substitution.h&quot;</span><br><span class="line">#include &quot;Transforms/Obfuscation/StringObfuscation.h&quot;</span><br><span class="line">#include &quot;llvm/Passes/PassBuilder.h&quot;</span><br><span class="line">#include &quot;llvm/Passes/PassPlugin.h&quot;</span><br><span class="line"></span><br><span class="line">llvm::PassPluginLibraryInfo getOllvmPluginInfo() &#123;</span><br><span class="line">  return &#123;</span><br><span class="line">    LLVM_PLUGIN_API_VERSION, &quot;Obfuscation&quot;, LLVM_VERSION_STRING,</span><br><span class="line">        [](PassBuilder &amp;PB) &#123;</span><br><span class="line"></span><br><span class="line">            // #1 注册标记 &quot;opt -passes=obf-bcf&quot;</span><br><span class="line">            PB.registerPipelineParsingCallback(</span><br><span class="line">              [&amp;](StringRef Name, FunctionPassManager &amp;FPM,</span><br><span class="line">                  ArrayRef&lt;PassBuilder::PipelineElement&gt;) &#123;</span><br><span class="line">                if (Name == &quot;obf-bcf&quot;) &#123;</span><br><span class="line">                  FPM.addPass(BogusControlFlowPass());</span><br><span class="line">                  return true;</span><br><span class="line">                &#125;</span><br><span class="line">                if(Name == &quot;obf-fla&quot;)&#123;</span><br><span class="line">                  FPM.addPass(FlatteningPass());</span><br><span class="line">                  return true;</span><br><span class="line">                &#125;</span><br><span class="line">                if(Name == &quot;obf-sub&quot;)&#123;</span><br><span class="line">                  FPM.addPass(SubstitutionPass());</span><br><span class="line">                  return true;</span><br><span class="line">                &#125;</span><br><span class="line">                if(Name == &quot;obf-split&quot;)&#123;</span><br><span class="line">                  FPM.addPass(SplitBasicBlockPass());</span><br><span class="line">                  return true;</span><br><span class="line">                &#125;</span><br><span class="line">                return false;</span><br><span class="line">              &#125;);</span><br><span class="line">            PB.registerPipelineParsingCallback(</span><br><span class="line">              [&amp;](StringRef Name, ModulePassManager &amp;MPM,</span><br><span class="line">                  ArrayRef&lt;PassBuilder::PipelineElement&gt;) &#123;</span><br><span class="line">                if (Name == &quot;obf-str&quot;) &#123;</span><br><span class="line">                  MPM.addPass(StringObfuscationPass());</span><br><span class="line">                  return true;</span><br><span class="line">                &#125;</span><br><span class="line">                return false;</span><br><span class="line">              &#125;);</span><br><span class="line"></span><br><span class="line">            // #2 找到具体时机插入pass</span><br><span class="line">            //registerVectorizerStartEPCallback这个方法插入需要加-O1的flag不然可能不生效会被跳过</span><br><span class="line">            PB.registerVectorizerStartEPCallback(</span><br><span class="line">              [](llvm::FunctionPassManager &amp;PM,</span><br><span class="line">                 llvm::PassBuilder::OptimizationLevel Level) &#123;</span><br><span class="line">                PM.addPass(SplitBasicBlockPass());</span><br><span class="line">                PM.addPass(BogusControlFlowPass());</span><br><span class="line">                #if LLVM_VERSION_MAJOR &gt;= 9</span><br><span class="line">                    PM.addPass(LowerSwitchPass());</span><br><span class="line">                #endif</span><br><span class="line">                PM.addPass(FlatteningPass());</span><br><span class="line">                PM.addPass(SubstitutionPass());</span><br><span class="line">                </span><br><span class="line">              &#125;);</span><br><span class="line">            PB.registerPipelineStartEPCallback(</span><br><span class="line">              [](llvm::ModulePassManager &amp;PM,</span><br><span class="line">                 llvm::PassBuilder::OptimizationLevel Level) &#123;</span><br><span class="line">                PM.addPass(StringObfuscationPass());</span><br><span class="line">              &#125;);</span><br><span class="line">          </span><br><span class="line">        &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">extern &quot;C&quot; LLVM_ATTRIBUTE_WEAK ::llvm::PassPluginLibraryInfo</span><br><span class="line">llvmGetPassPluginInfo() &#123;</span><br><span class="line">  return getOllvmPluginInfo();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>创建个PMRegistration.cpp,放到Obfuscation里再改一下CMakeLists.txt，执行完cmake构建好项目可以单独编译这个Obfuscation模块，其实用这个方法也就不需要再修改llvm本身了，移植起来方便多了只需要添加文件即可。用patch也就基本见不到冲突了。</p>
+<p>最后跟一个注册方法的表<br>|回调函数|回调时提供的对象|对应 ExtensionPointTy|<br>|—|—|—|<br>|registerPeepholeEPCallback|FunctionPassManager|对应EP_Peephole|<br>|registerLateLoopOptimizationsEPCallback|LoopPassManager|对应EP_LoopOptimizerEnd|<br>|registerLoopOptimizerEndEPCallback|LoopPassManager|对应EP_LateLoopOptimizations|<br>|registerScalarOptimizerLateEPCallback|FunctionPassManager|对应 EP_ScalarOptimizerLate|<br>|registerCGSCCOptimizerLateEPCallback|CGSCCPassManager|对应EP_CGSCCOptimizerLate|<br>|registerVectorizerStartEPCallback|FunctionPassManager|对应EP_VectorizerStart|<br>|registerPipelineStartEPCallback|ModulePassManager|对应EP_EarlyAsPossible|<br>|registerPipelineEarlySimplificationEPCallback|ModulePassManager|对应 EP_ModuleOptimizerEarly|<br>|registerOptimizerLastEPCallback|ModulePassManager|对应EP_OptimizerLast|</p>
 
       
 
@@ -453,27 +454,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
+                <a href="javascript:void(0)" class="js-tag color3">网络</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
+                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -486,22 +479,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -529,47 +506,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">网络</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Wifi Direct</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NDS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">MDNS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">DNS-SD</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">iOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Andoid</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">无网通信</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">BLE</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -582,6 +519,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -621,10 +562,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
               </li>
              
@@ -642,34 +579,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -702,6 +611,34 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">frp</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -749,10 +686,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
@@ -761,11 +694,79 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">视频</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GPUImage</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Wifi Direct</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NDS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">MDNS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">DNS-SD</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">iOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Andoid</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">无网通信</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">BLE</a>
               </li>
             
             <div class="clearfix"></div>
