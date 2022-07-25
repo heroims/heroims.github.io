@@ -274,14 +274,14 @@ llvmGetPassPluginInfo() {
 创建个PMRegistration.cpp,放到Obfuscation里再改一下CMakeLists.txt，执行完cmake构建好项目可以单独编译这个Obfuscation模块，其实用这个方法也就不需要再修改llvm本身了，移植起来方便多了只需要添加文件即可。用patch也就基本见不到冲突了。
 
 最后跟一个注册方法的表
-|回调函数|回调时提供的对象|对应 ExtensionPointTy|
-|---|---|---|
-|registerPeepholeEPCallback|FunctionPassManager|对应EP_Peephole|
-|registerLateLoopOptimizationsEPCallback|LoopPassManager|对应EP_LoopOptimizerEnd|
-|registerLoopOptimizerEndEPCallback|LoopPassManager|对应EP_LateLoopOptimizations|
-|registerScalarOptimizerLateEPCallback|FunctionPassManager|对应 EP_ScalarOptimizerLate|
-|registerCGSCCOptimizerLateEPCallback|CGSCCPassManager|对应EP_CGSCCOptimizerLate|
-|registerVectorizerStartEPCallback|FunctionPassManager|对应EP_VectorizerStart|
-|registerPipelineStartEPCallback|ModulePassManager|对应EP_EarlyAsPossible|
-|registerPipelineEarlySimplificationEPCallback|ModulePassManager|对应 EP_ModuleOptimizerEarly|
-|registerOptimizerLastEPCallback|ModulePassManager|对应EP_OptimizerLast|
+| 回调函数 | 回调时提供的对象 | 对应 ExtensionPointTy |
+| :------: | :------: | :------: |
+| registerPeepholeEPCallback | FunctionPassManager | 对应EP_Peephole |
+| registerLateLoopOptimizationsEPCallback | LoopPassManager | 对应EP_LoopOptimizerEnd |
+| registerLoopOptimizerEndEPCallback | LoopPassManager | 对应EP_LateLoopOptimizations |
+| registerScalarOptimizerLateEPCallback | FunctionPassManager | 对应 EP_ScalarOptimizerLate |
+| registerCGSCCOptimizerLateEPCallback | CGSCCPassManager | 对应EP_CGSCCOptimizerLate |
+| registerVectorizerStartEPCallback | FunctionPassManager | 对应EP_VectorizerStart |
+| registerPipelineStartEPCallback | ModulePassManager | 对应EP_EarlyAsPossible |
+| registerPipelineEarlySimplificationEPCallback | ModulePassManager | 对应 EP_ModuleOptimizerEarly |
+| registerOptimizerLastEPCallback | ModulePassManager | 对应EP_OptimizerLast |
