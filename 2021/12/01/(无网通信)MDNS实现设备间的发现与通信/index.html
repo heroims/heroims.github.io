@@ -17,7 +17,7 @@
 <meta property="og:description" content="简介这里无网通信指的是没有互联网的通信方式，之前在区块链公司是做这块，现在怕自己以后忘了写一遍，之前搞工业机器人实在太忙，整个博客停了，也不搞移动了，现在离职了，创业也败了，该恢复一下之前的技术调整心态继续找工作了。 所谓无网通信其实是不同设备互相发现然后连接进行通信，而互相发现的方式可以归纳成三种  两个设备连接在同一个WIFI 两个设备通过WLAN创建点对点连接 两个设备通过蓝牙BLE创建点对">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/assets/blogImage/WX20211206-012426@2x.png">
-<meta property="og:updated_time" content="2022-04-09T13:25:31.749Z">
+<meta property="og:updated_time" content="2022-07-25T02:24:05.646Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="(无网通信)MDNS实现设备间的发现与通信">
 <meta name="twitter:description" content="简介这里无网通信指的是没有互联网的通信方式，之前在区块链公司是做这块，现在怕自己以后忘了写一遍，之前搞工业机器人实在太忙，整个博客停了，也不搞移动了，现在离职了，创业也败了，该恢复一下之前的技术调整心态继续找工作了。 所谓无网通信其实是不同设备互相发现然后连接进行通信，而互相发现的方式可以归纳成三种  两个设备连接在同一个WIFI 两个设备通过WLAN创建点对点连接 两个设备通过蓝牙BLE创建点对">
@@ -218,7 +218,7 @@
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">   <span class="comment">//初始化tcp server，入参对应NSNetService初始化的</span></span><br><span class="line"><span class="keyword">self</span>.listener = <span class="keyword">try</span> <span class="type">NWListener</span>(using: .tcp, on :localPort)</span><br><span class="line">   <span class="keyword">self</span>.listener?.service = <span class="type">NWListener</span>.<span class="type">Service</span>(name:netServiceName, type: netServiceType, domain: serviceDomain, txtRecord: <span class="literal">nil</span>)</span><br><span class="line">   <span class="comment">//注册服务后回调，对应NSNetService发布服务成功后的回调</span></span><br><span class="line">   <span class="keyword">self</span>.listener?.serviceRegistrationUpdateHandler = &#123; (serviceChange) <span class="keyword">in</span></span><br><span class="line">     <span class="keyword">switch</span>(serviceChange) &#123;</span><br><span class="line">     <span class="keyword">case</span> .add(<span class="keyword">let</span> endpoint):<span class="comment">//设备加入</span></span><br><span class="line">       <span class="keyword">switch</span> endpoint &#123;</span><br><span class="line">       <span class="keyword">case</span> <span class="keyword">let</span> .service(name, type, domain, interface):</span><br><span class="line">         <span class="built_in">print</span>(<span class="string">"Service Name \(name) of type \(type) having domain: \(domain) and interface: \(String(describing: interface?.debugDescription))"</span>)</span><br><span class="line">       <span class="keyword">default</span>:</span><br><span class="line">         <span class="keyword">break</span></span><br><span class="line">       &#125;</span><br><span class="line">     <span class="keyword">default</span>:</span><br><span class="line">       <span class="keyword">break</span></span><br><span class="line">     &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">self</span>.listener?.stateUpdateHandler = &#123;(newState) <span class="keyword">in</span></span><br><span class="line">     <span class="keyword">switch</span> newState &#123;</span><br><span class="line">     <span class="keyword">case</span> .ready:</span><br><span class="line">         <span class="built_in">print</span>(<span class="string">"Bonjour TCP Listener: Bonjour listener state changed - ready"</span>)</span><br><span class="line">     <span class="keyword">default</span>:</span><br><span class="line">       <span class="keyword">break</span></span><br><span class="line">     &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">self</span>.listener?.newConnectionHandler = &#123;(newConnection) <span class="keyword">in</span></span><br><span class="line">     newConnection.stateUpdateHandler = &#123;newState <span class="keyword">in</span></span><br><span class="line">       <span class="keyword">switch</span> newState &#123;</span><br><span class="line">       <span class="keyword">case</span> .ready:</span><br><span class="line">         <span class="built_in">print</span>(<span class="string">"Bonjour TCP Listener: new  connection state - ready"</span>)</span><br><span class="line"></span><br><span class="line">         </span><br><span class="line">       <span class="keyword">default</span>:</span><br><span class="line">         <span class="keyword">break</span></span><br><span class="line">       &#125;</span><br><span class="line">     &#125;</span><br><span class="line">     newConnection.start(queue: <span class="type">DispatchQueue</span>(label: <span class="string">"Bonjour TCP Listener: New Connection"</span>))</span><br><span class="line">   &#125;</span><br><span class="line"> &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">   <span class="built_in">print</span>(<span class="string">"Bonjour TCP Listener: Unable to create listener"</span>)</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">self</span>.listener?.start(queue: .main)</span><br></pre></td></tr></table></figure>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//初始化tcp client</span></span><br><span class="line"><span class="keyword">self</span>.netConnect = <span class="type">NWConnection</span>(to: .service(name: netServiceName, type: netServiceType, domain: serviceDomain, interface: <span class="literal">nil</span>), port:localPort, using: .tcp)</span><br><span class="line"><span class="keyword">self</span>.netConnect?.stateUpdateHandler = &#123; (newState) <span class="keyword">in</span></span><br><span class="line">      <span class="built_in">print</span>(<span class="string">"bonjourToTCP: Connection details: \(String(describing: self.netConnect?.debugDescription))"</span>)</span><br><span class="line">    <span class="keyword">switch</span> (newState) &#123;</span><br><span class="line">    <span class="keyword">case</span> .ready:</span><br><span class="line">       <span class="keyword">self</span>.connectState = <span class="string">"Connection state: Ready"</span></span><br><span class="line">      <span class="built_in">print</span>(<span class="string">"bonjourToTCP: new TCP connection ready "</span>)</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">      <span class="keyword">break</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">self</span>.netConnect?.start(queue: .main)</span><br></pre></td></tr></table></figure>
 <p>新的Network库好处是直接把socket和注册广播服务整合了，这个也没真正测过在这里只是做个记录。</p>
-<h2 id="其他平台"><a href="#其他平台" class="headerlink" title="其他平台"></a>其他平台</h2><h3 id="Golang"><a href="#Golang" class="headerlink" title="Golang]"></a>Golang]</h3><h4 id="mDNS"><a href="#mDNS" class="headerlink" title="mDNS"></a><a href="https://github.com/hashicorp/mdns" target="_blank" rel="noopener">mDNS</a></h4><h4 id="bonjour"><a href="#bonjour" class="headerlink" title="bonjour"></a><a href="https://github.com/oleksandr/bonjour" target="_blank" rel="noopener">bonjour</a></h4><h3 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js]"></a>Node.js]</h3><h4 id="mDNS-1"><a href="#mDNS-1" class="headerlink" title="mDNS"></a><a href="https://github.com/agnat/node_mdns" target="_blank" rel="noopener">mDNS</a></h4><h3 id="C"><a href="#C" class="headerlink" title="C"></a>C</h3><h4 id="mDNS-2"><a href="#mDNS-2" class="headerlink" title="mDNS"></a><a href="https://github.com/mjansson/mdns" target="_blank" rel="noopener">mDNS</a></h4>
+<h2 id="其他平台"><a href="#其他平台" class="headerlink" title="其他平台"></a>其他平台</h2><h3 id="Golang"><a href="#Golang" class="headerlink" title="Golang"></a>Golang</h3><h4 id="mDNS"><a href="#mDNS" class="headerlink" title="mDNS"></a><a href="https://github.com/hashicorp/mdns" target="_blank" rel="noopener">mDNS</a></h4><h4 id="bonjour"><a href="#bonjour" class="headerlink" title="bonjour"></a><a href="https://github.com/oleksandr/bonjour" target="_blank" rel="noopener">bonjour</a></h4><h3 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js</h3><h4 id="mDNS-1"><a href="#mDNS-1" class="headerlink" title="mDNS"></a><a href="https://github.com/agnat/node_mdns" target="_blank" rel="noopener">mDNS</a></h4><h3 id="C"><a href="#C" class="headerlink" title="C"></a>C</h3><h4 id="mDNS-2"><a href="#mDNS-2" class="headerlink" title="mDNS"></a><a href="https://github.com/mjansson/mdns" target="_blank" rel="noopener">mDNS</a></h4>
       
 
       
@@ -367,7 +367,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#简介"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#MDNS-Multicast-DNS-与DNS-SD-DNS-Service-Discovery"><span class="toc-number">1.1.</span> <span class="toc-text">MDNS(Multicast DNS)与DNS-SD(DNS Service Discovery)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Andoid"><span class="toc-number">1.2.</span> <span class="toc-text">Andoid</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#独立设备下Andoid-NSD"><span class="toc-number">1.2.0.1.</span> <span class="toc-text">独立设备下Andoid NSD</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#在同一网络下Andoid-NSD"><span class="toc-number">1.2.0.2.</span> <span class="toc-text">在同一网络下Andoid NSD</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Andoid-WIFI直连"><span class="toc-number">1.2.0.3.</span> <span class="toc-text">Andoid WIFI直连</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#iOS"><span class="toc-number">1.3.</span> <span class="toc-text">iOS</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#MutipeerConnectivity"><span class="toc-number">1.3.0.1.</span> <span class="toc-text">MutipeerConnectivity</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#NSNetService"><span class="toc-number">1.3.0.2.</span> <span class="toc-text">NSNetService</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Network库"><span class="toc-number">1.3.0.3.</span> <span class="toc-text">Network库</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其他平台"><span class="toc-number">1.4.</span> <span class="toc-text">其他平台</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Golang"><span class="toc-number">1.4.1.</span> <span class="toc-text">Golang]</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#mDNS"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">mDNS</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bonjour"><span class="toc-number">1.4.1.2.</span> <span class="toc-text">bonjour</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Node-js"><span class="toc-number">1.4.2.</span> <span class="toc-text">Node.js]</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#mDNS-1"><span class="toc-number">1.4.2.1.</span> <span class="toc-text">mDNS</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C"><span class="toc-number">1.4.3.</span> <span class="toc-text">C</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#mDNS-2"><span class="toc-number">1.4.3.1.</span> <span class="toc-text">mDNS</span></a></li></ol></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#简介"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#MDNS-Multicast-DNS-与DNS-SD-DNS-Service-Discovery"><span class="toc-number">1.1.</span> <span class="toc-text">MDNS(Multicast DNS)与DNS-SD(DNS Service Discovery)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Andoid"><span class="toc-number">1.2.</span> <span class="toc-text">Andoid</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#独立设备下Andoid-NSD"><span class="toc-number">1.2.0.1.</span> <span class="toc-text">独立设备下Andoid NSD</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#在同一网络下Andoid-NSD"><span class="toc-number">1.2.0.2.</span> <span class="toc-text">在同一网络下Andoid NSD</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Andoid-WIFI直连"><span class="toc-number">1.2.0.3.</span> <span class="toc-text">Andoid WIFI直连</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#iOS"><span class="toc-number">1.3.</span> <span class="toc-text">iOS</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#MutipeerConnectivity"><span class="toc-number">1.3.0.1.</span> <span class="toc-text">MutipeerConnectivity</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#NSNetService"><span class="toc-number">1.3.0.2.</span> <span class="toc-text">NSNetService</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Network库"><span class="toc-number">1.3.0.3.</span> <span class="toc-text">Network库</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其他平台"><span class="toc-number">1.4.</span> <span class="toc-text">其他平台</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Golang"><span class="toc-number">1.4.1.</span> <span class="toc-text">Golang</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#mDNS"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">mDNS</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bonjour"><span class="toc-number">1.4.1.2.</span> <span class="toc-text">bonjour</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Node-js"><span class="toc-number">1.4.2.</span> <span class="toc-text">Node.js</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#mDNS-1"><span class="toc-number">1.4.2.1.</span> <span class="toc-text">mDNS</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C"><span class="toc-number">1.4.3.</span> <span class="toc-text">C</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#mDNS-2"><span class="toc-number">1.4.3.1.</span> <span class="toc-text">mDNS</span></a></li></ol></li></ol></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -477,50 +477,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">网络</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Wifi Direct</a>
               </li>
              
@@ -553,19 +509,47 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
+                <a href="javascript:void(0)" class="js-tag color4">IOS</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
+                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
+                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
+                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -585,75 +569,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
+                <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
+                <a href="javascript:void(0)" class="js-tag color4">组件化</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
+                <a href="javascript:void(0)" class="js-tag color5">CocoaPods</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">实用技巧</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">授权</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">地理位置</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">网络判断</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">相册</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">相机</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">麦克风</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">通讯录</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">蜂窝网络</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">构建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">编译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+                <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -669,31 +597,39 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
+                <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
+                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
+                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
+                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
+                <a href="javascript:void(0)" class="js-tag color3">构建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -741,6 +677,34 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">OLLVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Clang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">混淆</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">XCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NDK</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Visual Studio</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">WebView</a>
               </li>
              
@@ -773,6 +737,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">视频</a>
               </li>
              
@@ -781,15 +749,47 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">实用技巧</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">授权</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">地理位置</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">网络判断</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">相册</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">相机</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">麦克风</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">通讯录</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">蜂窝网络</a>
               </li>
             
             <div class="clearfix"></div>
