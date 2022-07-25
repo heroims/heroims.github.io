@@ -427,13 +427,13 @@ browser.start(queue: .main)
 
 ## 其他平台
 
-### Golang]
+### Golang
 
 #### [mDNS](https://github.com/hashicorp/mdns)
 
 #### [bonjour](https://github.com/oleksandr/bonjour)
 
-### Node.js]
+### Node.js
 
 #### [mDNS](https://github.com/agnat/node_mdns)
 
