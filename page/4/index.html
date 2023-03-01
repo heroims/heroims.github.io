@@ -146,6 +146,193 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-IOS 百行代码切面日志" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/22/IOS 百行代码切面日志/">IOS 百行代码切面日志</a>
+    </h1>
+  
+
+        
+        <a href="/2017/03/22/IOS 百行代码切面日志/" class="archive-article-date">
+  	<time datetime="2017-03-21T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="AOPLogger"><a href="#AOPLogger" class="headerlink" title="AOPLogger"></a>AOPLogger</h1><h3 id="切面日志作用"><a href="#切面日志作用" class="headerlink" title="切面日志作用"></a>切面日志作用</h3><p>说到日志，切面的实现最大的好处也就是分离出来，单独开发，包括埋点，记录输出log都可以在不影响项目内逻辑的情况下完成，形成完全的一个独立模块。</p>
+<h4 id="这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。"><a href="#这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。" class="headerlink" title="这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。"></a>这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。</h4><p>在实现上用了Aspects这个库，主要就是hook方法，用它主要是对一些例外情况处理不错，自己写简单实现其实就只写写方法交换剩下的就不管了。。。</p>
+<p>下面说一下.h<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">extern NSString * const AOPLoggerMethod;//要统计的日志方法Key</span><br><span class="line">extern NSString * const AOPLoggerLogInfo;//要统计的日志信息Key</span><br><span class="line">extern NSString * const AOPLoggerPositionAfter;//方法执行后统计日志</span><br><span class="line">extern NSString * const AOPLoggerPositionBefore;//方法执行前统计日志</span><br><span class="line">extern NSString * const AOPLoggerPositionType;//执行日志统计的类型Key</span><br><span class="line"></span><br><span class="line">@protocol AOPLoggerGetConfigInfoProtocol &lt;NSObject&gt;</span><br><span class="line"></span><br><span class="line">@required</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">创建类扩展如果使用此协议必须实现此方法</span><br><span class="line">此方法返回统计的配置信息，可以从网络取也可以从本地取</span><br><span class="line">@return 统计配置字典</span><br><span class="line">*/</span><br><span class="line">-(NSDictionary*)al_getConfigInfo;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line">@protocol AOPLoggerBLLProtocol &lt;NSObject&gt;</span><br><span class="line"></span><br><span class="line">@required</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">创建类扩展如果使用此协议必须实现此方法</span><br><span class="line">此方法主要来处理切面方法后的log信息处理可以存本地也可以使用其他任意第三方输出</span><br><span class="line">@param log 配置文件里定义的AOPLoggerLogInfo信息</span><br><span class="line">@param originAOP AspectInfo的方法信息，第三方库Aspect返回的切面方法的所有信息</span><br><span class="line">*/</span><br><span class="line">-(void)al_logger:(id)log originAOP:(id)originAOP;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface AOPLogger : NSObject</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">开始读取日志Plist配置文件</span><br><span class="line">*/</span><br><span class="line">+(void)startAOPLoggerWithPlist;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">统计日志的调用方法</span><br><span class="line">（如果不想增加开机时间可以采取每个模块创建一个日志统计类适时调用，在该类里提供一个初始化方法，内部调用此即可）</span><br><span class="line">@param classString 类名</span><br><span class="line">@param methodString 方法名</span><br><span class="line">@param log 相当于AOPLoggerLogInfo信息</span><br><span class="line">*/</span><br><span class="line">+(void)AOPLoggerWithClassString:(NSString*)classString methodString:(NSString*)methodString log:(id)log;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">统计日志的调用方法</span><br><span class="line">（如果不想增加开机时间可以采取每个模块创建一个日志统计类适时调用，在该类里提供一个初始化方法，内部调用此即可）</span><br><span class="line">@param classString 类名</span><br><span class="line">@param methodString 方法名</span><br><span class="line">@param log 相当于AOPLoggerLogInfo信息</span><br><span class="line">@param logPosition 日志统计时位置，可放在方法运行前或运行后（默认运行后执行日志统计）</span><br><span class="line">*/</span><br><span class="line">+(void)AOPLoggerWithClassString:(NSString *)classString methodString:(NSString *)methodString log:(id)log logPosition:(NSString*)logPosition;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
+        
+          <a class="article-more-a" href="/2017/03/22/IOS 百行代码切面日志/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">切面</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AOP</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">日志</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">百行代码系列</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/22/IOS 百行代码切面日志/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-IOS 网络服务层自动化详解" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/02/IOS 网络服务层自动化详解/">IOS 网络服务层自动化详解</a>
+    </h1>
+  
+
+        
+        <a href="/2017/03/02/IOS 网络服务层自动化详解/" class="archive-article-date">
+  	<time datetime="2017-03-01T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>之前的文章<a href="http://www.jianshu.com/p/7a3a387584c6" target="_blank" rel="noopener">http://www.jianshu.com/p/7a3a387584c6</a> 最后提到了网络服务层自动化，今天在详细说说。之前封装了ServerAPI，这套框架本身其实相当于定义了一套规范的。<br>自动化的概念还是放最后，先讲清楚这框架，到了后面自动化概念自然而然就出来了。</p>
+<p>#ServerAPI 分析与网络服务层构建<br>框架本身构成主要有4部分</p>
+<h3 id="ServerAPI"><a href="#ServerAPI" class="headerlink" title="ServerAPI"></a>ServerAPI</h3><p>主要对后台的API接口做对应描述，相当于网络请求的配置文件Model，定义了请求地址，重试次数，超时时间，返回数据类型，解析数据类型，上传方式等等，，除了常用描述还封装了常用方法算是个标准的胖Model<br>常用方法例如，请求地址这里也是拆分成host ，path ，pathParameter，parameter，内部封装了组合逻辑，下面4个属性<br>host：<a href="http://xxxx/" target="_blank" rel="noopener">http://xxxx/</a><br>path：module/{xxxmudleID}<br>pathParameter：xxxmudleID:xxxx<br>parameter：key:value<br>可以拼成<a href="http://xxxx/module/xxxmudleID?key=value" target="_blank" rel="noopener">http://xxxx/module/xxxmudleID?key=value</a> 这个url，还有自动为每一次请求生成唯一ID，对请求打Tag方便归类，包括发起请求这也提供了方法，不过实现当然不在这，毕竟他只负责描述</p>
+<h3 id="ServerAPIManager"><a href="#ServerAPIManager" class="headerlink" title="ServerAPIManager"></a>ServerAPIManager</h3><p>主要负责管理请求和根据api发起请求，框架内他只是一个管理者逻辑，对发起的请求做归类管理，而发起请求包括缓存逻辑这里通过Category来实现，而具体要实现哪些，由最后面的协议类定义，这样框架本身不去对网络层实现，缓存层实现做干涉，方便更自由的定制化，例如网络层AFN，ASI，还是其他语言都跟框架本身无关，所以这里框架本身只是一个壳，移植性较高，同样的思想拿到其他平台依然适用</p>
+<h3 id="ServerResult"><a href="#ServerResult" class="headerlink" title="ServerResult"></a>ServerResult</h3><p>主要把返回的数据用通用型实体表示，包括发起的api，发起请求的request对象，返回的源数据，返回的格式化数据，返回的错误，状态等，由于牵扯到数据格式化，所以这里依然是通过Category实现对应方法，方便扩展</p>
+<p>ps：不支持扩展的语言，继承也可以<br>
+        
+          <a class="article-more-a" href="/2017/03/02/IOS 网络服务层自动化详解/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">网络层</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">自动化</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">架构设计</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/02/IOS 网络服务层自动化详解/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-IOS百行代码全局语言本地化:国际化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -430,191 +617,9 @@
 
 
   
-    <article id="post-WebView-常见开发误区" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/01/WebView-常见开发误区/">WebView 常见开发误区</a>
-    </h1>
-  
-
-        
-        <a href="/2017/01/01/WebView-常见开发误区/" class="archive-article-date">
-  	<time datetime="2017-01-01T08:13:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="RequestUrl"><a href="#RequestUrl" class="headerlink" title="RequestUrl"></a>RequestUrl</h1><p>setRequestUrl方法内注意fragment的概念，当前段采用了#在url中的时候，且作为新页面传给客户端，一定要注意，因为#也就是fragment是不会触发页面重新加载的如果host和path都一样，这时候需要调用reload方法如下，但另一方面也该给前段说明这是启用一个新页面本来就不该用#，背离了用#的意义<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">-(void)setRequestUrl:(NSString *)requestUrl&#123;</span><br><span class="line">_requestUrl=requestUrl;</span><br><span class="line"></span><br><span class="line">NSURL *tmpUrl=[NSURL URLWithString:requestUrl];</span><br><span class="line"></span><br><span class="line">NSURL *ordUrl=self.lk_webView.request.URL;</span><br><span class="line"></span><br><span class="line">[self.lk_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:_requestUrl]]];</span><br><span class="line"></span><br><span class="line">//fragment不会触发重新加载</span><br><span class="line">if ([tmpUrl.host isEqualToString:ordUrl.host]&amp;&amp;[tmpUrl.path isEqualToString:ordUrl.path]&amp;&amp;![tmpUrl.fragment isEqualToString:ordUrl.fragment]) &#123;</span><br><span class="line">[self.lk_webView reload];</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h1 id="异步页面标题设置"><a href="#异步页面标题设置" class="headerlink" title="异步页面标题设置"></a>异步页面标题设置</h1><p>通常客户端直接在webview开始加载或加载完js交互调一下document.title设置就完事了，但是如果网页异步设置页面标题就尴尬了，所以通常要定义一个供网页调用的native方法如下，isDynamicTitle控制是否在开始加载和结束加载webview的时候执行<code>document.title</code>获取标题动态设置，当前端主动设置就要关闭动态设置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-(void)setWebViewTitle:(NSString*)title&#123;</span><br><span class="line">dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">UIViewController *tmpVC=[UIViewController topViewController];</span><br><span class="line">if ([tmpVC isKindOfClass:[LK_WebViewController class]]) &#123;</span><br><span class="line">[(LK_WebViewController*)tmpVC setIsDynamicTitle:NO];</span><br><span class="line">tmpVC.title=title;</span><br><span class="line">&#125;</span><br><span class="line">&#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h1 id="区域内使用webview取消填充"><a href="#区域内使用webview取消填充" class="headerlink" title="区域内使用webview取消填充"></a>区域内使用webview取消填充</h1><p>如果在一个固定区域使用webview，你会发现有时底部会有一条线，设背景图背景色都没用，那是view的opaque在生效，需要设置成NO，webview底部会留1像素的缝隙，只有取消填充才能保证背景图背景色不被那条底线干扰</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">WebView</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">常见开发误区</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/01/01/WebView-常见开发误区/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Xcode添加静态库以及编译选项配置常见问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/06/04/Xcode添加静态库以及编译选项配置常见问题/">Xcode添加静态库以及编译选项配置常见问题</a>
-    </h1>
-  
-
-        
-        <a href="/2015/06/04/Xcode添加静态库以及编译选项配置常见问题/" class="archive-article-date">
-  	<time datetime="2015-06-04T04:17:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-06-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="一-Xcode编译出现Link错误-出现”duplicate-symbols-for-architecture-i386-clang”提示"><a href="#一-Xcode编译出现Link错误-出现”duplicate-symbols-for-architecture-i386-clang”提示" class="headerlink" title="一,Xcode编译出现Link错误,出现”duplicate symbols for architecture i386 clang”提示."></a>一,Xcode编译出现Link错误,出现”duplicate symbols for architecture i386 clang”提示.</h1><p>问题:链接时,项目有重名文件.</p>
-<p>解决:</p>
-<p>根据错误提示,做如下检查:<br>1.Taraget-&gt;Build Settings-&gt;Link Binary With Libraries检查是否有重复lib.</p>
-<p>2.全工程搜索下重名文件,决定如何删除.</p>
-<h1 id="二-关于Category位于静态库时-引用该静态库的工程使用Category-出现”unrecognized-selector-sent-to-class”提示"><a href="#二-关于Category位于静态库时-引用该静态库的工程使用Category-出现”unrecognized-selector-sent-to-class”提示" class="headerlink" title="二,关于Category位于静态库时,引用该静态库的工程使用Category,出现”unrecognized selector sent to class”提示."></a>二,关于Category位于静态库时,引用该静态库的工程使用Category,出现”unrecognized selector sent to class”提示.</h1><p>问题:标准UNIX静态库与Objective-C之间Linker的差异.在标准的UNIX静态库内,linker symbol是依照每一个类别而产生的,但由于Category并没有真正产生一个类别,所以出错.</p>
-<p>解决:</p>
-<p>1.在该静态库的Taraget-&gt;Build Settings-&gt;Other Linker Flags-&gt;加上 <code>-ObjC</code>.</p>
-<p>2.在使用该静态库的工程Taraget-&gt;Build Settings-&gt;Other Linker Flags-&gt;加上<code>-all_load</code>或<code>-force_load.</code></p>
-<h1 id="三-编译warning：ld-warning-directory-not-found-for-option-‘-L’"><a href="#三-编译warning：ld-warning-directory-not-found-for-option-‘-L’" class="headerlink" title="三,编译warning：ld: warning: directory not found for option ‘-L’."></a>三,编译warning：ld: warning: directory not found for option ‘-L’.</h1><p>问题:通常是Path问题.</p>
-<p>解决:</p>
-<p>Taraget-&gt;Build Settings-&gt;Library Search Paths 和 Framework Search Paths,删掉编译报warning的路径即OK</p>
-<h1 id="四-引入-带源码的-静态库所需配置"><a href="#四-引入-带源码的-静态库所需配置" class="headerlink" title="四,引入(带源码的)静态库所需配置."></a>四,引入(带源码的)静态库所需配置.</h1><p>步骤:</p>
-<p>1.Add Files to.. 加入静态库的.xcodeproj 文件,不要勾选Copy Items.. 选项。(可以先把源代码项目先复制到使用项目文件夹下)</p>
-<p>2.Target-&gt;Build Phases-&gt;Target Dependecies-&gt;加静态库 &amp;&amp; Link Binary With Libraries-&gt;加静态库.</p>
-<p>3.配置静态库头文件路径,在Taraget-&gt;Build Settings-&gt;User Header Search Paths-&gt;配上静态库的物理路径.</p>
-<p>[错误tips: 若出现加入的.xcodeproj无法展开,则在Xcode中关闭静态库项目即可]</p>
-<p>PS:只有.a 和 .h的静态库,则直接拖入项目即可。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">静态库</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">常见开发误区</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2015/06/04/Xcode添加静态库以及编译选项配置常见问题/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
     </nav>
   
 
@@ -626,7 +631,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2022 Heroims
+    		&copy; 2023 Heroims
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -709,6 +714,38 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Wifi Direct</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NDS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">MDNS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">DNS-SD</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">iOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Andoid</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">无网通信</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">BLE</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
               </li>
              
@@ -742,6 +779,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -805,18 +858,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">构建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">编译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">实用技巧</a>
               </li>
              
@@ -850,6 +891,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">蜂窝网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">构建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -913,6 +966,30 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">PCL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">点云</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">机器视觉</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">滤波</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">分割</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">动态库</a>
               </li>
              
@@ -930,6 +1007,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">配准</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">压缩</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">轮廓</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">特征</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -957,10 +1050,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
@@ -969,59 +1058,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">视频</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GPUImage</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Wifi Direct</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NDS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">MDNS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">DNS-SD</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">iOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Andoid</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">无网通信</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">BLE</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
               </li>
             
             <div class="clearfix"></div>
