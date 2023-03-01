@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="Heroims的博客">
 <meta property="og:description" content="点云滤波汇总立方体滤波首先是最简单的容易理解的立方体的剪裁滤波，根据对角点确定一个立方体然后获取立方体内或外的点，并且还可以在这立方体基础上加平移或旋转，因为根据两个点确立的立方体只是坐标轴正方向的，不一定能满足所有需求。1234567891011121314151617181920#include &amp;lt;pcl/filters/crop_box.h&amp;gt;/// &amp;lt;summary&amp;gt;">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2023-03-01T16:50:04.194Z">
+<meta property="og:updated_time" content="2023-03-01T17:02:22.676Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PCL 点云滤波及分割汇总">
 <meta name="twitter:description" content="点云滤波汇总立方体滤波首先是最简单的容易理解的立方体的剪裁滤波，根据对角点确定一个立方体然后获取立方体内或外的点，并且还可以在这立方体基础上加平移或旋转，因为根据两个点确立的立方体只是坐标轴正方向的，不一定能满足所有需求。1234567891011121314151617181920#include &amp;lt;pcl/filters/crop_box.h&amp;gt;/// &amp;lt;summary&amp;gt;">
@@ -170,6 +170,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="点云滤波汇总"><a href="#点云滤波汇总" class="headerlink" title="点云滤波汇总"></a>点云滤波汇总</h2><h3 id="立方体滤波"><a href="#立方体滤波" class="headerlink" title="立方体滤波"></a>立方体滤波</h3><p>首先是最简单的容易理解的立方体的剪裁滤波，根据对角点确定一个立方体然后获取立方体内或外的点，并且还可以在这立方体基础上加平移或旋转，因为根据两个点确立的立方体只是坐标轴正方向的，不一定能满足所有需求。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/filters/crop_box.h&gt;</span></span></span><br><span class="line"><span class="comment">/// &lt;summary&gt;</span></span><br><span class="line"><span class="comment">/// 立方体滤波</span></span><br><span class="line"><span class="comment">/// &lt;/summary&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="cloud_in"&gt;输入点云&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="cloud_out"&gt;输出点云&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="min"&gt;最小点位 x y z 1&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="max"&gt;最大点位 x y z 1&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="negative"&gt;默认值为 false，输出点云为在设定字段的设定范围内的点集，如果设置为 true 则刚好相反&lt;/param&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">cropFilter</span><span class="params">(pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr cloud_in, pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr &amp;cloud_out, Eigen::Vector4f min, Eigen::Vector4f max, <span class="keyword">bool</span> negative)</span> </span>&#123;</span><br><span class="line">    pcl::CropBox&lt;pcl::PointXYZ&gt; box_filter;						<span class="comment">//滤波器对象</span></span><br><span class="line">    box_filter.setMin(min);	<span class="comment">//Min和Max是指立方体的两个对角点。每个点由一个四维向量表示，通常最后一个是1.</span></span><br><span class="line">    box_filter.setMax(max);</span><br><span class="line">    <span class="comment">//box_filter.setRotation(rotation); //旋转 rx ry rz</span></span><br><span class="line">    <span class="comment">//box_filter.setTranslation(tanslation);//仿射矩阵 Affine3f 旋转加平移</span></span><br><span class="line">    <span class="comment">//box_filter.setTransform(transformax);//平移 tx ty tz</span></span><br><span class="line">    box_filter.setNegative(negative);</span><br><span class="line">    box_filter.setInputCloud(cloud_in);</span><br><span class="line">    box_filter.filter(*cloud_out);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
 <h3 id="凸-凹-包滤波"><a href="#凸-凹-包滤波" class="headerlink" title="凸(凹)包滤波"></a>凸(凹)包滤波</h3><p>这个滤波实际用下来效果就是把凸出来或凹进去的一块区域的点云滤出来，入参其实输不输入都行就是维度，默认不输入就是按点云情况来，<code>pcl::ConvexHull</code>是用来算凸包的， <code>pcl:: ConcaveHull</code>用来算凹包，最后都扔到<code>pcl::CropHull</code>里面。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/surface/concave_hull.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/filters/crop_hull.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// &lt;summary&gt;</span></span><br><span class="line"><span class="comment">/// 凸包滤波</span></span><br><span class="line"><span class="comment">/// &lt;/summary&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="cloud_in"&gt;输入点云&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="cloud_out"&gt;输出点云&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="boundingbox"&gt;封闭区域顶点&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="dimension"&gt;设置凸包维度&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="negative"&gt;默认值为 false，输出点云为在设定字段的设定范围内的点集，如果设置为 true 则刚好相反&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="keepOrganized"&gt; false=删除点（默认），true=重新定义点，保留结构&lt;/param&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">cropHullFilter</span><span class="params">(pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr cloud_in, pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr&amp; cloud_out, pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr boundingbox, <span class="keyword">int</span> dimension, <span class="keyword">bool</span> negative, <span class="keyword">bool</span> keepOrganized)</span> </span>&#123;</span><br><span class="line">    pcl::PointCloud&lt;pcl::PointXYZ&gt;::<span class="function">Ptr <span class="title">surface_hull</span><span class="params">(<span class="keyword">new</span> pcl::PointCloud&lt;pcl::PointXYZ&gt;)</span></span>;	<span class="comment">//描述凸包形状的点云</span></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;pcl::Vertices&gt; polygons;<span class="comment">// polygons保存的是所有凸包多边形的顶点在surface_hull中的下标</span></span><br><span class="line"></span><br><span class="line">    pcl::ConvexHull&lt;pcl::PointXYZ&gt; hull;</span><br><span class="line">    hull.setInputCloud(boundingbox);<span class="comment">//设置输入点云：封闭区域顶点点云</span></span><br><span class="line">    hull.setDimension(dimension);<span class="comment">//设置凸包维度</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//surface_hull存储最终产生的凹多边形上的顶点，polygons存储一系列顶点集,每个顶点集构成的一个多边形,Vertices数据结构包含一组点的索引,索引是point中的点对应的索引。</span></span><br><span class="line">    hull.reconstruct(*surface_hull, polygons);</span><br><span class="line"></span><br><span class="line">    pcl::CropHull&lt;pcl::PointXYZ&gt; CH;<span class="comment">//创建CropHull滤波对象</span></span><br><span class="line">    CH.setDim(dimension);	<span class="comment">//设置维度，与凸包维度一致</span></span><br><span class="line">    CH.setInputCloud(cloud_in);		<span class="comment">//设置需要滤波的点云</span></span><br><span class="line">    CH.setHullIndices(polygons);	<span class="comment">//输入封闭区域的顶点</span></span><br><span class="line">    CH.setHullCloud(surface_hull);	<span class="comment">//输入封闭区域的形状</span></span><br><span class="line">    CH.setNegative(negative);</span><br><span class="line">    CH.setKeepOrganized(keepOrganized);</span><br><span class="line">    CH.filter(*cloud_out);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h3 id="体素采样滤波"><a href="#体素采样滤波" class="headerlink" title="体素采样滤波"></a>体素采样滤波</h3><p>体素滤波可以按照给定长宽高的立方体来填充点云，每个立方体的质心点留下来以此让减少点云中点的数目，有效的提升后续点云处理速度，一般用来下采样。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/filters/voxel_grid.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// &lt;summary&gt;</span></span><br><span class="line"><span class="comment">/// 体素采样滤波</span></span><br><span class="line"><span class="comment">/// &lt;/summary&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="cloud_in"&gt;输入点云&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="cloud_out"&gt;输出点云&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="lx"&gt;立方体X轴长度&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="ly"&gt;立方体Y轴长度&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="lz"&gt;立方体Z轴长度&lt;/param&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">voxelFilter</span><span class="params">(pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr cloud_in, pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr &amp;cloud_out, <span class="keyword">float</span> lx, <span class="keyword">float</span> ly, <span class="keyword">float</span> lz)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"size before voxelFilter: "</span> &lt;&lt; cloud_in-&gt;size() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    pcl::VoxelGrid&lt;pcl::PointXYZ&gt; vox_grid;</span><br><span class="line">    vox_grid.setLeafSize(lx, ly, lz);<span class="comment">//设置滤波时创建的体素大小为lx m*ly m*lz m的立方体</span></span><br><span class="line">    vox_grid.setInputCloud(cloud_in);</span><br><span class="line">    vox_grid.filter(*cloud_out);</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"size after voxelFilter: "</span> &lt;&lt; cloud_out-&gt;size() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h3 id="近似体素重心采样滤波"><a href="#近似体素重心采样滤波" class="headerlink" title="近似体素重心采样滤波"></a>近似体素重心采样滤波</h3><p><code>ApproximateVoxelGrid</code>近似体素滤波企图以 <strong>更快的速度</strong> 实现与<code>VoxelGrid</code> 体素滤波相同的下采样，它通过 <strong>散列函数</strong>（Hashing Function）<strong>快速逼近质心</strong>，而不是精细确定质心并对点云进行下采样。采样结果是近似逼近的体素质心，并不是体素中心。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/filters/approximate_voxel_grid.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// &lt;summary&gt;</span></span><br><span class="line"><span class="comment">/// 近似体素重心采样滤波</span></span><br><span class="line"><span class="comment">/// &lt;/summary&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="cloud_in"&gt;输入点云&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="cloud_out"&gt;输出点云&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="lx"&gt;立方体X轴长度&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="ly"&gt;立方体Y轴长度&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="lz"&gt;立方体Z轴长度&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="downsampleAllData"&gt;如果只有XYZ字段，则设置为false，如果对所有字段，如intensity，都进行下采样，则设置为true&lt;/param&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">approximateVoxelGridFilter</span><span class="params">(pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr cloud_in, pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr&amp; cloud_out, <span class="keyword">float</span> lx, <span class="keyword">float</span> ly, <span class="keyword">float</span> lz, <span class="keyword">bool</span> downsampleAllData)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"size before voxelFilter: "</span> &lt;&lt; cloud_in-&gt;size() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    pcl::ApproximateVoxelGrid&lt;pcl::PointXYZ&gt; vox_grid;</span><br><span class="line">    vox_grid.setLeafSize(lx, ly, lz);<span class="comment">//设置滤波时创建的体素大小为lx m*ly m*lz m的立方体</span></span><br><span class="line">    vox_grid.setInputCloud(cloud_in);</span><br><span class="line">    vox_grid.setDownsampleAllData(downsampleAllData);</span><br><span class="line">    vox_grid.filter(*cloud_out);</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"size after voxelFilter: "</span> &lt;&lt; cloud_out-&gt;size() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
@@ -465,22 +466,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
               </li>
              
@@ -498,6 +483,54 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Wifi Direct</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NDS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">MDNS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">DNS-SD</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">iOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Andoid</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">无网通信</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">BLE</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -533,6 +566,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
               </li>
              
@@ -546,30 +595,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">构建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">编译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -606,6 +631,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">蜂窝网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -669,6 +698,54 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">WebView</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">PCL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">点云</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">机器视觉</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">配准</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">压缩</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">轮廓</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">特征</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">动态库</a>
               </li>
              
@@ -681,11 +758,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">WebView</a>
+                <a href="javascript:void(0)" class="js-tag color3">滤波</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
+                <a href="javascript:void(0)" class="js-tag color3">分割</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -713,10 +790,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
@@ -725,99 +798,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">构建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">视频</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GPUImage</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Wifi Direct</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NDS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">MDNS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">DNS-SD</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">iOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Andoid</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">无网通信</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">BLE</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">PCL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">点云</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">机器视觉</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">滤波</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">分割</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">配准</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">压缩</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">轮廓</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">特征</a>
               </li>
             
             <div class="clearfix"></div>

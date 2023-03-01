@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="Heroims的博客">
 <meta property="og:description" content="点云配准汇总配准比较常用的套路就是法线提取，然后fpfh特征提取，粗配准，最后再来精配准，基本就能得到比较准确的旋转矩阵和模板点云配上。 特征提取轮廓提取12345678910111213141516171819202122232425262728293031323334#include &amp;lt;pcl/features/boundary.h&amp;gt;/// &amp;lt;summary&amp;gt;/// 轮">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2023-03-01T16:55:57.173Z">
+<meta property="og:updated_time" content="2023-03-01T17:02:35.990Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PCL 点云常用方法及配准">
 <meta name="twitter:description" content="点云配准汇总配准比较常用的套路就是法线提取，然后fpfh特征提取，粗配准，最后再来精配准，基本就能得到比较准确的旋转矩阵和模板点云配上。 特征提取轮廓提取12345678910111213141516171819202122232425262728293031323334#include &amp;lt;pcl/features/boundary.h&amp;gt;/// &amp;lt;summary&amp;gt;/// 轮">
@@ -171,6 +171,7 @@
       
         <h2 id="点云配准汇总"><a href="#点云配准汇总" class="headerlink" title="点云配准汇总"></a>点云配准汇总</h2><p>配准比较常用的套路就是法线提取，然后fpfh特征提取，粗配准，最后再来精配准，基本就能得到比较准确的旋转矩阵和模板点云配上。</p>
 <h3 id="特征提取"><a href="#特征提取" class="headerlink" title="特征提取"></a>特征提取</h3><h4 id="轮廓提取"><a href="#轮廓提取" class="headerlink" title="轮廓提取"></a>轮廓提取</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/features/boundary.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// &lt;summary&gt;</span></span><br><span class="line"><span class="comment">/// 轮廓计算</span></span><br><span class="line"><span class="comment">/// &lt;/summary&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="cloud_in"&gt;输入点云&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="normals_in"&gt;输入法线&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="radius"&gt;半径&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="angle"&gt;角度&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="cloud_out"&gt;输出点云&lt;/param&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">boundaryEstimationFeatures</span><span class="params">(pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr cloud_in, pcl::PointCloud&lt;pcl::Normal&gt;::Ptr normals_in, pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr&amp; cloud_out, <span class="keyword">double</span> radius, <span class="keyword">float</span> angle)</span> </span>&#123;</span><br><span class="line">    pcl::BoundaryEstimation&lt;pcl::PointXYZ, pcl::Normal, pcl::Boundary&gt; be;</span><br><span class="line">    be.setInputCloud(cloud_in);</span><br><span class="line">    be.setInputNormals(normals_in);</span><br><span class="line">    pcl::search::KdTree&lt;pcl::PointXYZ&gt;::<span class="function">Ptr <span class="title">tree</span><span class="params">(<span class="keyword">new</span> pcl::search::KdTree&lt;pcl::PointXYZ&gt;)</span></span>;</span><br><span class="line">    tree-&gt;setInputCloud(cloud_in);</span><br><span class="line">    <span class="comment">//设置搜索时所用的球半径,参数radius为设置搜索球体半径</span></span><br><span class="line">    be.setRadiusSearch(radius);</span><br><span class="line">    <span class="comment">//设置搜索时近邻的来源点云,参数cloud指向搜索时被搜索的点云对象,常常用稠密的原始点云,而不用稀疏的下采样后的点云,在特征描述和提取中查询点往往是关键点</span></span><br><span class="line">    <span class="comment">//be.setSearchSurface(overlap_cloud);</span></span><br><span class="line">    <span class="comment">//设置搜索时所用的k近邻个数,参数k为设置搜索近邻个数</span></span><br><span class="line">    <span class="comment">//be.setKSearch(k);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//设置将点标记为边界或规则的决定边界(角度阈值)。</span></span><br><span class="line">    be.setAngleThreshold(angle);</span><br><span class="line">    pcl::PointCloud&lt;pcl::Boundary&gt;::<span class="function">Ptr <span class="title">boundarys</span><span class="params">(<span class="keyword">new</span> pcl::PointCloud&lt;pcl::Boundary&gt;())</span></span>;</span><br><span class="line">    be.compute(*boundarys);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; cloud_in-&gt;size(); i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> ((*boundarys)[i].boundary_point &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            cloud_out-&gt;points.push_back(cloud_in-&gt;points[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
 <h4 id="法线提取"><a href="#法线提取" class="headerlink" title="法线提取"></a>法线提取</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/features/normal_3d.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// &lt;summary&gt;</span></span><br><span class="line"><span class="comment">/// 法线计算</span></span><br><span class="line"><span class="comment">/// &lt;/summary&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="cloud_in"&gt;输入点云&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="radius"&gt;半径&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="normals_out"&gt;输出点云&lt;/param&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">normalEstimationFeatures</span><span class="params">(pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr cloud_in, <span class="keyword">double</span> radius, pcl::PointCloud&lt;pcl::Normal&gt;::Ptr&amp; normals_out)</span> </span>&#123;</span><br><span class="line">    pcl::NormalEstimation&lt;pcl::PointXYZ, pcl::Normal&gt; ne;</span><br><span class="line">    ne.setInputCloud(cloud_in);</span><br><span class="line">    pcl::search::KdTree&lt;pcl::PointXYZ&gt;::<span class="function">Ptr <span class="title">tree</span><span class="params">(<span class="keyword">new</span> pcl::search::KdTree&lt;pcl::PointXYZ&gt;)</span></span>;</span><br><span class="line">    tree-&gt;setInputCloud(cloud_in);</span><br><span class="line">    ne.setSearchMethod(tree);</span><br><span class="line">    <span class="comment">//设置搜索时所用的球半径,参数radius为设置搜索球体半径</span></span><br><span class="line">    ne.setRadiusSearch(radius);</span><br><span class="line">    <span class="comment">//设置搜索时近邻的来源点云,参数cloud指向搜索时被搜索的点云对象,常常用稠密的原始点云,而不用稀疏的下采样后的点云,在特征描述和提取中查询点往往是关键点</span></span><br><span class="line">    <span class="comment">//ne.setSearchSurface(overlap_cloud);</span></span><br><span class="line">    <span class="comment">//设置搜索时所用的k近邻个数,参数k为设置搜索近邻个数</span></span><br><span class="line">    <span class="comment">//ne.setKSearch(k);</span></span><br><span class="line">    ne.compute(*normals_out);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h4 id="FPFH特征提取"><a href="#FPFH特征提取" class="headerlink" title="FPFH特征提取"></a>FPFH特征提取</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/features/fpfh.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// &lt;summary&gt;</span></span><br><span class="line"><span class="comment">/// fpfh计算</span></span><br><span class="line"><span class="comment">/// &lt;/summary&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="cloud_in"&gt;输入点云&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="normals_in"&gt;输入法线&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="radius"&gt;半径&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="features_out"&gt;输出特征&lt;/param&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">fpfhEstimationFeatures</span><span class="params">(pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr cloud_in, pcl::PointCloud&lt;pcl::Normal&gt;::Ptr normals_in, pcl::PointCloud&lt;pcl::FPFHSignature33&gt;::Ptr&amp; features_out, <span class="keyword">double</span> radius)</span> </span>&#123;</span><br><span class="line">    pcl::FPFHEstimation&lt;pcl::PointXYZ, pcl::Normal, pcl::FPFHSignature33&gt; fpfhe;</span><br><span class="line">    fpfhe.setInputCloud(cloud_in);</span><br><span class="line">    fpfhe.setInputNormals(normals_in);</span><br><span class="line">    pcl::search::KdTree&lt;pcl::PointXYZ&gt;::<span class="function">Ptr <span class="title">tree</span><span class="params">(<span class="keyword">new</span> pcl::search::KdTree&lt;pcl::PointXYZ&gt;)</span></span>;</span><br><span class="line">    tree-&gt;setInputCloud(cloud_in);</span><br><span class="line">    fpfhe.setSearchMethod(tree);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//设置搜索时所用的球半径,参数radius为设置搜索球体半径</span></span><br><span class="line">    fpfhe.setRadiusSearch(radius);</span><br><span class="line">    <span class="comment">//设置搜索时近邻的来源点云,参数cloud指向搜索时被搜索的点云对象,常常用稠密的原始点云,而不用稀疏的下采样后的点云,在特征描述和提取中查询点往往是关键点</span></span><br><span class="line">    <span class="comment">//fpfhe.setSearchSurface(overlap_cloud);</span></span><br><span class="line">    <span class="comment">//设置搜索时所用的k近邻个数,参数k为设置搜索近邻个数</span></span><br><span class="line">    <span class="comment">//fpfhe.setKSearch(k);</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//设置SPFH的统计区间个数。</span></span><br><span class="line">    <span class="comment">//fpfhe.setNrSubdivisions(nr_bins_f1, nr_bins_f2, nr_bins_f3);</span></span><br><span class="line">    fpfhe.compute(*features_out);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="粗配准"><a href="#粗配准" class="headerlink" title="粗配准"></a>粗配准</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pcl/registration/ia_ransac.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// &lt;summary&gt;</span></span><br><span class="line"><span class="comment">/// 粗配准矩阵</span></span><br><span class="line"><span class="comment">/// &lt;/summary&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="cloud_src_in"&gt;源点云&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="cloud_tgt_in"&gt;目标点云&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="fpfhs_src_in"&gt;源点云特征&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="fpfhs_tgt_in"&gt;目标点云特征&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="sac_trans_out"&gt;输出粗配准矩阵&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="maximum_iterations"&gt;最大迭代数&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="distance"&gt;样本间的最小距离&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="number"&gt;使用的样本数量&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name="k"&gt;k邻&lt;/param&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sacRegistration</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr cloud_src_in, </span></span></span><br><span class="line"><span class="function"><span class="params">    pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr cloud_tgt_in, </span></span></span><br><span class="line"><span class="function"><span class="params">    pcl::PointCloud&lt;pcl::FPFHSignature33&gt;::Ptr fpfhs_src_in,</span></span></span><br><span class="line"><span class="function"><span class="params">    pcl::PointCloud&lt;pcl::FPFHSignature33&gt;::Ptr fpfhs_tgt_in, </span></span></span><br><span class="line"><span class="function"><span class="params">    Eigen::Matrix4f&amp; sac_trans_out,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> maximum_iterations, </span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">float</span> distance,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> number,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    pcl::SampleConsensusInitialAlignment&lt;pcl::PointXYZ, pcl::PointXYZ, pcl::FPFHSignature33&gt; scia;</span><br><span class="line">    scia.setInputSource(cloud_src_in);</span><br><span class="line">    scia.setInputTarget(cloud_tgt_in);</span><br><span class="line">    scia.setSourceFeatures(fpfhs_src_in);</span><br><span class="line">    scia.setTargetFeatures(fpfhs_tgt_in);</span><br><span class="line">    scia.setMaximumIterations(maximum_iterations);<span class="comment">// 最大迭代次数</span></span><br><span class="line">    scia.setMinSampleDistance(distance);<span class="comment">//设置样本间的最小距离</span></span><br><span class="line">    scia.setNumberOfSamples(number);<span class="comment">//设置每次迭代中使用的样本数量</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//设置计算协方差时选择附近多少个点为邻居:设置的点的数量k越高,协方差计算越准确但也会相应降低计算速度</span></span><br><span class="line">    scia.setCorrespondenceRandomness(k);</span><br><span class="line"></span><br><span class="line">    pcl::PointCloud&lt;pcl::PointXYZ&gt;::<span class="function">Ptr <span class="title">sac_result</span><span class="params">(<span class="keyword">new</span> pcl::PointCloud&lt;pcl::PointXYZ&gt;)</span></span>;</span><br><span class="line">    scia.align(*sac_result);</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"sac has converged:"</span> &lt;&lt; scia.hasConverged() &lt;&lt; <span class="string">" score: "</span> &lt;&lt; scia.getFitnessScore() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    sac_trans_out = scia.getFinalTransformation();</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; sac_trans_out &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -458,22 +459,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">工程管理</a>
               </li>
              
@@ -491,6 +476,54 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">动/静态库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Wifi Direct</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NDS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">MDNS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">DNS-SD</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">iOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Andoid</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">无网通信</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">BLE</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -526,6 +559,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">AES-128-CBC</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Objective-C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Golang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
               </li>
              
@@ -539,30 +588,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">构建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">编译</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -599,6 +624,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">蜂窝网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数学函数</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -662,6 +691,54 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地化/国际化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">WebView</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">PCL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">点云</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">机器视觉</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">配准</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">压缩</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">轮廓</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">特征</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">动态库</a>
               </li>
              
@@ -674,11 +751,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">WebView</a>
+                <a href="javascript:void(0)" class="js-tag color3">滤波</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
+                <a href="javascript:void(0)" class="js-tag color3">分割</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -706,10 +783,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
@@ -718,99 +791,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">构建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">编译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">视频</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GPUImage</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Wifi Direct</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NDS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">MDNS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">DNS-SD</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">iOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Andoid</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">无网通信</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">BLE</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">OSX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">安保系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Crash防御</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cocoa</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">PCL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">点云</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">机器视觉</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">滤波</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">分割</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">配准</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">压缩</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">轮廓</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">特征</a>
               </li>
             
             <div class="clearfix"></div>
