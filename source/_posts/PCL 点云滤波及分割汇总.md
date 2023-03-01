@@ -34,6 +34,7 @@ void cropFilter(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_in, pcl::PointCloud<pc
     box_filter.filter(*cloud_out);
 }
 ```
+<!-- more -->
 ### 凸(凹)包滤波
 这个滤波实际用下来效果就是把凸出来或凹进去的一块区域的点云滤出来，入参其实输不输入都行就是维度，默认不输入就是按点云情况来，`pcl::ConvexHull`是用来算凸包的， `pcl:: ConcaveHull`用来算凹包，最后都扔到`pcl::CropHull`里面。
 ```C++

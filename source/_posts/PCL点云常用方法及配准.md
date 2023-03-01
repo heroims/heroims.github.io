@@ -51,6 +51,7 @@ void boundaryEstimationFeatures(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_in, pc
     }
 }
 ```
+<!-- more -->
 #### 法线提取
 ```C++
 #include <pcl/features/normal_3d.h>
