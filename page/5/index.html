@@ -146,6 +146,102 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-移动端Model层与Server服务层自动化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/01/移动端Model层与Server服务层自动化/">移动端Model层与Server服务层自动化</a>
+    </h1>
+  
+
+        
+        <a href="/2017/02/01/移动端Model层与Server服务层自动化/" class="archive-article-date">
+  	<time datetime="2017-01-31T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Model层自动化"><a href="#Model层自动化" class="headerlink" title="Model层自动化"></a>Model层自动化</h1><h3 id="前言（纯属捎带扯一下，后端大咖勿看）"><a href="#前言（纯属捎带扯一下，后端大咖勿看）" class="headerlink" title="前言（纯属捎带扯一下，后端大咖勿看）"></a>前言（纯属捎带扯一下，后端大咖勿看）</h3><p>谈到Model层自动化的产出我们就来从最初的地方开始讲，数据库！<br>无论你是用啥写服务器如果还手写Model那真的只能说你够low我服！不过如果是手写Model自动生成数据库那另说，总的来说就是要么从数据库转实体出来，要么从实体转数据库这才有点意思。<br>上边只是开玩笑下面正题，很多时候大家都无奈没办法不能说low不low，其中奥妙各有体会，通常有点规模的团队都是先定义表然后就出Model了</p>
+<h3 id="后端的Model层"><a href="#后端的Model层" class="headerlink" title="后端的Model层"></a>后端的Model层</h3><p>后端数据库和实体互转的方案都不用Google，百度就能出来一大推，有直接读库生成的，也有从实体转sql生成库的，更有提前定义协议然后开始出对应模块对应语言的实体及sql</p>
+<h3 id="移动端的Model层"><a href="#移动端的Model层" class="headerlink" title="移动端的Model层"></a>移动端的Model层</h3><p>先继续谈会后台Model，这里要说的只是最好有一个提前定义的过程，这样一方面规范开发流程提前想好怎样建库合理，一方面有利于跨平台跨语言的开发，有了提前定义的协议，Model和枚举的各平台自动生成就方便了很多，写个简单的小程序即可，类型也就那几类。关键真的是一劳永逸，省去了大家互相校对的过程。<br>自动化生成移动端乃至前端用的Model层说白了就是做个类型映射，细说的话基本就是分为两类，一类直接就着后端现有项目读Model层的文件，然后做个类型的映射直接导出移动端需要的类，另一类也就是设计数据库时先定义Model的协议，然后根据协议自动生成各个平台需要的实体，而协议定义通常用序列化后的数据如xml(极力抵制，结构复杂)，json，pb，sql文件都能干这事。</p>
+<h3 id="Model自动化实现"><a href="#Model自动化实现" class="headerlink" title="Model自动化实现"></a>Model自动化实现</h3><p>上面说到了xml，json，pb，sql文件都能干这件事，但其中最容易就是json，github上搜个json class基本就能有一大片总有你想要的语言，但json的局限在于也就能转换一下model，当然通过特殊定义中间转换，枚举啥的也能搞定，在这我推荐pb，首先它就是专门用来定义协议的，枚举实体不用说都能搞定，包括默认值设置也能写出来，而且是谷歌出品本身是im通讯协议，被它序列化的数据在上面说的里面算是最小的，而另一方面关于转码参考<a href="https://github.com/google/protobuf/blob/master/docs/third_party.md" target="_blank" rel="noopener">https://github.com/google/protobuf/blob/master/docs/third_party.md</a> ，直接开放了各个语言的转换方法，当然你根本用不到它里面写的那么复杂，它的里面实体可是直接带pb转换model方法的，如果不是开发im根本用不到，要删部分源码实现自己的需要也行，。。。（下面讲一下正经方法）</p>
+<h4 id="Protobuf-Convert转码"><a href="#Protobuf-Convert转码" class="headerlink" title="Protobuf Convert转码"></a>Protobuf Convert转码</h4><p>下面放代码片段（反馈的人多放全的，之所以不想放还有个原因是这边实现有点粗）<br>这里以Python为例，只是因为安装执行方便所以选它<br>转成OC的例子，之所以选OC因为我就是个搞IOS的。。。写起来各个公司需求不同每次都要改改改。。。也就是这个原因懒得放全的了，因为用的人说到底还是需要手动改成自己想要的，没有通用的。。。<br>
+        
+          <a class="article-more-a" href="/2017/02/01/移动端Model层与Server服务层自动化/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">网络层</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">自动化</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">架构设计</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Model层</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/02/01/移动端Model层与Server服务层自动化/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-WebView-常见开发误区" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -605,100 +701,6 @@
 
 
   
-    <article id="post-视频处理开发常见问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2013/04/12/视频处理开发常见问题/">视频处理开发常见问题</a>
-    </h1>
-  
-
-        
-        <a href="/2013/04/12/视频处理开发常见问题/" class="archive-article-date">
-  	<time datetime="2013-04-12T04:55:52.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2013-04-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="获取视频的方向"><a href="#获取视频的方向" class="headerlink" title="获取视频的方向"></a>获取视频的方向</h1><p>一个视频可以有多个轨道，轨道理论上可以是不同方向的视</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">AVAsset *anAsset = [AVURLAsset URLAssetWithURL:assetUrl options:nil];</span><br><span class="line">AVAssetTrack *track=[[anAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];只有视频轨道上才有方向信息</span><br><span class="line">CGAffineTransform txf=[track preferredTransform];</span><br><span class="line">NSLog(@&quot;%f,%f,%f,%f&quot;,txf.a,txf.b,txf.c,txf.d);</span><br></pre></td></tr></table></figure>
-<p>0  1 -1  0    Right 向右旋转90度</p>
-<p>-1 0  0 -1    Down 旋转180度</p>
-<p>1  0  0  1    Up 不做旋转</p>
-<p>0 -1  1  0    Left 向左旋转90度</p>
-<h1 id="GPUImageCropFilter处理旋转"><a href="#GPUImageCropFilter处理旋转" class="headerlink" title="GPUImageCropFilter处理旋转"></a>GPUImageCropFilter处理旋转</h1><p>GPUImageCropFilter无法直接处理需要旋转的图片，必须通过一次其他的filter处理传给GPUImageCropFilter才能正确处理，GPUImageCropFilter本身对GPUImageMovieMode处理了旋转但不正确需要中间量</p>
-<h1 id="视频压缩"><a href="#视频压缩" class="headerlink" title="视频压缩"></a>视频压缩</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- (void) lowQuailtyWithInputURL:(NSURL*)inputURL</span><br><span class="line">outputURL:(NSURL*)outputURL</span><br><span class="line">blockHandler:(void (^)(AVAssetExportSession*))handler</span><br><span class="line">&#123;</span><br><span class="line">AVURLAsset *asset = [AVURLAsset URLAssetWithURL:inputURL options:nil];</span><br><span class="line">AVAssetExportSession *session = [[AVAssetExportSession alloc] initWithAsset:asset     presetName:AVAssetExportPresetMediumQuality];</span><br><span class="line">session.outputURL = outputURL;</span><br><span class="line">session.outputFileType = AVFileTypeQuickTimeMovie;</span><br><span class="line">[session exportAsynchronouslyWithCompletionHandler:^(void)</span><br><span class="line">&#123;</span><br><span class="line">handler(session);</span><br><span class="line">&#125;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//使用</span><br><span class="line">[self lowQuailtyWithInputURL:video outputURL:output blockHandler:^(AVAssetExportSession *session)</span><br><span class="line">&#123;</span><br><span class="line">if (session.status == AVAssetExportSessionStatusCompleted)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<p>在block里面检测成功，失败，或者是取消，然后释放session.</p>
-<p>期间可以通过不断的查看session的progress属性来获取转换的进度。</p>
-<p>可以设置这些压缩质量</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">AVF_EXPORT NSString *const AVAssetExportPresetLowQuality        NS_AVAILABLE_IOS(4_0);</span><br><span class="line">AVF_EXPORT NSString *const AVAssetExportPresetMediumQuality     NS_AVAILABLE_IOS(4_0);</span><br><span class="line">AVF_EXPORT NSString *const AVAssetExportPresetHighestQuality    NS_AVAILABLE_IOS(4_0);</span><br></pre></td></tr></table></figure>
-<h1 id="GPUImage常用类说明"><a href="#GPUImage常用类说明" class="headerlink" title="GPUImage常用类说明"></a>GPUImage常用类说明</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;GLProgram.h&quot;</span><br><span class="line"></span><br><span class="line">// Base classes</span><br><span class="line">#import &quot;GPUImageOpenGLESContext.h&quot;//封装</span><br><span class="line">#import &quot;GPUImageOutput.h&quot;//输出</span><br><span class="line">#import &quot;GPUImageView.h&quot;//画布</span><br><span class="line">#import &quot;GPUImageVideoCamera.h&quot;//录像</span><br><span class="line">#import &quot;GPUImageStillCamera.h&quot;//拍照</span><br><span class="line">#import &quot;GPUImageMovie.h&quot;//输入视频</span><br><span class="line">#import &quot;GPUImagePicture.h&quot;//输出视频</span><br><span class="line">#import &quot;GPUImageRawDataInput.h&quot;//输入原始数据</span><br><span class="line">#import &quot;GPUImageRawDataOutput.h&quot;//输出原始数据</span><br><span class="line">#import &quot;GPUImageMovieWriter.h&quot;//合成视频写本地</span><br><span class="line">#import &quot;GPUImageFilterPipeline.h&quot;//滤镜组合</span><br><span class="line">#import &quot;GPUImageTextureOutput.h&quot;//输出纹理</span><br><span class="line">#import &quot;GPUImageFilterGroup.h&quot;//滤镜组合</span><br><span class="line">#import &quot;GPUImageTextureInput.h&quot;//OpenGL输入纹理</span><br><span class="line">#import &quot;GPUImageUIElement.h&quot;//视频合成元素，包装view对象进去可以输出到画面上</span><br><span class="line">#import &quot;GPUImageBuffer.h&quot;//视频图片buffer</span><br><span class="line">&lt;!-- more --&gt;</span><br><span class="line"></span><br><span class="line">// Filters</span><br><span class="line">#import &quot;GPUImageFilter.h&quot;</span><br><span class="line">#import &quot;GPUImageTwoInputFilter.h&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#pragma mark - 调整颜色 Handle Color</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageBrightnessFilter.h&quot;                //亮度</span><br><span class="line">#import &quot;GPUImageExposureFilter.h&quot;                  //曝光</span><br><span class="line">#import &quot;GPUImageContrastFilter.h&quot;                  //对比度</span><br><span class="line">#import &quot;GPUImageSaturationFilter.h&quot;                //饱和度</span><br><span class="line">#import &quot;GPUImageGammaFilter.h&quot;                     //伽马线</span><br><span class="line">#import &quot;GPUImageColorInvertFilter.h&quot;               //反色</span><br><span class="line">#import &quot;GPUImageSepiaFilter.h&quot;                     //褐色（怀旧）</span><br><span class="line">#import &quot;GPUImageLevelsFilter.h&quot;                    //色阶</span><br><span class="line">#import &quot;GPUImageGrayscaleFilter.h&quot;                 //灰度</span><br><span class="line">#import &quot;GPUImageHistogramFilter.h&quot;                 //色彩直方图，显示在图片上</span><br><span class="line">#import &quot;GPUImageHistogramGenerator.h&quot;              //色彩直方图</span><br><span class="line">#import &quot;GPUImageRGBFilter.h&quot;                       //RGB</span><br><span class="line">#import &quot;GPUImageToneCurveFilter.h&quot;                 //色调曲线</span><br><span class="line">#import &quot;GPUImageMonochromeFilter.h&quot;                //单色</span><br><span class="line">#import &quot;GPUImageOpacityFilter.h&quot;                   //不透明度</span><br><span class="line">#import &quot;GPUImageHighlightShadowFilter.h&quot;           //提亮阴影</span><br><span class="line">#import &quot;GPUImageFalseColorFilter.h&quot;                //色彩替换（替换亮部和暗部色彩）</span><br><span class="line">#import &quot;GPUImageHueFilter.h&quot;                       //色度</span><br><span class="line">#import &quot;GPUImageChromaKeyFilter.h&quot;                 //色度键</span><br><span class="line">#import &quot;GPUImageWhiteBalanceFilter.h&quot;              //白平横</span><br><span class="line">#import &quot;GPUImageAverageColor.h&quot;                    //像素平均色值</span><br><span class="line">#import &quot;GPUImageSolidColorGenerator.h&quot;             //纯色</span><br><span class="line">#import &quot;GPUImageLuminosity.h&quot;                      //亮度平均</span><br><span class="line">#import &quot;GPUImageAverageLuminanceThresholdFilter.h&quot; //像素色值亮度平均，图像黑白（有类似漫画效果）</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageLookupFilter.h&quot;                    //lookup 色彩调整</span><br><span class="line">#import &quot;GPUImageAmatorkaFilter.h&quot;                  //Amatorka lookup</span><br><span class="line">#import &quot;GPUImageMissEtikateFilter.h&quot;               //MissEtikate lookup</span><br><span class="line">#import &quot;GPUImageSoftEleganceFilter.h&quot;              //SoftElegance lookup</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#pragma mark - 图像处理 Handle Image</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageCrosshairGenerator.h&quot;              //十字</span><br><span class="line">#import &quot;GPUImageLineGenerator.h&quot;                   //线条</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageTransformFilter.h&quot;                 //形状变化</span><br><span class="line">#import &quot;GPUImageCropFilter.h&quot;                      //剪裁</span><br><span class="line">#import &quot;GPUImageSharpenFilter.h&quot;                   //锐化</span><br><span class="line">#import &quot;GPUImageUnsharpMaskFilter.h&quot;               //反遮罩锐化</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageFastBlurFilter.h&quot;                  //模糊</span><br><span class="line">#import &quot;GPUImageGaussianBlurFilter.h&quot;              //高斯模糊</span><br><span class="line">#import &quot;GPUImageGaussianSelectiveBlurFilter.h&quot;     //高斯模糊，选择部分清晰</span><br><span class="line">#import &quot;GPUImageBoxBlurFilter.h&quot;                   //盒状模糊</span><br><span class="line">#import &quot;GPUImageTiltShiftFilter.h&quot;                 //条纹模糊，中间清晰，上下两端模糊</span><br><span class="line">#import &quot;GPUImageMedianFilter.h&quot;                    //中间值，有种稍微模糊边缘的效果</span><br><span class="line">#import &quot;GPUImageBilateralFilter.h&quot;                 //双边模糊</span><br><span class="line">#import &quot;GPUImageErosionFilter.h&quot;                   //侵蚀边缘模糊，变黑白</span><br><span class="line">#import &quot;GPUImageRGBErosionFilter.h&quot;                //RGB侵蚀边缘模糊，有色彩</span><br><span class="line">#import &quot;GPUImageDilationFilter.h&quot;                  //扩展边缘模糊，变黑白</span><br><span class="line">#import &quot;GPUImageRGBDilationFilter.h&quot;               //RGB扩展边缘模糊，有色彩</span><br><span class="line">#import &quot;GPUImageOpeningFilter.h&quot;                   //黑白色调模糊</span><br><span class="line">#import &quot;GPUImageRGBOpeningFilter.h&quot;                //彩色模糊</span><br><span class="line">#import &quot;GPUImageClosingFilter.h&quot;                   //黑白色调模糊，暗色会被提亮</span><br><span class="line">#import &quot;GPUImageRGBClosingFilter.h&quot;                //彩色模糊，暗色会被提亮</span><br><span class="line">#import &quot;GPUImageLanczosResamplingFilter.h&quot;         //Lanczos重取样，模糊效果</span><br><span class="line">#import &quot;GPUImageNonMaximumSuppressionFilter.h&quot;     //非最大抑制，只显示亮度最高的像素，其他为黑</span><br><span class="line">#import &quot;GPUImageThresholdedNonMaximumSuppressionFilter.h&quot; //与上相比，像素丢失更多</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageSobelEdgeDetectionFilter.h&quot;        //Sobel边缘检测算法(白边，黑内容，有点漫画的反色效果)</span><br><span class="line">#import &quot;GPUImageCannyEdgeDetectionFilter.h&quot;        //Canny边缘检测算法（比上更强烈的黑白对比度）</span><br><span class="line">#import &quot;GPUImageThresholdEdgeDetectionFilter.h&quot;    //阈值边缘检测（效果与上差别不大）</span><br><span class="line">#import &quot;GPUImagePrewittEdgeDetectionFilter.h&quot;      //普瑞维特(Prewitt)边缘检测(效果与Sobel差不多，貌似更平滑)</span><br><span class="line">#import &quot;GPUImageXYDerivativeFilter.h&quot;              //XYDerivative边缘检测，画面以蓝色为主，绿色为边缘，带彩色</span><br><span class="line">#import &quot;GPUImageHarrisCornerDetectionFilter.h&quot;     //Harris角点检测，会有绿色小十字显示在图片角点处</span><br><span class="line">#import &quot;GPUImageNobleCornerDetectionFilter.h&quot;      //Noble角点检测，检测点更多</span><br><span class="line">#import &quot;GPUImageShiTomasiFeatureDetectionFilter.h&quot; //ShiTomasi角点检测，与上差别不大</span><br><span class="line">#import &quot;GPUImageMotionDetector.h&quot;                  //动作检测</span><br><span class="line">#import &quot;GPUImageHoughTransformLineDetector.h&quot;      //线条检测</span><br><span class="line">#import &quot;GPUImageParallelCoordinateLineTransformFilter.h&quot; //平行线检测</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageLocalBinaryPatternFilter.h&quot;        //图像黑白化，并有大量噪点</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageLowPassFilter.h&quot;                   //用于图像加亮</span><br><span class="line">#import &quot;GPUImageHighPassFilter.h&quot;                  //图像低于某值时显示为黑</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#pragma mark - 视觉效果 Visual Effect</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageSketchFilter.h&quot;                    //素描</span><br><span class="line">#import &quot;GPUImageThresholdSketchFilter.h&quot;           //阀值素描，形成有噪点的素描</span><br><span class="line">#import &quot;GPUImageToonFilter.h&quot;                      //卡通效果（黑色粗线描边）</span><br><span class="line">#import &quot;GPUImageSmoothToonFilter.h&quot;                //相比上面的效果更细腻，上面是粗旷的画风</span><br><span class="line">#import &quot;GPUImageKuwaharaFilter.h&quot;                  //桑原(Kuwahara)滤波,水粉画的模糊效果；处理时间比较长，慎用</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageMosaicFilter.h&quot;                    //黑白马赛克</span><br><span class="line">#import &quot;GPUImagePixellateFilter.h&quot;                 //像素化</span><br><span class="line">#import &quot;GPUImagePolarPixellateFilter.h&quot;            //同心圆像素化</span><br><span class="line">#import &quot;GPUImageCrosshatchFilter.h&quot;                //交叉线阴影，形成黑白网状画面</span><br><span class="line">#import &quot;GPUImageColorPackingFilter.h&quot;              //色彩丢失，模糊（类似监控摄像效果）</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageVignetteFilter.h&quot;                  //晕影，形成黑色圆形边缘，突出中间图像的效果</span><br><span class="line">#import &quot;GPUImageSwirlFilter.h&quot;                     //漩涡，中间形成卷曲的画面</span><br><span class="line">#import &quot;GPUImageBulgeDistortionFilter.h&quot;           //凸起失真，鱼眼效果</span><br><span class="line">#import &quot;GPUImagePinchDistortionFilter.h&quot;           //收缩失真，凹面镜</span><br><span class="line">#import &quot;GPUImageStretchDistortionFilter.h&quot;         //伸展失真，哈哈镜</span><br><span class="line">#import &quot;GPUImageGlassSphereFilter.h&quot;               //水晶球效果</span><br><span class="line">#import &quot;GPUImageSphereRefractionFilter.h&quot;          //球形折射，图形倒立</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImagePosterizeFilter.h&quot;                 //色调分离，形成噪点效果</span><br><span class="line">#import &quot;GPUImageCGAColorspaceFilter.h&quot;             //CGA色彩滤镜，形成黑、浅蓝、紫色块的画面</span><br><span class="line">#import &quot;GPUImagePerlinNoiseFilter.h&quot;               //柏林噪点，花边噪点</span><br><span class="line">#import &quot;GPUImage3x3ConvolutionFilter.h&quot;            //3x3卷积，高亮大色块变黑，加亮边缘、线条等</span><br><span class="line">#import &quot;GPUImageEmbossFilter.h&quot;                    //浮雕效果，带有点3d的感觉</span><br><span class="line">#import &quot;GPUImagePolkaDotFilter.h&quot;                  //像素圆点花样</span><br><span class="line">#import &quot;GPUImageHalftoneFilter.h&quot;                  //点染,图像黑白化，由黑点构成原图的大致图形</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#pragma mark - 混合模式 Blend</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageMultiplyBlendFilter.h&quot;             //通常用于创建阴影和深度效果</span><br><span class="line">#import &quot;GPUImageNormalBlendFilter.h&quot;               //正常</span><br><span class="line">#import &quot;GPUImageAlphaBlendFilter.h&quot;                //透明混合,通常用于在背景上应用前景的透明度</span><br><span class="line">#import &quot;GPUImageDissolveBlendFilter.h&quot;             //溶解</span><br><span class="line">#import &quot;GPUImageOverlayBlendFilter.h&quot;              //叠加,通常用于创建阴影效果</span><br><span class="line">#import &quot;GPUImageDarkenBlendFilter.h&quot;               //加深混合,通常用于重叠类型</span><br><span class="line">#import &quot;GPUImageLightenBlendFilter.h&quot;              //减淡混合,通常用于重叠类型</span><br><span class="line">#import &quot;GPUImageSourceOverBlendFilter.h&quot;           //源混合</span><br><span class="line">#import &quot;GPUImageColorBurnBlendFilter.h&quot;            //色彩加深混合</span><br><span class="line">#import &quot;GPUImageColorDodgeBlendFilter.h&quot;           //色彩减淡混合</span><br><span class="line">#import &quot;GPUImageScreenBlendFilter.h&quot;               //屏幕包裹,通常用于创建亮点和镜头眩光</span><br><span class="line">#import &quot;GPUImageExclusionBlendFilter.h&quot;            //排除混合</span><br><span class="line">#import &quot;GPUImageDifferenceBlendFilter.h&quot;           //差异混合,通常用于创建更多变动的颜色</span><br><span class="line">#import &quot;GPUImageSubtractBlendFilter.h&quot;             //差值混合,通常用于创建两个图像之间的动画变暗模糊效果</span><br><span class="line">#import &quot;GPUImageHardLightBlendFilter.h&quot;            //强光混合,通常用于创建阴影效果</span><br><span class="line">#import &quot;GPUImageSoftLightBlendFilter.h&quot;            //柔光混合</span><br><span class="line">#import &quot;GPUImageChromaKeyBlendFilter.h&quot;            //色度键混合</span><br><span class="line">#import &quot;GPUImageMaskFilter.h&quot;                      //遮罩混合</span><br><span class="line">#import &quot;GPUImageHazeFilter.h&quot;                      //朦胧加暗</span><br><span class="line">#import &quot;GPUImageLuminanceThresholdFilter.h&quot;        //亮度阈</span><br><span class="line">#import &quot;GPUImageAdaptiveThresholdFilter.h&quot;         //自适应阈值</span><br><span class="line">#import &quot;GPUImageAddBlendFilter.h&quot;                  //通常用于创建两个图像之间的动画变亮模糊效果</span><br><span class="line">#import &quot;GPUImageDivideBlendFilter.h&quot;               //通常用于创建两个图像之间的动画变暗模糊效果</span><br></pre></td></tr></table></figure>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">常见开发误区</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">视频</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GPUImage</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2013/04/12/视频处理开发常见问题/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
@@ -812,6 +814,38 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Wifi Direct</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NDS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">MDNS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">DNS-SD</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">iOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Andoid</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">无网通信</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">BLE</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">IOS</a>
               </li>
              
@@ -848,11 +882,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">网络</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
+                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -868,6 +898,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Content-Type</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">AOP解耦</a>
               </li>
              
@@ -877,22 +915,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">统计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">百行代码系列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -929,6 +951,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">蜂窝网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">网络层</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">自动化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">架构设计</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1028,6 +1062,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">WebView</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">PCL</a>
               </li>
              
@@ -1068,6 +1110,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">工业相机</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">深度相机</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">视觉</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Scheme</a>
               </li>
              
@@ -1088,27 +1142,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">WebView</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">常见开发误区</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">FFmpeg</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1120,35 +1154,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Wifi Direct</a>
+                <a href="javascript:void(0)" class="js-tag color2">Model层</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NDS</a>
+                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">MDNS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">DNS-SD</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">iOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Andoid</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">无网通信</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">BLE</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
             
             <div class="clearfix"></div>
