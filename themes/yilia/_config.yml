@@ -111,8 +111,8 @@ slider:
 # mermaid chart
 mermaid: ## mermaid url https://github.com/knsv/mermaid
   enable: true
-  theme: forest
-    
+  # Available themes: default | dark | forest | neutral
+
 # 智能菜单
 # 如不需要，将该对应项置为false
 # 比如
