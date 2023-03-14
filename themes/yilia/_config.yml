@@ -108,6 +108,11 @@ slider:
   # 是否默认展开tags板块
   showTags: true
 
+# mermaid chart
+mermaid: ## mermaid url https://github.com/knsv/mermaid
+  enable: true
+  theme: forest
+    
 # 智能菜单
 # 如不需要，将该对应项置为false
 # 比如
