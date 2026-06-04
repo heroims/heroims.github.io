@@ -146,6 +146,103 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-CocoaPods 动:静态库封装组件化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/15/CocoaPods%20%E5%8A%A8:%E9%9D%99%E6%80%81%E5%BA%93%E5%B0%81%E8%A3%85%E7%BB%84%E4%BB%B6%E5%8C%96/">CocoaPods 动/静态库封装组件化</a>
+    </h1>
+  
+
+        
+        <a href="/2017/08/15/CocoaPods%20%E5%8A%A8:%E9%9D%99%E6%80%81%E5%BA%93%E5%B0%81%E8%A3%85%E7%BB%84%E4%BB%B6%E5%8C%96/" class="archive-article-date">
+  	<time datetime="2017-08-15T15:07:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/assets/blogImage/3994053-1fd000b267fa2f10.png" alt="DingTalk20170818200900.png"></p>
+<h1 id="动-静态库混用"><a href="#动-静态库混用" class="headerlink" title="动/静态库混用"></a>动/静态库混用</h1><p>pods的动静态库混用，相信大多数人一想到就会头皮发麻，体会过的应该都懂，那种无助感。。。。</p>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>大型项目里来个尝试性swift过渡，首先就是pod加use_frameworks!来支持pod动态库，接着就是一大片的不支持动态库pod提示error，源码上看不dependency依赖静态库pod其实是不会有问题的，如果你的pod全是源码型也不会有任何问题！</p>
+<p>ps:其实我感觉这是bug。。。压根就不是啥问题</p>
+<p>正常的pod当静态库用的时候vendored_library，vendored_frameworks两个属性搞定一切。。。</p>
+<h3 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h3><h4 id="未来"><a href="#未来" class="headerlink" title="未来"></a>未来</h4><p>虽说是未来，但我估计也就只有几个月的事吧，CocoaPods马上就要可以加动静态库标签了！长期关注pods源码的估计不以为然，上个月就定下来1.4.0发布，然而现在是1.3.1。。。。。<br>那老哥们PR了好久<a target="_blank" rel="noopener" href="https://github.com/CocoaPods/Core/pull/386">https://github.com/CocoaPods/Core/pull/386</a><br>看源码写的用法每个pod是可以定义static_framework:true属性,这样其实对简单的小项目半点作用都没有，但大型项目简直是救世的存在！承接上边的问题，对指定pod加静态库标签瞬间解决！<br>
+        
+          <a class="article-more-a" href="/2017/08/15/CocoaPods%20%E5%8A%A8:%E9%9D%99%E6%80%81%E5%BA%93%E5%B0%81%E8%A3%85%E7%BB%84%E4%BB%B6%E5%8C%96/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">工程管理</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">组件化</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CocoaPods</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">动/静态库</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/08/15/CocoaPods%20%E5%8A%A8:%E9%9D%99%E6%80%81%E5%BA%93%E5%B0%81%E8%A3%85%E7%BB%84%E4%BB%B6%E5%8C%96/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-IOS 切面统计事件解耦" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -533,97 +630,6 @@
 
 
   
-    <article id="post-IOS组件化与工程管理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/05/IOS%E7%BB%84%E4%BB%B6%E5%8C%96%E4%B8%8E%E5%B7%A5%E7%A8%8B%E7%AE%A1%E7%90%86/">IOS组件化与工程管理</a>
-    </h1>
-  
-
-        
-        <a href="/2017/02/05/IOS%E7%BB%84%E4%BB%B6%E5%8C%96%E4%B8%8E%E5%B7%A5%E7%A8%8B%E7%AE%A1%E7%90%86/" class="archive-article-date">
-  	<time datetime="2017-02-04T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>谈及组件化其实网上也有不少文章了，但我个人认为不结合工程管理去单讲组件化恐怕很难让人理解概念，而去实践的时候也只是照猫画虎。</p>
-<h1 id="工程管理"><a href="#工程管理" class="headerlink" title="工程管理"></a>工程管理</h1><p>组件化的实现很重要的一个组成部分应该是工程拆分，这里我的方案是采取git管理项目pod管理依赖很常见很普通的方法。<br>理想的状态每一个模块都是独立的，可以单独拿出来测试，发布，也就是每一个子模块其实都是一个git仓库，这里紧接着就是子仓库和主项目的关系问题，上边说到了git和pod，还有一个submodule我喜欢用这个来做子仓库的管理上边为啥没提它呢？<br>因为submodule本身就是git自带的就是git的一部分，常用命令有<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 添加子仓库</span><br><span class="line">git submodule add 仓库地址 路径</span><br><span class="line">#初始化所有子仓库</span><br><span class="line">git submodule init</span><br><span class="line"># 更新子仓库</span><br><span class="line">git submodule update</span><br><span class="line"></span><br><span class="line"># 也可以初始化更新一起</span><br><span class="line">git submodule update --init</span><br></pre></td></tr></table></figure></p>
-<p>pod只是帮我把依赖关系理清直接本地pod，因为坑爹的开发阶段难免有互相block的情况，那边东西弄完了，但还没有做发布还不稳定，但另一边已经急着要看一眼整体调用的效果了。。。<br>当然这时候也可以让对面先打个beta的tag，那样可想而知最后会有多少没用的tag，另一方面就是bug联调恢复节点排查的时候，另一方估计只有一个方案就是回滚上一个tag中间哪的问题一点点打tag联调。<br>上边说的打tag也只是个例子，当然你可以改Podfile对应不同branch，但那也是要每次调都要改一下的，但我这种模式由于是本地pod所以podfile不用动了每次都去指向对应的项目，剩下的就是对子仓库随意切换branch甚至commit节点都可以，调ok了直接commit一下submodule指向的更改即可。然后另一方更新一下再pod update把依赖关系重新建立一下（如果没有添加或删除，甚至这步都不需要，本地pod引用目录我们submodule的本地文件夹里面有什么变化这边自动会变，添加删除是因为依赖关系发生变化了所以跟着需要重新建立）,当然理想情况回头有空单独整合一套submodule和pod的命令，submodule更新时判断有增删操作执行pod update其他情况不处理。</p>
-<p>这里紧接着就是公共库的处理以及怎么去建立主仓库与子仓库的依赖，我这里把基本思路给出，具体情况还是自己再改动，这里首先就是建立podspec来提供依赖建立<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">Pod::Spec.new do |s|</span><br><span class="line">s.name                  = &#x27;MainWorkSpaceDemo&#x27;</span><br><span class="line">s.version               = &#x27;1.0.0&#x27;</span><br><span class="line">s.summary               = &#x27;A new container controller to slide  &#x27;</span><br><span class="line">s.homepage              = &#x27;github.com&#x27;</span><br><span class="line">s.license               = &#123; :type =&gt; &#x27;MIT&#x27;, :file =&gt; &#x27;README.md&#x27; &#125;</span><br><span class="line">s.author                = &#123; &#x27;heroims&#x27; =&gt; &#x27;heroims@163.com&#x27; &#125;</span><br><span class="line">s.source                = &#123; :git =&gt; &#x27;&#x27;, :tag =&gt; &quot;#&#123;s.version&#125;&quot; &#125;</span><br><span class="line">s.platform              = :ios, &#x27;5.0&#x27;</span><br><span class="line">s.source_files          = &#x27;ZYQRouter/*.&#123;h,m&#125;&#x27;</span><br><span class="line">s.requires_arc          = true</span><br><span class="line">#公共仓库</span><br><span class="line">s.subspec &#x27;BaseTool&#x27; do |ss|</span><br><span class="line">ss.source_files = &#x27;ZYQRouter/*.&#123;h,m&#125;&#x27;</span><br><span class="line">end</span><br><span class="line">#模块1</span><br><span class="line">s.subspec &#x27;Module1&#x27; do |sss|</span><br><span class="line">sss.source_files = &#x27;Module1/Module1Lib/*.&#123;h,m&#125;&#x27;</span><br><span class="line">end</span><br><span class="line">#模块2</span><br><span class="line">s.subspec &#x27;Module2&#x27; do |ssss|</span><br><span class="line">ssss.source_files = &#x27;Module2/Module2Lib/*.&#123;h,m&#125;&#x27;</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">end</span><br></pre></td></tr></table></figure><br>看见上边相比就明白了把，开发的时候最好要作为模块给人的东西放在一个目录下，当然不放也可以，这里就是为了方便<br>然后就是引用了,下面是module1工程的，只引用了一个公共库，真正开发的时候则会引用很多，然后build测试模块的app给测试，提供给主仓库的东西放在事先约定的目录下，其他的随便看心情，反正对别人没影响就是自己爽不爽<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">target &#x27;Module1&#x27; do</span><br><span class="line"># Uncomment the next line if you&#x27;re using Swift or would like to use dynamic frameworks</span><br><span class="line"># use_frameworks!</span><br><span class="line"></span><br><span class="line"># Pods for Module1</span><br><span class="line">pod &#x27;MainWorkSpaceDemo/BaseTool&#x27;, :path =&gt; &#x27;../MainWorkSpaceDemo.podspec&#x27;</span><br><span class="line"></span><br><span class="line">target &#x27;Module1Tests&#x27; do</span><br><span class="line">inherit! :search_paths</span><br><span class="line"># Pods for testing</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">target &#x27;Module1UITests&#x27; do</span><br><span class="line">inherit! :search_paths</span><br><span class="line"># Pods for testing</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">end</span><br></pre></td></tr></table></figure><br>
-        
-          <a class="article-more-a" href="/2017/02/05/IOS%E7%BB%84%E4%BB%B6%E5%8C%96%E4%B8%8E%E5%B7%A5%E7%A8%8B%E7%AE%A1%E7%90%86/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">工程管理</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">组件化</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">架构设计</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/05/IOS%E7%BB%84%E4%BB%B6%E5%8C%96%E4%B8%8E%E5%B7%A5%E7%A8%8B%E7%AE%A1%E7%90%86/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/3/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/">Next &amp;raquo;</a>
@@ -638,7 +644,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2023 Heroims
+    		&copy; 2026 Heroims
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -1095,6 +1101,30 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">分割</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">SSB</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Secure Scuttlebutt</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">点对点网络</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">去中心化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">P2P</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">分布式</a>
               </li>
             
             <div class="clearfix"></div>
