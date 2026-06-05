@@ -1482,16 +1482,18 @@ BLE 蓝牙的角色分为：**广播者（Advertiser）**、**扫描者（Scanne
 虽然看似双方操作的是同一个特征值，但主机发送消息时并非直接修改从机的特征值，因此双方通信互不影响。蓝牙本身就是时分全双工的，不必担心通信冲突。双方 API 回调都提供了设备 ID、服务 ID、特征值 ID 用于区分逻辑。
 
 ```mermaid
-graph TD
-	Central
+flowchart TD
+    Central
+
     subgraph Peripheral
         subgraph Services
             subgraph Characteristics
-                D[Descriptors]
+                Descriptors
             end
         end
     end
 ```
+
 #### 传输限制与拆包
 
 BLE 单次传输不支持超过 **20 字节**。虽然超过 20 字节有时也能收到，但那仅是系统余量，后续数据会丢失且末尾乱码。因此需要对数据进行拆包：
