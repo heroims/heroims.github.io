@@ -1120,38 +1120,35 @@ ssbClient(manifest)
 
 ```mermaid
 graph TB
-    subgraph "顶层依赖"
-        BIND[bindings-noderify-nodejs-mobile@10.3.0]
-        BUFFERUTIL[bufferutil@4.0.1]
-        CACHED[cached-path-relative@1.0.2]
-        CHLORIDE[chloride@2.4.0]
-        ELECTRON[electron@15.2.0]
+    subgraph 顶层依赖
+        BIND[bindings-noderify-nodejs-mobile]
+        BUFFERUTIL[bufferutil]
+        CACHED[cached-path-relative]
+        CHLORIDE[chloride]
+        ELECTRON[electron]
     end
-
-    subgraph "chloride 加密库"
-        SB[sodium-browserify@1.3.0]
-        SBT[sodium-browserify-tweetnacl@0.2.6]
-        SC[sodium-chloride@1.1.2]
-        SN[sodium-native@3.2.0]
+    subgraph chloride加密库
+        SB[sodium-browserify]
+        SBT[sodium-browserify-tweetnacl]
+        SC[sodium-chloride]
+        SN[sodium-native]
     end
-
-    SB --> LW[libsodium-wrappers@0.7.8]
-    LW --> LS[libsodium@0.7.8]
-    SB --> SHA[sha.js@2.4.5]
-    SB --> TN[tweetnacl@0.14.5]
-
-    SBT --> CT[chloride-test@1.2.4]
-    SBT --> ED[ed2curve@0.1.4]
-    SBT --> SHA2[sha.js@2.4.11]
-    SBT --> TN2[tweetnacl@1.0.3]
-    SBT --> TA[tweetnacl-auth@0.3.1]
-
-    SN --> INI[ini@1.3.8]
-    SN --> NGB[node-gyp-build@4.2.3]
-
-    CHLORIDE --> SB & SBT & SC & SN
-
-    BUFFERUTIL --> NGB2[node-gyp-build@3.7.0]
+    SB --> LW[libsodium-wrappers]
+    LW --> LS[libsodium]
+    SB --> SHA[sha.js]
+    SB --> TN[tweetnacl]
+    SBT --> CT[chloride-test]
+    SBT --> ED[ed2curve]
+    SBT --> SHA2[sha2.js]
+    SBT --> TN2[tweetnacl2]
+    SBT --> TA[tweetnacl-auth]
+    SN --> INI[ini]
+    SN --> NGB[node-gyp-build]
+    BUFFERUTIL --> NGB2[node-gyp-build2]
+    CHLORIDE --> SB
+    CHLORIDE --> SBT
+    CHLORIDE --> SC
+    CHLORIDE --> SN
 ```
 
 ### 7.2 关键依赖分析
