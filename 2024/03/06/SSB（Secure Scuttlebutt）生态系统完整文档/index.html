@@ -16,7 +16,7 @@
 <meta property="og:description" content="SSB 生态系统完整技术参考，涵盖核心框架、插件体系、移动端集成及蓝牙模块。   目录 SSB 简介 架构总览：SSB Sketch 2.1 核心框架层 2.2 插件生态全景图 2.3 模块分类详表   secret-stack 深度解析 3.1 架构分层 3.2 插件机制 3.3 完整的 secret-stack 启动流程   pull-stream 流式模型 4.1 四种流类型 4.2 组合">
 <meta property="og:locale">
 <meta property="article:published_time" content="2024-03-06T10:49:00.000Z">
-<meta property="article:modified_time" content="2026-06-05T06:18:12.470Z">
+<meta property="article:modified_time" content="2026-06-05T07:03:25.758Z">
 <meta property="article:author" content="Heroims">
 <meta property="article:tag" content="SSB">
 <meta property="article:tag" content="Secure Scuttlebutt">
@@ -1557,7 +1557,17 @@
 <li>从机如果要给主机发消息，只需改变自己服务中的特征值，主机通过订阅更新即可收到</li>
 </ol>
 <p>虽然看似双方操作的是同一个特征值，但主机发送消息时并非直接修改从机的特征值，因此双方通信互不影响。蓝牙本身就是时分全双工的，不必担心通信冲突。双方 API 回调都提供了设备 ID、服务 ID、特征值 ID 用于区分逻辑。</p>
-<p><pre class="mermaid">graph TD<br>    Central<br>    subgraph Peripheral<br>        subgraph Services<br>            subgraph Characteristics<br>                D[Descriptors]<br>            end<br>        end<br>    end</pre></p>
+<pre class="mermaid">flowchart TD
+    Central
+
+    subgraph Peripheral
+        subgraph Services
+            subgraph Characteristics
+                Descriptors
+            end
+        end
+    end</pre>
+
 <h4 id="传输限制与拆包"><a href="#传输限制与拆包" class="headerlink" title="传输限制与拆包"></a>传输限制与拆包</h4><p>BLE 单次传输不支持超过 <strong>20 字节</strong>。虽然超过 20 字节有时也能收到，但那仅是系统余量，后续数据会丢失且末尾乱码。因此需要对数据进行拆包：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">原始数据 → 分包（每包 18 字节数据 + 2 字节标识）</span><br><span class="line">         → 收端根据标识合并还原</span><br></pre></td></tr></table></figure>
 <h4 id="连接数限制"><a href="#连接数限制" class="headerlink" title="连接数限制"></a>连接数限制</h4><p>BLE 最多支持 <strong>7 个设备同时连接</strong>。从机在发现第 7 个设备连接时，需要主动踢掉旧连接，防止影响正在通信的其他设备。</p>
