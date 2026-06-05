@@ -36,8 +36,9 @@ typora-root-url: ../
    - 5.4 [身份与密钥模块](#54-身份与密钥模块)
    - 5.5 [复制与同步模块](#55-复制与同步模块)
    - 5.6 [HTTP/邀请模块](#56-http邀请模块)
-   - 5.7 [工具与辅助模块](#57-工具与辅助模块)
-   - 5.8 [蓝牙相关模块](#58-蓝牙相关模块)
+    - 5.7 [工具与辅助模块](#57-工具与辅助模块)
+    - 5.8 [蓝牙相关模块](#58-蓝牙相关模块)
+    - 5.9 [私信实现核心逻辑](#59-私信实现核心逻辑)
 6. [React Native SSB Client](#6-react-native-ssb-client)
    - 6.1 [整体架构](#61-整体架构)
    - 6.2 [前后端分离模式](#62-前后端分离模式)
@@ -51,8 +52,9 @@ typora-root-url: ../
    - 8.1 [模块分层](#81-模块分层)
    - 8.2 [Socket 类型与通信](#82-socket-类型与通信)
    - 8.3 [Socket 命令 API](#83-socket-命令-api)
-   - 8.4 [蓝牙连接建立流程](#84-蓝牙连接建立流程)
-   - 8.5 [完整数据流](#85-完整数据流)
+    - 8.4 [蓝牙连接建立流程](#84-蓝牙连接建立流程)
+    - 8.5 [完整数据流](#85-完整数据流)
+    - 8.6 [BLE 跨平台通信基础](#86-ble-跨平台通信基础)
 9. [附录](#9-附录)
    - 9.1 [相关组织与链接汇总](#91-相关组织与链接汇总)
    - 9.2 [术语表](#92-术语表)
@@ -868,6 +870,176 @@ graph TB
 ### 5.8 蓝牙相关模块
 
 详见 [第 8 章：SSB 蓝牙模块架构](#8-ssb-蓝牙模块架构)。
+
+---
+
+### 5.9 私信实现核心逻辑
+
+SSB 私信（Private Message）基于 `ssb-keys.box` 进行端到端加密，结合 `ssb-db2` 查询和 `ssb-threads` 进行线程组织，实现双方之间的私密通信。
+
+#### 5.9.1 核心模块依赖
+
+```javascript
+const ssbKeys = require('ssb-keys')
+const Ref = require('ssb-ref')
+const pull = require('pull-stream')
+```
+
+**必需的 npm 模块**：
+- [ssb-threads](https://github.com/ssbc/ssb-threads) — 消息线程组织
+- [ssb-meta-feeds](https://github.com/ssbc/ssb-meta-feeds) — 元 Feed 支持
+- [ssb-db2](https://github.com/ssbc/ssb-db2) — 数据库
+
+#### 5.9.2 私信发送
+
+```javascript
+// 首次通信 root 为空字符串，发送后返回 rootId 作为会话通道 ID
+// 后续双方都用此 root 通信，且双方都要持久化记录
+let content = {
+  type: 'post',
+  root: root,
+  text: msg,
+  recps: [authorId, partnerId],
+}
+
+// 处理附件（Blob）
+if (content) {
+  for (const mention of content.mentions) {
+    if (Ref.isBlob(mention.link)) {
+      ssb.blobs.push(mention.link, err => {
+        if (err) console.error(err)
+      })
+    }
+  }
+}
+
+// 端到端加密：仅收件人可解密
+if (content.recps) {
+  try {
+    content = ssbKeys.box(
+      content,
+      content.recps
+        .map(e =>
+          Ref.isFeed(e) ? e : Ref.isFeed(e.link) ? e.link : void 0,
+        )
+        .filter(x => !!x),
+    )
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+// 发布消息
+ssb.publish(content, (err, msg) => {
+  // msg.key 即为 rootId
+})
+```
+
+**发送流程**：
+
+1. 首次发送时 `root` 设为空字符串，`ssb.publish` 返回的消息的 `key` 即为 `rootId`
+2. 发送方和接收方都需保存此 `rootId` 作为后续会话通道
+3. 消息体需包含 `recps`（收件人列表），SSB 会使用 `ssbKeys.box` 加密
+4. 加密后的内容只有列表中的收件人能解密
+
+#### 5.9.3 获取私信会话 Root
+
+```javascript
+function latestPrivateChatWith(feedId, cb) {
+  pull(
+    ssb.db.query(
+      where(and(type('post'), isPrivate('box'), hasTwoRecps(predicate))),
+      descending(),
+      batch(500),
+      toPullStream(),
+    ),
+    pull.filter(msg => {
+      const recps = msg.value.content && msg.value.content.recps
+      if (!recps) return false
+      if (!Array.isArray(recps)) return false
+      if (recps.length !== 2) return false
+      if (!recps.find(r => r === ssb.id || r.link === ssb.id)) return false
+      if (!recps.find(r => r === feedId || r.link === feedId)) return false
+      return true
+    }),
+    pull.take(1),
+    pull.collect((err, msgs) => {
+      if (err) return cb(err)
+      if (msgs.length === 0) return cb(null, null)
+      const msg = msgs[0]
+      cb(null, msg.value.content.root || msg.key)
+    }),
+  )
+}
+```
+
+**说明**：
+- 从 `ssb-db2` 中查询双方之间的私密消息
+- 使用 `isPrivate('box')` 过滤仅加密消息
+- 使用 `hasTwoRecps` 过滤仅包含两人的私信
+- 取最新一条消息的 `root` 作为会话通道 ID
+- 如果本地没有记录或尚未通信，将返回 `null`
+
+#### 5.9.4 获取私聊消息流
+
+```javascript
+pull(
+  ssb.threads.thread({
+    root,
+    allowlist: ['post'],
+    private: true,
+    threadMaxSize: 3,
+  }),
+  pull.drain(thread => {
+    console.log(thread)
+  }),
+)
+```
+
+**说明**：
+- 使用 `ssb.threads.thread` 以 `root` 为入口拉取整个会话线程
+- `private: true` 表示包含私密消息
+- 返回的是 pull-stream，既能拉取历史数据，也能监听新消息
+- 如需拉取历史数据而不持续监听，可配合 `pull.collect` 使用
+
+#### 5.9.5 完整架构
+
+```mermaid
+sequenceDiagram
+    participant A as 用户 A
+    participant DB_A as ssb-db2
+    participant KEYS as ssb-keys.box
+    participant NET as SSB 网络
+    participant DB_B as ssb-db2
+    participant B as 用户 B
+
+    Note over A,B: 首次通信
+
+    A->>DB_A: publish({type, root: '', recps, text})
+    DB_A->>KEYS: 加密内容（仅收件人可解密）
+    KEYS-->>DB_A: 加密后 content
+    DB_A-->>A: msg.key (rootId)
+    A->>NET: 通过 EBT 复制到 B
+    NET->>DB_B: 同步消息
+    DB_B-->>B: 解密（ssb-keys.unbox）
+
+    Note over A,B: 后续通信
+
+    A->>DB_A: publish({type, root: rootId, recps, text})
+    DB_A->>KEYS: 加密
+    KEYS-->>DB_A: 加密后 content
+    DB_A-->>A: 发布成功
+    A->>NET: 复制到 B
+    NET->>DB_B: 同步
+    DB_B-->>B: 解密，追加到线程
+
+    Note over A,B: 查询会话
+
+    A->>DB_A: query(isPrivate, hasTwoRecps)
+    DB_A-->>A: 最新消息的 rootId
+    A->>DB_A: threads.thread({root: rootId, private: true})
+    DB_A-->>A: 完整会话线程流
+```
 
 ---
 
