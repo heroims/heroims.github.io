@@ -16,7 +16,7 @@
 <meta property="og:description" content="SSB 生态系统完整技术参考，涵盖核心框架、插件体系、移动端集成及蓝牙模块。   目录 SSB 简介 架构总览：SSB Sketch 2.1 核心框架层 2.2 插件生态全景图 2.3 模块分类详表   secret-stack 深度解析 3.1 架构分层 3.2 插件机制 3.3 完整的 secret-stack 启动流程   pull-stream 流式模型 4.1 四种流类型 4.2 组合">
 <meta property="og:locale">
 <meta property="article:published_time" content="2024-03-06T10:49:00.000Z">
-<meta property="article:modified_time" content="2026-06-05T07:03:25.758Z">
+<meta property="article:modified_time" content="2026-06-05T07:27:19.932Z">
 <meta property="article:author" content="Heroims">
 <meta property="article:tag" content="SSB">
 <meta property="article:tag" content="Secure Scuttlebutt">
@@ -1146,38 +1146,35 @@
 <hr>
 <h2 id="7-SSB-依赖完整性树"><a href="#7-SSB-依赖完整性树" class="headerlink" title="7. SSB 依赖完整性树"></a>7. SSB 依赖完整性树</h2><p>以下是 SSB 项目的完整 npm 依赖树中主要依赖的整理。</p>
 <h3 id="7-1-依赖关系总览"><a href="#7-1-依赖关系总览" class="headerlink" title="7.1 依赖关系总览"></a>7.1 依赖关系总览</h3><pre class="mermaid">graph TB
-    subgraph "顶层依赖"
-        BIND[bindings-noderify-nodejs-mobile@10.3.0]
-        BUFFERUTIL[bufferutil@4.0.1]
-        CACHED[cached-path-relative@1.0.2]
-        CHLORIDE[chloride@2.4.0]
-        ELECTRON[electron@15.2.0]
+    subgraph 顶层依赖
+        BIND[bindings-noderify-nodejs-mobile]
+        BUFFERUTIL[bufferutil]
+        CACHED[cached-path-relative]
+        CHLORIDE[chloride]
+        ELECTRON[electron]
     end
-
-    subgraph "chloride 加密库"
-        SB[sodium-browserify@1.3.0]
-        SBT[sodium-browserify-tweetnacl@0.2.6]
-        SC[sodium-chloride@1.1.2]
-        SN[sodium-native@3.2.0]
+    subgraph chloride加密库
+        SB[sodium-browserify]
+        SBT[sodium-browserify-tweetnacl]
+        SC[sodium-chloride]
+        SN[sodium-native]
     end
-
-    SB --> LW[libsodium-wrappers@0.7.8]
-    LW --> LS[libsodium@0.7.8]
-    SB --> SHA[sha.js@2.4.5]
-    SB --> TN[tweetnacl@0.14.5]
-
-    SBT --> CT[chloride-test@1.2.4]
-    SBT --> ED[ed2curve@0.1.4]
-    SBT --> SHA2[sha.js@2.4.11]
-    SBT --> TN2[tweetnacl@1.0.3]
-    SBT --> TA[tweetnacl-auth@0.3.1]
-
-    SN --> INI[ini@1.3.8]
-    SN --> NGB[node-gyp-build@4.2.3]
-
-    CHLORIDE --> SB & SBT & SC & SN
-
-    BUFFERUTIL --> NGB2[node-gyp-build@3.7.0]</pre>
+    SB --> LW[libsodium-wrappers]
+    LW --> LS[libsodium]
+    SB --> SHA[sha.js]
+    SB --> TN[tweetnacl]
+    SBT --> CT[chloride-test]
+    SBT --> ED[ed2curve]
+    SBT --> SHA2[sha2.js]
+    SBT --> TN2[tweetnacl2]
+    SBT --> TA[tweetnacl-auth]
+    SN --> INI[ini]
+    SN --> NGB[node-gyp-build]
+    BUFFERUTIL --> NGB2[node-gyp-build2]
+    CHLORIDE --> SB
+    CHLORIDE --> SBT
+    CHLORIDE --> SC
+    CHLORIDE --> SN</pre>
 
 <h3 id="7-2-关键依赖分析"><a href="#7-2-关键依赖分析" class="headerlink" title="7.2 关键依赖分析"></a>7.2 关键依赖分析</h3><table>
 <thead>
@@ -1913,10 +1910,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
 
 
 
-	<script src='https://cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js'></script>
+	<script src='https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js'></script>
 	<script>
 	  if (window.mermaid) {
-		mermaid.initialize({theme: 'neutral'});
+		mermaid.initialize({ theme: 'forest', startOnLoad: true });
 	  }
 	</script>
 
