@@ -146,6 +146,204 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-PCL 点云滤波及分割汇总" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/02/27/PCL%20%E7%82%B9%E4%BA%91%E6%BB%A4%E6%B3%A2%E5%8F%8A%E5%88%86%E5%89%B2%E6%B1%87%E6%80%BB/">PCL 点云滤波及分割汇总</a>
+    </h1>
+  
+
+        
+        <a href="/2023/02/27/PCL%20%E7%82%B9%E4%BA%91%E6%BB%A4%E6%B3%A2%E5%8F%8A%E5%88%86%E5%89%B2%E6%B1%87%E6%80%BB/" class="archive-article-date">
+  	<time datetime="2023-02-27T04:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-02-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="点云滤波汇总"><a href="#点云滤波汇总" class="headerlink" title="点云滤波汇总"></a>点云滤波汇总</h2><h3 id="立方体滤波"><a href="#立方体滤波" class="headerlink" title="立方体滤波"></a>立方体滤波</h3><p>首先是最简单的容易理解的立方体的剪裁滤波，根据对角点确定一个立方体然后获取立方体内或外的点，并且还可以在这立方体基础上加平移或旋转，因为根据两个点确立的立方体只是坐标轴正方向的，不一定能满足所有需求。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pcl/filters/crop_box.h&gt;</span></span></span><br><span class="line"><span class="comment">/// &lt;summary&gt;</span></span><br><span class="line"><span class="comment">/// 立方体滤波</span></span><br><span class="line"><span class="comment">/// &lt;/summary&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;cloud_in&quot;&gt;输入点云&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;cloud_out&quot;&gt;输出点云&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;min&quot;&gt;最小点位 x y z 1&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;max&quot;&gt;最大点位 x y z 1&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;negative&quot;&gt;默认值为 false，输出点云为在设定字段的设定范围内的点集，如果设置为 true 则刚好相反&lt;/param&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">cropFilter</span><span class="params">(pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr cloud_in, pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr &amp;cloud_out, Eigen::Vector4f min, Eigen::Vector4f max, <span class="type">bool</span> negative)</span> </span>&#123;</span><br><span class="line">    pcl::CropBox&lt;pcl::PointXYZ&gt; box_filter;						<span class="comment">//滤波器对象</span></span><br><span class="line">    box_filter.<span class="built_in">setMin</span>(min);	<span class="comment">//Min和Max是指立方体的两个对角点。每个点由一个四维向量表示，通常最后一个是1.</span></span><br><span class="line">    box_filter.<span class="built_in">setMax</span>(max);</span><br><span class="line">    <span class="comment">//box_filter.setRotation(rotation); //旋转 rx ry rz</span></span><br><span class="line">    <span class="comment">//box_filter.setTranslation(tanslation);//仿射矩阵 Affine3f 旋转加平移</span></span><br><span class="line">    <span class="comment">//box_filter.setTransform(transformax);//平移 tx ty tz</span></span><br><span class="line">    box_filter.<span class="built_in">setNegative</span>(negative);</span><br><span class="line">    box_filter.<span class="built_in">setInputCloud</span>(cloud_in);</span><br><span class="line">    box_filter.<span class="built_in">filter</span>(*cloud_out);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>
+        
+          <a class="article-more-a" href="/2023/02/27/PCL%20%E7%82%B9%E4%BA%91%E6%BB%A4%E6%B3%A2%E5%8F%8A%E5%88%86%E5%89%B2%E6%B1%87%E6%80%BB/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">点云</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">PCL</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">机器视觉</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">滤波</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">分割</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/02/27/PCL%20%E7%82%B9%E4%BA%91%E6%BB%A4%E6%B3%A2%E5%8F%8A%E5%88%86%E5%89%B2%E6%B1%87%E6%80%BB/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-OLLVM代码混淆移植与使用(再续)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/04/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E5%86%8D%E7%BB%AD)/">OLLVM代码混淆移植与使用(再续)</a>
+    </h1>
+  
+
+        
+        <a href="/2022/04/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E5%86%8D%E7%BB%AD)/" class="archive-article-date">
+  	<time datetime="2022-04-09T15:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-09</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这波主要自己闲下来了，帮之前兼职区块链公司搞定了Android和iOS的BLE无网通信请了假，准备去自考本科最后四门，结果疫情太厉害直接取消了，本来还想着年中就可以申请毕业直接再准备一下考研请的是长假。。。结果计划永远赶不上变化，毕竟搞学历对现在的自己只是解个心结去个遗憾，对自己工作生活没啥用调整好情绪重新继续正经创业或工作吧，借着长假的时间思考思考人生，搞一搞之前没空处理的遗留项目。下面就直接进入主题把！</p>
+<h1 id="关键修改"><a href="#关键修改" class="headerlink" title="关键修改"></a>关键修改</h1><h3 id="Legacy-PM模式不生效"><a href="#Legacy-PM模式不生效" class="headerlink" title="Legacy PM模式不生效"></a>Legacy PM模式不生效</h3><p>现在由于默认是NEW PM所以经常有人邮件我移植很完美编译也成功，就是没效果，这里做一下解答。主要两种方式解决，一种是在cmake的时候加一下<code>-DLLVM_ENABLE_NEW_PASS_MANAGER=OFF</code>来禁用掉NEW PM，这样在编译完成后使用的时候就可以了，还有一种就是走默认开启这，然后用ollvm编译自己项目时加上-flegacy-pass-manager的cflag，再加-mllvm原来哪些就可以正常使用了</p>
+<h3 id="14-0以后的修改"><a href="#14-0以后的修改" class="headerlink" title="14.0以后的修改"></a>14.0以后的修改</h3><p>主要是<code>StringObfuscation.cpp</code>里面的两个地方，第一个是宏的修改编译时机，第二个就是CreateGEP,CreateLoad等多个方法需要传递指针类型了，原来不传会设置为null到了13.0里就开始内部通过对象获取类型，就像修改的这样，到了14.0干脆就是强制你必须传类型了。<br><img src="/assets/blogImage/1649574671473.jpg" alt="image.png"><br>
+        
+          <a class="article-more-a" href="/2022/04/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E5%86%8D%E7%BB%AD)/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">LLVM</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">OLLVM</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Clang</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">混淆</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">XCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NDK</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Visual Studio</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/04/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E5%86%8D%E7%BB%AD)/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Mesh组网与智能路由器系统" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -471,199 +669,9 @@
 
 
   
-    <article id="post-OLLVM代码混淆移植与使用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/06/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8/">OLLVM代码混淆移植与使用</a>
-    </h1>
-  
-
-        
-        <a href="/2019/01/06/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8/" class="archive-article-date">
-  	<time datetime="2019-01-05T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>OLLVM(Obfuscator-LLVM)是瑞士西北应用科技大学安全实验室于2010年6月份发起的一个项目,该项目旨在提供一套开源的针对LLVM的代码混淆工具,以增加对逆向工程的难度。github上地址是<a target="_blank" rel="noopener" href="https://github.com/obfuscator-llvm/obfuscator">https://github.com/obfuscator-llvm/obfuscator</a> ，只不过仅更新到llvm的4.0，2017年开始就没在更新。</p>
-<h1 id="移植"><a href="#移植" class="headerlink" title="移植"></a>移植</h1><p>OLLVM如果自己想拿最新版的LLVM和Clang进行移植功能其实也并不是很难，整理一下其实改动很小，接下来将会讲一下移植的方法。</p>
-<h2 id="个人整理"><a href="#个人整理" class="headerlink" title="个人整理"></a>个人整理</h2><p>先放一下个人移植好的版本地址<a target="_blank" rel="noopener" href="https://github.com/heroims/obfuscator.git">https://github.com/heroims/obfuscator.git</a> ，个人fork原版后又加入了llvm5.0，6.0，7.0以及swift-llvm5.0的版本，应该能满足大部分需求了，如果有新版本下面的讲解，各位也可以自己动手去下载自己需要的llvm和clang进行移植。git上的提交每次都很独立如下图，方便各位cherry-pick。<br>
-        
-          <a class="article-more-a" href="/2019/01/06/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">LLVM</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">OLLVM</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Clang</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">混淆</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">XCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NDK</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Visual Studio</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/06/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-AES-128-CBC Base64加密——OC,Java,Golang联调" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/21/AES-128-CBC%20Base64%E5%8A%A0%E5%AF%86%E2%80%94%E2%80%94OC,Java,Golang%E8%81%94%E8%B0%83/">AES-128-CBC Base64加密——OC,Java,Golang联调</a>
-    </h1>
-  
-
-        
-        <a href="/2018/11/21/AES-128-CBC%20Base64%E5%8A%A0%E5%AF%86%E2%80%94%E2%80%94OC,Java,Golang%E8%81%94%E8%B0%83/" class="archive-article-date">
-  	<time datetime="2018-11-20T18:17:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-11-21</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="AES-128-CBC"><a href="#AES-128-CBC" class="headerlink" title="AES-128-CBC"></a>AES-128-CBC</h1><p>这里首先说说AES加密原理<br>AES加密算法采用分组密码体制，每个分组数据的长度为128位16个字节，密钥长度可以是128位16个字节、192位或256位，一共有四种加密模式（ECB、CBC、CFB、OFB），我们通常采用需要初始向量IV的CBC模式，初始向量的长度规定是128位16个字节。另外就是Padding，这里面有大坑。。。。先说一下Padding的三种模式PKCS5、PKCS7和NOPADDING。PKCS5是指分组数据缺少几个字节，就在数据的末尾填充几个字节的几，比如缺少5个字节，就在末尾填充5个字节的5。PKCS7是指分组数据缺少几个字节，就在数据的末尾填充几个字节的0，比如缺少7个字节，就在末尾填充7个字节的0。NoPadding是指不需要填充，也就是说数据的发送方肯定会保证最后一段数据也正好是16个字节。而PKCS5如果正好是16个字节且最后是16的时候则会再填充16个16用来区分，PKC7则是为0时填充16个0。而在iOS的OC方法里压根没提供PKCS5，只有PKCS7更坑的是真正对接时发现iOS上的PKCS7和其他端PKCS5是一样的。。。。所以才有了现在的想法分享一下踩过的坑，具体啥原因恐怕只有苹果自家知道，系统方法是真的坑！Java可以直接用系统方法填好设置结束战斗。。。Go的话padding这块自己写实现其他的系统都能设置。最后说一下密钥长度这里只有iOS是要自己设置好位数再对应位数写密钥，其他平台直接对应位数写密钥即可，所以最好各平台自己在封装下判断密钥长度出事向量长度，不然各端对应起来还是要犯傻。<br>
-        
-          <a class="article-more-a" href="/2018/11/21/AES-128-CBC%20Base64%E5%8A%A0%E5%AF%86%E2%80%94%E2%80%94OC,Java,Golang%E8%81%94%E8%B0%83/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">AES-128-CBC</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Objective-C</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Golang</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/11/21/AES-128-CBC%20Base64%E5%8A%A0%E5%AF%86%E2%80%94%E2%80%94OC,Java,Golang%E8%81%94%E8%B0%83/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/">Next &amp;raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/">Next &amp;raquo;</a>
     </nav>
   
 
@@ -1156,6 +1164,46 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Web3</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Meme</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Telegram Mini App</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Trading Bot</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Token Launch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">钱包</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">托管钱包</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">私钥</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">多链</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">交易系统</a>
               </li>
             
             <div class="clearfix"></div>
