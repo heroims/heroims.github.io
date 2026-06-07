@@ -16,7 +16,7 @@
 <meta property="og:description" content="前言Prediction Market（预测市场）是 Web3 领域重要的应用场景之一。Polymarket 作为最大的去中心化预测市场平台，提供 Gamma、Data、CLOB 三套 API 接口供开发者消费数据。 但要基于 Polymarket 数据构建一个面向用户的前端应用，需要解决几个实际问题：  数据获取：API 有频率限制，单次查询量有限，需要周期性同步 数据一致性：多 API 之间的">
 <meta property="og:locale">
 <meta property="article:published_time" content="2026-06-07T12:10:00.000Z">
-<meta property="article:modified_time" content="2026-06-07T11:06:36.481Z">
+<meta property="article:modified_time" content="2026-06-07T11:10:56.078Z">
 <meta property="article:author" content="Heroims">
 <meta property="article:tag" content="web3">
 <meta property="article:tag" content="go">
@@ -207,6 +207,7 @@
     Worker --> Storage
     Storage --> FE</pre>
 
+<span id="more"></span>
 <h3 id="核心启动流程"><a href="#核心启动流程" class="headerlink" title="核心启动流程"></a>核心启动流程</h3><p>Worker 的启动入口在 <code>cmd/worker/main.go</code>，启动顺序如下：</p>
 <pre class="mermaid">flowchart TD
     Start[启动 Worker]
