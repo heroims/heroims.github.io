@@ -146,35 +146,325 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Pods的static-framework使用感受" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-OLLVM代码混淆移植与使用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/29/Pods%E7%9A%84static-framework%E4%BD%BF%E7%94%A8%E6%84%9F%E5%8F%97/">Pods的static_framework使用感受</a>
+      <a class="article-title" href="/2019/01/06/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8/">OLLVM代码混淆移植与使用</a>
     </h1>
   
 
         
-        <a href="/2017/09/29/Pods%E7%9A%84static-framework%E4%BD%BF%E7%94%A8%E6%84%9F%E5%8F%97/" class="archive-article-date">
-  	<time datetime="2017-09-29T08:39:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-29</time>
+        <a href="/2019/01/06/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8/" class="archive-article-date">
+  	<time datetime="2019-01-05T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>CocoaPods终于出1.4.0.beta.1了，终于能用用static_framework这个属性了，拯救世界的属性啊！</p>
-<h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><p>封装pod依赖另一个有.a或Framework的pod，然后用<code>use_frameworks!</code>来动态库模式pod。那情况原来只能把那有.a或Framework的pod直接代码都放自己pod里，不能dependency，当然项目没用任何Swift其实就没事因为用不到<code>use_frameworks!</code>。还有就是Pod里用了资源文件的，因为用了资源文件和<code>use_frameworks!</code>，最终生成资源可都在.app的Frameworks/xxxxx.framework/里，如果第三方代码处理了这种情况还好，不过现在看几乎没有几个做这个处理的，都没想过动态库带来的改变也是醉了，资源都会找不到！使用静态库模式则会拍平就没这问题了。</p>
-<h1 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h1><p>下面来个例子，封装统计模块需要依赖Google统计，Fabric crash统计，现在有了这属性直接如下就完成了依赖关系<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#Google 统计</span><br><span class="line">s.ios.dependency      &#x27;Google/Analytics&#x27;</span><br><span class="line">#Fabric crash统计</span><br><span class="line">s.ios.dependency      &#x27;Fabric&#x27;</span><br><span class="line">s.ios.dependency      &#x27;Crashlytics&#x27;</span><br><span class="line">#指定Pod为静态库模式</span><br><span class="line">s.static_framework      = true</span><br></pre></td></tr></table></figure></p>
-<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
-<li>不能在当前pod里的<code>subpecs</code>中使用</li>
-<li>Framework受限头文件引用模式</li>
+        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>OLLVM(Obfuscator-LLVM)是瑞士西北应用科技大学安全实验室于2010年6月份发起的一个项目,该项目旨在提供一套开源的针对LLVM的代码混淆工具,以增加对逆向工程的难度。github上地址是<a target="_blank" rel="noopener" href="https://github.com/obfuscator-llvm/obfuscator">https://github.com/obfuscator-llvm/obfuscator</a> ，只不过仅更新到llvm的4.0，2017年开始就没在更新。</p>
+<h1 id="移植"><a href="#移植" class="headerlink" title="移植"></a>移植</h1><p>OLLVM如果自己想拿最新版的LLVM和Clang进行移植功能其实也并不是很难，整理一下其实改动很小，接下来将会讲一下移植的方法。</p>
+<h2 id="个人整理"><a href="#个人整理" class="headerlink" title="个人整理"></a>个人整理</h2><p>先放一下个人移植好的版本地址<a target="_blank" rel="noopener" href="https://github.com/heroims/obfuscator.git">https://github.com/heroims/obfuscator.git</a> ，个人fork原版后又加入了llvm5.0，6.0，7.0以及swift-llvm5.0的版本，应该能满足大部分需求了，如果有新版本下面的讲解，各位也可以自己动手去下载自己需要的llvm和clang进行移植。git上的提交每次都很独立如下图，方便各位cherry-pick。<br>
+        
+          <a class="article-more-a" href="/2019/01/06/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">LLVM</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">OLLVM</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Clang</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">混淆</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">XCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NDK</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Visual Studio</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/01/06/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-AES-128-CBC Base64加密——OC,Java,Golang联调" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/21/AES-128-CBC%20Base64%E5%8A%A0%E5%AF%86%E2%80%94%E2%80%94OC,Java,Golang%E8%81%94%E8%B0%83/">AES-128-CBC Base64加密——OC,Java,Golang联调</a>
+    </h1>
+  
+
+        
+        <a href="/2018/11/21/AES-128-CBC%20Base64%E5%8A%A0%E5%AF%86%E2%80%94%E2%80%94OC,Java,Golang%E8%81%94%E8%B0%83/" class="archive-article-date">
+  	<time datetime="2018-11-20T18:17:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-11-21</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="AES-128-CBC"><a href="#AES-128-CBC" class="headerlink" title="AES-128-CBC"></a>AES-128-CBC</h1><p>这里首先说说AES加密原理<br>AES加密算法采用分组密码体制，每个分组数据的长度为128位16个字节，密钥长度可以是128位16个字节、192位或256位，一共有四种加密模式（ECB、CBC、CFB、OFB），我们通常采用需要初始向量IV的CBC模式，初始向量的长度规定是128位16个字节。另外就是Padding，这里面有大坑。。。。先说一下Padding的三种模式PKCS5、PKCS7和NOPADDING。PKCS5是指分组数据缺少几个字节，就在数据的末尾填充几个字节的几，比如缺少5个字节，就在末尾填充5个字节的5。PKCS7是指分组数据缺少几个字节，就在数据的末尾填充几个字节的0，比如缺少7个字节，就在末尾填充7个字节的0。NoPadding是指不需要填充，也就是说数据的发送方肯定会保证最后一段数据也正好是16个字节。而PKCS5如果正好是16个字节且最后是16的时候则会再填充16个16用来区分，PKC7则是为0时填充16个0。而在iOS的OC方法里压根没提供PKCS5，只有PKCS7更坑的是真正对接时发现iOS上的PKCS7和其他端PKCS5是一样的。。。。所以才有了现在的想法分享一下踩过的坑，具体啥原因恐怕只有苹果自家知道，系统方法是真的坑！Java可以直接用系统方法填好设置结束战斗。。。Go的话padding这块自己写实现其他的系统都能设置。最后说一下密钥长度这里只有iOS是要自己设置好位数再对应位数写密钥，其他平台直接对应位数写密钥即可，所以最好各平台自己在封装下判断密钥长度出事向量长度，不然各端对应起来还是要犯傻。<br>
+        
+          <a class="article-more-a" href="/2018/11/21/AES-128-CBC%20Base64%E5%8A%A0%E5%AF%86%E2%80%94%E2%80%94OC,Java,Golang%E8%81%94%E8%B0%83/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">AES-128-CBC</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Objective-C</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Golang</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/11/21/AES-128-CBC%20Base64%E5%8A%A0%E5%AF%86%E2%80%94%E2%80%94OC,Java,Golang%E8%81%94%E8%B0%83/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Cocoa-iOS-OSX-安保系统设计实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/21/Cocoa-iOS-OSX-%E5%AE%89%E4%BF%9D%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E5%AE%9E%E7%8E%B0/">Cocoa(iOS,OSX)安保系统设计实现</a>
+    </h1>
+  
+
+        
+        <a href="/2017/12/21/Cocoa-iOS-OSX-%E5%AE%89%E4%BF%9D%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E5%AE%9E%E7%8E%B0/" class="archive-article-date">
+  	<time datetime="2017-12-21T10:38:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-12-21</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/assets/blogImage/3994053-6cb0e72bd8827012.jpg" alt="3994053-6cb0e72bd8827012.png"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这里主要以iOS和OSX讲讲crash闪退怎么防御。<br>其中最新的OSX应用本身就有一定闪退防御，但有点类似<code>@try @catch</code>在最外层包了一下普通的越界调用空方法都会中断在操作位置不向下执行，如果没有进一步复杂逻辑不会闪退，只是影响后续的操作。</p>
+<p>而iOS则没这么好说话了，二话不说直接闪退给你看没有上面的那种机制。</p>
+<p>所以才有了设计一个安保系统的意义，来保证最大程度的健壮性，理想的状态就是不crash且能继续正常运行后面的逻辑。</p>
+<p>参考了众多网上的资料有了下面的小成果分享出来，这其实只是安保系统最后的一个环节的防御</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/heroims/SafeObjectProxy">https://github.com/heroims/SafeObjectProxy</a></p>
+<h1 id="安保系统设计"><a href="#安保系统设计" class="headerlink" title="安保系统设计"></a>安保系统设计</h1><p>这里我所认为的安保系统应该从代码和规范两个层面看，毕竟想抓到所有的crash情况是一定不可能的，现实中即使处处try catch都没法保证抓到所有crash！</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><ul>
+<li>swizzing切面</li>
+<li>方法防御选型</li>
+<li>防御成功上报</li>
 </ul>
         
-          <a class="article-more-a" href="/2017/09/29/Pods%E7%9A%84static-framework%E4%BD%BF%E7%94%A8%E6%84%9F%E5%8F%97/#more">more >></a>
+          <a class="article-more-a" href="/2017/12/21/Cocoa-iOS-OSX-%E5%AE%89%E4%BF%9D%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E5%AE%9E%E7%8E%B0/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">OSX</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">安保系统</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Crash防御</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Cocoa</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/12/21/Cocoa-iOS-OSX-%E5%AE%89%E4%BF%9D%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E5%AE%9E%E7%8E%B0/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Xcode-配置多种scheme完美使用（配合Pods）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/01/Xcode-%E9%85%8D%E7%BD%AE%E5%A4%9A%E7%A7%8Dscheme%E5%AE%8C%E7%BE%8E%E4%BD%BF%E7%94%A8%EF%BC%88%E9%85%8D%E5%90%88Pods%EF%BC%89/">Xcode 配置多种scheme完美使用（配合Pods）</a>
+    </h1>
+  
+
+        
+        <a href="/2017/11/01/Xcode-%E9%85%8D%E7%BD%AE%E5%A4%9A%E7%A7%8Dscheme%E5%AE%8C%E7%BE%8E%E4%BD%BF%E7%94%A8%EF%BC%88%E9%85%8D%E5%90%88Pods%EF%BC%89/" class="archive-article-date">
+  	<time datetime="2017-11-01T12:21:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这里说到scheme其实配置不难，但真正应用到大项目中会发现一个神奇的问题，调试的时候自己自定义的scheme变量值都是nil，即使配置好也那样，主要场景就是工程内的其他工程，所以你的配置其实是要应用到所有子工程下的，是不是瞬间压力山大，，，，，本文最后就讲讲结合pod后轻松解决的办法，开头还是由浅入深，这样受众多点，文章也不至于太单调，就从配置开始一路讲到调试使用。</p>
+<h1 id="配置-Configurations"><a href="#配置-Configurations" class="headerlink" title="配置 Configurations"></a>配置 Configurations</h1><p>这一步主要是创建我们的编译配置项，比如添加备机,测试环境的调试和发布项，下面是添加了测试环境</p>
+<p><img src="/assets/blogImage/3994053-36feba23b8a9e57d.png" alt="屏幕快照 2017-10-31 下午7.10.33.png"><br>这里环境分离时最好也是分Debug和Release,我添加了SchemeAppTest_Debug和SchemeAppTest_Release相当于测试环境下的Debug和Release还有每次创建新的一定要基于Debug或Release不然出现啥配置不对真的是会排查到疯！</p>
+<h1 id="配置-Preprocessor-Macros"><a href="#配置-Preprocessor-Macros" class="headerlink" title="配置 Preprocessor Macros"></a>配置 Preprocessor Macros</h1><p><img src="/assets/blogImage/3994053-0cbf93e2a6e0e7b9.png" alt="屏幕快照 2017-10-31 下午7.28.20.png"><br>有了配置项，现在需要添加预编译宏，这样我们的代码里就可以用它来判断我们正在编译的是哪个环境了。<br>上图我分别对SchemeAppTest_Debug和SchemeAppTest_Release配置了<code>SCHEMETESTDEBUG=2</code>和<code>SCHEMETESTRELEASE=3</code>，内部其实写什么都可以只不过用的时候就要用你写的哪个宏，这里的写法只是效仿系统，完全可以把SchemeAppTest_Debug定为<code>ABC=1000</code>,也没问题，只不过用的时候就如下就可以了，ABC就代表了SchemeAppTest_Debug<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#ifdef ABC</span><br><span class="line">#else</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure><br>
+        
+          <a class="article-more-a" href="/2017/11/01/Xcode-%E9%85%8D%E7%BD%AE%E5%A4%9A%E7%A7%8Dscheme%E5%AE%8C%E7%BE%8E%E4%BD%BF%E7%94%A8%EF%BC%88%E9%85%8D%E5%90%88Pods%EF%BC%89/#more">more >></a>
         
       
 
@@ -196,15 +486,23 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">动态库</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Scheme</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Framework</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">预编译宏</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">静态库</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Configurations</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Preprocessor Macros</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">User-Defined-Setting</a>
         		</li>
       		
 		</ul>
@@ -214,7 +512,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/29/Pods%E7%9A%84static-framework%E4%BD%BF%E7%94%A8%E6%84%9F%E5%8F%97/">查看全文 >></a>
+          <a class="article-more-a" href="/2017/11/01/Xcode-%E9%85%8D%E7%BD%AE%E5%A4%9A%E7%A7%8Dscheme%E5%AE%8C%E7%BE%8E%E4%BD%BF%E7%94%A8%EF%BC%88%E9%85%8D%E5%90%88Pods%EF%BC%89/">查看全文 >></a>
         </p>
       
 
@@ -244,36 +542,45 @@
 
 
   
-    <article id="post-Linux 构建:编译IOS:Mac程序" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-IOS-各类获取授权处理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/10/Linux%20%E6%9E%84%E5%BB%BA:%E7%BC%96%E8%AF%91IOS:Mac%E7%A8%8B%E5%BA%8F/">Linux 构建/编译IOS/Mac程序</a>
+      <a class="article-title" href="/2017/09/29/IOS-%E5%90%84%E7%B1%BB%E8%8E%B7%E5%8F%96%E6%8E%88%E6%9D%83%E5%A4%84%E7%90%86/">IOS 各类获取授权常用处理</a>
     </h1>
   
 
         
-        <a href="/2017/09/10/Linux%20%E6%9E%84%E5%BB%BA:%E7%BC%96%E8%AF%91IOS:Mac%E7%A8%8B%E5%BA%8F/" class="archive-article-date">
-  	<time datetime="2017-09-09T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-10</time>
+        <a href="/2017/09/29/IOS-%E5%90%84%E7%B1%BB%E8%8E%B7%E5%8F%96%E6%8E%88%E6%9D%83%E5%A4%84%E7%90%86/" class="archive-article-date">
+  	<time datetime="2017-09-29T08:50:41.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-29</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>理论上这是一个很好的想法，但真正落实到实践，简直坑的不要不要的！笔者最终在CentOS上实在搞不动了，只在Ubuntu上弄了，关键CentOS是公司环境也不敢太造次。</p>
-<p>整个东西写出来主要是让自己记住坑太多，不是实在想不开没事干，千万不要再搞。</p>
-<p>思路来源<a target="_blank" rel="noopener" href="https://github.com/facebook/xcbuild/issues/37">https://github.com/facebook/xcbuild/issues/37</a></p>
-<h1 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h1><p>做这个事情起初只是因为我司不提供Mac机器来做自动打包，但又想要让我做自动打包，能提供的也只有CentOS系统，不过很快就发现打包其实完全不可能，因为证书问题很难解决，然后想着跑跑CI的test也不错才继续研究了一下。。。。毕竟我们Model都是自动生成的，git提交后跑一下CI确保能各端运行正常还是很有用的，另外版本归档打tag的时候跑一下CocoaPods把完整可执行代码构建好拉下来归档也是挺不错的！</p>
-<p>现实是恐怕就CocoaPods构建是比较稳定100%没问题，编译这个完全不敢说ok。。。所以有条件的话还是建议用有台Mac专门来干这些事，不然实在太麻烦，哪怕ssh到一台同事电脑悄悄开个账户搞都比在linux上搞靠谱！</p>
-<p>如图实现，没mac和有mac简直就是天壤之别的恶心差距！</p>
-<p><img src="/assets/blogImage/3994053-fad34baa2afc46ac.png" alt="Untitled.png"></p>
-<h1 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h1><h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>ruby （为了支持CocoaPods）<br><a target="_blank" rel="noopener" href="http://releases.llvm.org/download.html">clang</a> 4.0或以上（为了支持IOS10，如果你准备的sdk版本不高，那就无所谓了，关键是对应上）<br><a target="_blank" rel="noopener" href="https://opensource.apple.com/tarballs/clang/">Apple clang</a>(用他的话妥妥的手动apt-get拯救不了你)<br><a target="_blank" rel="noopener" href="https://github.com/tpoechtrager/cctools-port.git">cctools-port</a> 生成ios工具链（ios-toolchain）回头替换掉Xcode里的<br><a target="_blank" rel="noopener" href="https://github.com/ninja-build/ninja.git">ninja</a><br><a target="_blank" rel="noopener" href="https://github.com/facebook/xcbuild.git">xcbuild</a><br>Xcode（确切的说其实只要三个文件夹但我很不放心用了整个）<br>
+        <h1 id="地理位置授权"><a href="#地理位置授权" class="headerlink" title="地理位置授权"></a>地理位置授权</h1><p>需要引用<code>#import &lt;CoreLocation/CoreLocation.h&gt;</code></p>
+<ul>
+<li>plist<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">始终允许访问位置</span><br><span class="line">NSLocationAlwaysUsageDescription</span><br><span class="line">位置</span><br><span class="line">NSLocationUsageDescription</span><br><span class="line">在使用期间访问位置</span><br><span class="line">NSLocationWhenInUseUsageDescription</span><br><span class="line">始终允许访问位置并且在使用期间访问位置</span><br><span class="line">NSLocationAlwaysAndWhenInUseUsageDescription</span><br></pre></td></tr></table></figure></li>
+<li>判断<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//判断是否开启</span><br><span class="line">[CLLocationManager locationServicesEnabled];</span><br><span class="line">//获取具体状态</span><br><span class="line">[CLLocationManager authorizationStatus];</span><br></pre></td></tr></table></figure></li>
+<li>授权<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CLLocationManager *locManager = [[CLLocationManager alloc] init];</span><br><span class="line">[locManager ]</span><br><span class="line">//获取始终允许访问位置权限</span><br><span class="line">[locManager requestWhenInUseAuthorization];</span><br><span class="line">//获取在使用期间访问位置</span><br><span class="line">[locManager requestAlwaysAuthorization];</span><br></pre></td></tr></table></figure>
+<h1 id="相册授权"><a href="#相册授权" class="headerlink" title="相册授权"></a>相册授权</h1>需要引用<code>#import &lt;AssetsLibrary/AssetsLibrary.h&gt;</code>或<code>#import &lt;Photos/Photos.h&gt;</code></li>
+<li>plist<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">访问相册</span><br><span class="line">NSPhotoLibraryUsageDescription</span><br><span class="line">添加相册</span><br><span class="line">NSPhotoAddLibraryUsageDescription</span><br></pre></td></tr></table></figure></li>
+<li>判断<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[ALAssetsLibrary authorizationStatus];</span><br><span class="line"></span><br><span class="line">[PHPhotoLibrary authorizationStatus];</span><br></pre></td></tr></table></figure></li>
+<li>授权<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) &#123;</span><br><span class="line">if (status == PHAuthorizationStatusAuthorized) &#123;</span><br><span class="line">// 用户同意授权</span><br><span class="line">&#125;</span><br><span class="line">else &#123;</span><br><span class="line">// 用户拒绝授权</span><br><span class="line">&#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+<h1 id="相机-amp-麦克风授权"><a href="#相机-amp-麦克风授权" class="headerlink" title="相机&amp;麦克风授权"></a>相机&amp;麦克风授权</h1>需要引用<code>#import &lt;AVFoundation/AVFoundation.h&gt;</code></li>
+<li>plist<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">相机</span><br><span class="line">NSCameraUsageDescription</span><br><span class="line">麦克风</span><br><span class="line">NSMicrophoneUsageDescription</span><br></pre></td></tr></table></figure></li>
+<li>判断<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//AVMediaTypeVideo相机 AVMediaTypeAudio麦克风</span><br><span class="line">[AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];</span><br></pre></td></tr></table></figure></li>
+<li>授权<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">//AVMediaTypeVideo相机 AVMediaTypeAudio麦克风</span><br><span class="line">[AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) &#123;</span><br><span class="line"></span><br><span class="line">if (granted)&#123;// 用户同意授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">else &#123;// 用户拒绝授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">//不推荐慎用</span><br><span class="line">[[AVAudioSession sharedInstance] performSelector:@selector(requestRecordPermission:) withObject:^(BOOL granted) &#123;</span><br><span class="line">if (granted)&#123;// 用户同意授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">else &#123;// 用户拒绝授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+<h1 id="通讯录授权"><a href="#通讯录授权" class="headerlink" title="通讯录授权"></a>通讯录授权</h1>需要引用<code>#import &lt;Contacts/Contacts.h&gt;</code></li>
+<li>plist<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">通讯录</span><br><span class="line">NSContactsUsageDescription</span><br></pre></td></tr></table></figure></li>
+<li>判断<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts]</span><br></pre></td></tr></table></figure></li>
+<li>授权<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">CNContactStore*contactStore = [[CNContactStore alloc] init];</span><br><span class="line"></span><br><span class="line">[contactStore requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted,NSError*_Nullable error) &#123;</span><br><span class="line">if (granted)&#123;// 用户同意授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">else &#123;// 用户拒绝授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
         
-          <a class="article-more-a" href="/2017/09/10/Linux%20%E6%9E%84%E5%BB%BA:%E7%BC%96%E8%AF%91IOS:Mac%E7%A8%8B%E5%BA%8F/#more">more >></a>
+          <a class="article-more-a" href="/2017/09/29/IOS-%E5%90%84%E7%B1%BB%E8%8E%B7%E5%8F%96%E6%8E%88%E6%9D%83%E5%A4%84%E7%90%86/#more">more >></a>
         
       
 
@@ -291,19 +598,39 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">架构设计</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">实用技巧</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">构建</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">授权</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">编译</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">地理位置</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">网络判断</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">相册</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">相机</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">麦克风</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">通讯录</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">蜂窝网络</a>
         		</li>
       		
 		</ul>
@@ -313,302 +640,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/10/Linux%20%E6%9E%84%E5%BB%BA:%E7%BC%96%E8%AF%91IOS:Mac%E7%A8%8B%E5%BA%8F/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-CocoaPods 动:静态库封装组件化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/15/CocoaPods%20%E5%8A%A8:%E9%9D%99%E6%80%81%E5%BA%93%E5%B0%81%E8%A3%85%E7%BB%84%E4%BB%B6%E5%8C%96/">CocoaPods 动/静态库封装组件化</a>
-    </h1>
-  
-
-        
-        <a href="/2017/08/15/CocoaPods%20%E5%8A%A8:%E9%9D%99%E6%80%81%E5%BA%93%E5%B0%81%E8%A3%85%E7%BB%84%E4%BB%B6%E5%8C%96/" class="archive-article-date">
-  	<time datetime="2017-08-15T15:07:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="/assets/blogImage/3994053-1fd000b267fa2f10.png" alt="DingTalk20170818200900.png"></p>
-<h1 id="动-静态库混用"><a href="#动-静态库混用" class="headerlink" title="动/静态库混用"></a>动/静态库混用</h1><p>pods的动静态库混用，相信大多数人一想到就会头皮发麻，体会过的应该都懂，那种无助感。。。。</p>
-<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>大型项目里来个尝试性swift过渡，首先就是pod加use_frameworks!来支持pod动态库，接着就是一大片的不支持动态库pod提示error，源码上看不dependency依赖静态库pod其实是不会有问题的，如果你的pod全是源码型也不会有任何问题！</p>
-<p>ps:其实我感觉这是bug。。。压根就不是啥问题</p>
-<p>正常的pod当静态库用的时候vendored_library，vendored_frameworks两个属性搞定一切。。。</p>
-<h3 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h3><h4 id="未来"><a href="#未来" class="headerlink" title="未来"></a>未来</h4><p>虽说是未来，但我估计也就只有几个月的事吧，CocoaPods马上就要可以加动静态库标签了！长期关注pods源码的估计不以为然，上个月就定下来1.4.0发布，然而现在是1.3.1。。。。。<br>那老哥们PR了好久<a target="_blank" rel="noopener" href="https://github.com/CocoaPods/Core/pull/386">https://github.com/CocoaPods/Core/pull/386</a><br>看源码写的用法每个pod是可以定义static_framework:true属性,这样其实对简单的小项目半点作用都没有，但大型项目简直是救世的存在！承接上边的问题，对指定pod加静态库标签瞬间解决！<br>
-        
-          <a class="article-more-a" href="/2017/08/15/CocoaPods%20%E5%8A%A8:%E9%9D%99%E6%80%81%E5%BA%93%E5%B0%81%E8%A3%85%E7%BB%84%E4%BB%B6%E5%8C%96/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">工程管理</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">组件化</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CocoaPods</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">动/静态库</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/08/15/CocoaPods%20%E5%8A%A8:%E9%9D%99%E6%80%81%E5%BA%93%E5%B0%81%E8%A3%85%E7%BB%84%E4%BB%B6%E5%8C%96/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-IOS 切面统计事件解耦" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/02/IOS%20%E5%88%87%E9%9D%A2%E7%BB%9F%E8%AE%A1%E4%BA%8B%E4%BB%B6%E8%A7%A3%E8%80%A6/">IOS 切面统计事件解耦</a>
-    </h1>
-  
-
-        
-        <a href="/2017/08/02/IOS%20%E5%88%87%E9%9D%A2%E7%BB%9F%E8%AE%A1%E4%BA%8B%E4%BB%B6%E8%A7%A3%E8%80%A6/" class="archive-article-date">
-  	<time datetime="2017-08-01T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>统计这个事情可以说是个巨无语的系统，当然不把他独立出来也就不是什么问题了，只是一堆牛皮癣似得代码穿插在项目各个地方，毕竟真正应用到一个app里的统计都跟业务有着很强的绑定关系，脱离业务的统计数据基本没什么大用，先吐槽一波再开始正文。。。。<br><img src="/assets/blogImage/3994053-18807a49c709e49a.png" alt="DingTalk20170802140347.png"></p>
-<h1 id="基础封装"><a href="#基础封装" class="headerlink" title="基础封装"></a>基础封装</h1><p>先从用第三方的来说，基本上就只是需要包个壳就ok了，建个manager，初始化sdk一封装，加几个常用统计方法基本ok。常见的方法就是传个event名再加个properties传扩展字典，用户登录状态绑定注销，通用字段增删改，基本上这就满足了大部分需求。。。</p>
-<p>如果是纯自己手写，上面说的壳放着，剩下的仿照sdk来，基本功能要实现异步队列记录往本地写数据，定期上传，处理好读写关系是关键，这里不多说不是这篇重点。</p>
-<p>ps:有个壳才敢放开手折腾优化</p>
-<h4 id="切面封装"><a href="#切面封装" class="headerlink" title="切面封装"></a>切面封装</h4><p>切面统计其实可以看我之前的<a target="_blank" rel="noopener" href="http://www.jianshu.com/p/a9219e618ca2">IOS 百行代码切面日志</a>，整个完成的就是切面的封装，看过的基本应该了解这套逻辑切面的时候不关心切面方法的参数的话会非常好用。<br>如果业务关联强的情况，虽然也能处理但要针对那些业务作出对应的逻辑，导致切面封装里夹杂很多特殊逻辑,下面的方法内部要对originAOP拆分取所有参，甚至要复制部分业务层逻辑过来最后完成一个统计。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">@interface NSObject (AOPLogger)</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">替换或添加类方法，即使替换过也会替换，注意想单次替换使用dispatch_once保证，如果方法从未声明过则会添加失败</span><br><span class="line"></span><br><span class="line">@param originalSelector 原方法</span><br><span class="line">@param swizzledSelector 替换方法</span><br><span class="line">@param error 错误信息</span><br><span class="line">*/</span><br><span class="line">+(void)al_hookOrAddWithOriginClassSeletor:(SEL)originalSelector swizzledSelector:(SEL)swizzledSelector error:(NSError**)error;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">替换或添加实例方法，即使替换过也会替换，注意想单次替换使用dispatch_once保证，如果方法从未声明过则会添加失败</span><br><span class="line"></span><br><span class="line">@param originalSelector 原方法</span><br><span class="line">@param swizzledSelector 替换方法</span><br><span class="line">@param error 错误信息</span><br><span class="line">*/</span><br><span class="line">+(void)al_hookOrAddWithOriginSeletor:(SEL)originalSelector swizzledSelector:(SEL)swizzledSelector error:(NSError**)error;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure><br>
-        
-          <a class="article-more-a" href="/2017/08/02/IOS%20%E5%88%87%E9%9D%A2%E7%BB%9F%E8%AE%A1%E4%BA%8B%E4%BB%B6%E8%A7%A3%E8%80%A6/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">切面</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AOP</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">日志</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">AOP解耦</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">统计</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/08/02/IOS%20%E5%88%87%E9%9D%A2%E7%BB%9F%E8%AE%A1%E4%BA%8B%E4%BB%B6%E8%A7%A3%E8%80%A6/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-IOS 百行代码切面日志" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/22/IOS%20%E7%99%BE%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%88%87%E9%9D%A2%E6%97%A5%E5%BF%97/">IOS 百行代码切面日志</a>
-    </h1>
-  
-
-        
-        <a href="/2017/03/22/IOS%20%E7%99%BE%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%88%87%E9%9D%A2%E6%97%A5%E5%BF%97/" class="archive-article-date">
-  	<time datetime="2017-03-21T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="AOPLogger"><a href="#AOPLogger" class="headerlink" title="AOPLogger"></a>AOPLogger</h1><h3 id="切面日志作用"><a href="#切面日志作用" class="headerlink" title="切面日志作用"></a>切面日志作用</h3><p>说到日志，切面的实现最大的好处也就是分离出来，单独开发，包括埋点，记录输出log都可以在不影响项目内逻辑的情况下完成，形成完全的一个独立模块。</p>
-<h4 id="这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。"><a href="#这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。" class="headerlink" title="这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。"></a>这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。</h4><p>在实现上用了Aspects这个库，主要就是hook方法，用它主要是对一些例外情况处理不错，自己写简单实现其实就只写写方法交换剩下的就不管了。。。</p>
-<p>下面说一下.h<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">extern NSString * const AOPLoggerMethod;//要统计的日志方法Key</span><br><span class="line">extern NSString * const AOPLoggerLogInfo;//要统计的日志信息Key</span><br><span class="line">extern NSString * const AOPLoggerPositionAfter;//方法执行后统计日志</span><br><span class="line">extern NSString * const AOPLoggerPositionBefore;//方法执行前统计日志</span><br><span class="line">extern NSString * const AOPLoggerPositionType;//执行日志统计的类型Key</span><br><span class="line"></span><br><span class="line">@protocol AOPLoggerGetConfigInfoProtocol &lt;NSObject&gt;</span><br><span class="line"></span><br><span class="line">@required</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">创建类扩展如果使用此协议必须实现此方法</span><br><span class="line">此方法返回统计的配置信息，可以从网络取也可以从本地取</span><br><span class="line">@return 统计配置字典</span><br><span class="line">*/</span><br><span class="line">-(NSDictionary*)al_getConfigInfo;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line">@protocol AOPLoggerBLLProtocol &lt;NSObject&gt;</span><br><span class="line"></span><br><span class="line">@required</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">创建类扩展如果使用此协议必须实现此方法</span><br><span class="line">此方法主要来处理切面方法后的log信息处理可以存本地也可以使用其他任意第三方输出</span><br><span class="line">@param log 配置文件里定义的AOPLoggerLogInfo信息</span><br><span class="line">@param originAOP AspectInfo的方法信息，第三方库Aspect返回的切面方法的所有信息</span><br><span class="line">*/</span><br><span class="line">-(void)al_logger:(id)log originAOP:(id)originAOP;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface AOPLogger : NSObject</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">开始读取日志Plist配置文件</span><br><span class="line">*/</span><br><span class="line">+(void)startAOPLoggerWithPlist;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">统计日志的调用方法</span><br><span class="line">（如果不想增加开机时间可以采取每个模块创建一个日志统计类适时调用，在该类里提供一个初始化方法，内部调用此即可）</span><br><span class="line">@param classString 类名</span><br><span class="line">@param methodString 方法名</span><br><span class="line">@param log 相当于AOPLoggerLogInfo信息</span><br><span class="line">*/</span><br><span class="line">+(void)AOPLoggerWithClassString:(NSString*)classString methodString:(NSString*)methodString log:(id)log;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">统计日志的调用方法</span><br><span class="line">（如果不想增加开机时间可以采取每个模块创建一个日志统计类适时调用，在该类里提供一个初始化方法，内部调用此即可）</span><br><span class="line">@param classString 类名</span><br><span class="line">@param methodString 方法名</span><br><span class="line">@param log 相当于AOPLoggerLogInfo信息</span><br><span class="line">@param logPosition 日志统计时位置，可放在方法运行前或运行后（默认运行后执行日志统计）</span><br><span class="line">*/</span><br><span class="line">+(void)AOPLoggerWithClassString:(NSString *)classString methodString:(NSString *)methodString log:(id)log logPosition:(NSString*)logPosition;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure><br>
-        
-          <a class="article-more-a" href="/2017/03/22/IOS%20%E7%99%BE%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%88%87%E9%9D%A2%E6%97%A5%E5%BF%97/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">切面</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AOP</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">日志</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">百行代码系列</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/03/22/IOS%20%E7%99%BE%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%88%87%E9%9D%A2%E6%97%A5%E5%BF%97/">查看全文 >></a>
+          <a class="article-more-a" href="/2017/09/29/IOS-%E5%90%84%E7%B1%BB%E8%8E%B7%E5%8F%96%E6%8E%88%E6%9D%83%E5%A4%84%E7%90%86/">查看全文 >></a>
         </p>
       
 
@@ -640,7 +672,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/">Next &amp;raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/3/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/5/">Next &amp;raquo;</a>
     </nav>
   
 
@@ -1173,6 +1205,50 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">交易系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">web3</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">kline</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">go</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">architecture</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">smart-money</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">polymarket</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">prediction-market</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">solana</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">evm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">kafka</a>
               </li>
             
             <div class="clearfix"></div>

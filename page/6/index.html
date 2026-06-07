@@ -146,43 +146,405 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Xcode添加静态库以及编译选项配置常见问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-IOS 网络服务层自动化详解" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/06/04/Xcode%E6%B7%BB%E5%8A%A0%E9%9D%99%E6%80%81%E5%BA%93%E4%BB%A5%E5%8F%8A%E7%BC%96%E8%AF%91%E9%80%89%E9%A1%B9%E9%85%8D%E7%BD%AE%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">Xcode添加静态库以及编译选项配置常见问题</a>
+      <a class="article-title" href="/2017/03/02/IOS%20%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%B1%82%E8%87%AA%E5%8A%A8%E5%8C%96%E8%AF%A6%E8%A7%A3/">IOS 网络服务层自动化详解</a>
     </h1>
   
 
         
-        <a href="/2015/06/04/Xcode%E6%B7%BB%E5%8A%A0%E9%9D%99%E6%80%81%E5%BA%93%E4%BB%A5%E5%8F%8A%E7%BC%96%E8%AF%91%E9%80%89%E9%A1%B9%E9%85%8D%E7%BD%AE%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="archive-article-date">
-  	<time datetime="2015-06-04T04:17:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-06-04</time>
+        <a href="/2017/03/02/IOS%20%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%B1%82%E8%87%AA%E5%8A%A8%E5%8C%96%E8%AF%A6%E8%A7%A3/" class="archive-article-date">
+  	<time datetime="2017-03-01T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-02</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="一-Xcode编译出现Link错误-出现”duplicate-symbols-for-architecture-i386-clang”提示"><a href="#一-Xcode编译出现Link错误-出现”duplicate-symbols-for-architecture-i386-clang”提示" class="headerlink" title="一,Xcode编译出现Link错误,出现”duplicate symbols for architecture i386 clang”提示."></a>一,Xcode编译出现Link错误,出现”duplicate symbols for architecture i386 clang”提示.</h1><p>问题:链接时,项目有重名文件.</p>
-<p>解决:</p>
-<p>根据错误提示,做如下检查:<br>1.Taraget-&gt;Build Settings-&gt;Link Binary With Libraries检查是否有重复lib.</p>
-<p>2.全工程搜索下重名文件,决定如何删除.</p>
-<h1 id="二-关于Category位于静态库时-引用该静态库的工程使用Category-出现”unrecognized-selector-sent-to-class”提示"><a href="#二-关于Category位于静态库时-引用该静态库的工程使用Category-出现”unrecognized-selector-sent-to-class”提示" class="headerlink" title="二,关于Category位于静态库时,引用该静态库的工程使用Category,出现”unrecognized selector sent to class”提示."></a>二,关于Category位于静态库时,引用该静态库的工程使用Category,出现”unrecognized selector sent to class”提示.</h1><p>问题:标准UNIX静态库与Objective-C之间Linker的差异.在标准的UNIX静态库内,linker symbol是依照每一个类别而产生的,但由于Category并没有真正产生一个类别,所以出错.</p>
-<p>解决:</p>
-<p>1.在该静态库的Taraget-&gt;Build Settings-&gt;Other Linker Flags-&gt;加上 <code>-ObjC</code>.</p>
-<p>2.在使用该静态库的工程Taraget-&gt;Build Settings-&gt;Other Linker Flags-&gt;加上<code>-all_load</code>或<code>-force_load.</code></p>
-<h1 id="三-编译warning：ld-warning-directory-not-found-for-option-‘-L’"><a href="#三-编译warning：ld-warning-directory-not-found-for-option-‘-L’" class="headerlink" title="三,编译warning：ld: warning: directory not found for option ‘-L’."></a>三,编译warning：ld: warning: directory not found for option ‘-L’.</h1><p>问题:通常是Path问题.</p>
-<p>解决:</p>
-<p>Taraget-&gt;Build Settings-&gt;Library Search Paths 和 Framework Search Paths,删掉编译报warning的路径即OK</p>
-<h1 id="四-引入-带源码的-静态库所需配置"><a href="#四-引入-带源码的-静态库所需配置" class="headerlink" title="四,引入(带源码的)静态库所需配置."></a>四,引入(带源码的)静态库所需配置.</h1><p>步骤:</p>
-<p>1.Add Files to.. 加入静态库的.xcodeproj 文件,不要勾选Copy Items.. 选项。(可以先把源代码项目先复制到使用项目文件夹下)</p>
-<p>2.Target-&gt;Build Phases-&gt;Target Dependecies-&gt;加静态库 &amp;&amp; Link Binary With Libraries-&gt;加静态库.</p>
-<p>3.配置静态库头文件路径,在Taraget-&gt;Build Settings-&gt;User Header Search Paths-&gt;配上静态库的物理路径.</p>
-<p>[错误tips: 若出现加入的.xcodeproj无法展开,则在Xcode中关闭静态库项目即可]</p>
-<p>PS:只有.a 和 .h的静态库,则直接拖入项目即可。</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>之前的文章<a target="_blank" rel="noopener" href="http://www.jianshu.com/p/7a3a387584c6">http://www.jianshu.com/p/7a3a387584c6</a> 最后提到了网络服务层自动化，今天在详细说说。之前封装了ServerAPI，这套框架本身其实相当于定义了一套规范的。<br>自动化的概念还是放最后，先讲清楚这框架，到了后面自动化概念自然而然就出来了。</p>
+<p>#ServerAPI 分析与网络服务层构建<br>框架本身构成主要有4部分</p>
+<h3 id="ServerAPI"><a href="#ServerAPI" class="headerlink" title="ServerAPI"></a>ServerAPI</h3><p>主要对后台的API接口做对应描述，相当于网络请求的配置文件Model，定义了请求地址，重试次数，超时时间，返回数据类型，解析数据类型，上传方式等等，，除了常用描述还封装了常用方法算是个标准的胖Model<br>常用方法例如，请求地址这里也是拆分成host ，path ，pathParameter，parameter，内部封装了组合逻辑，下面4个属性<br>host：<a target="_blank" rel="noopener" href="http://xxxx/">http://xxxx/</a><br>path：module/{xxxmudleID}<br>pathParameter：xxxmudleID:xxxx<br>parameter：key:value<br>可以拼成<a target="_blank" rel="noopener" href="http://xxxx/module/xxxmudleID?key=value">http://xxxx/module/xxxmudleID?key=value</a> 这个url，还有自动为每一次请求生成唯一ID，对请求打Tag方便归类，包括发起请求这也提供了方法，不过实现当然不在这，毕竟他只负责描述</p>
+<h3 id="ServerAPIManager"><a href="#ServerAPIManager" class="headerlink" title="ServerAPIManager"></a>ServerAPIManager</h3><p>主要负责管理请求和根据api发起请求，框架内他只是一个管理者逻辑，对发起的请求做归类管理，而发起请求包括缓存逻辑这里通过Category来实现，而具体要实现哪些，由最后面的协议类定义，这样框架本身不去对网络层实现，缓存层实现做干涉，方便更自由的定制化，例如网络层AFN，ASI，还是其他语言都跟框架本身无关，所以这里框架本身只是一个壳，移植性较高，同样的思想拿到其他平台依然适用</p>
+<h3 id="ServerResult"><a href="#ServerResult" class="headerlink" title="ServerResult"></a>ServerResult</h3><p>主要把返回的数据用通用型实体表示，包括发起的api，发起请求的request对象，返回的源数据，返回的格式化数据，返回的错误，状态等，由于牵扯到数据格式化，所以这里依然是通过Category实现对应方法，方便扩展</p>
+<p>ps：不支持扩展的语言，继承也可以<br>
+        
+          <a class="article-more-a" href="/2017/03/02/IOS%20%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%B1%82%E8%87%AA%E5%8A%A8%E5%8C%96%E8%AF%A6%E8%A7%A3/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">网络层</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">自动化</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">架构设计</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/02/IOS%20%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%B1%82%E8%87%AA%E5%8A%A8%E5%8C%96%E8%AF%A6%E8%A7%A3/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-IOS百行代码全局语言本地化:国际化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/15/IOS%E7%99%BE%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%85%A8%E5%B1%80%E8%AF%AD%E8%A8%80%E6%9C%AC%E5%9C%B0%E5%8C%96:%E5%9B%BD%E9%99%85%E5%8C%96/">IOS百行代码全局语言本地化/国际化</a>
+    </h1>
+  
+
+        
+        <a href="/2017/02/15/IOS%E7%99%BE%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%85%A8%E5%B1%80%E8%AF%AD%E8%A8%80%E6%9C%AC%E5%9C%B0%E5%8C%96:%E5%9B%BD%E9%99%85%E5%8C%96/" class="archive-article-date">
+  	<time datetime="2017-02-14T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="IOS百行代码全局语言本地化-国际化"><a href="#IOS百行代码全局语言本地化-国际化" class="headerlink" title="IOS百行代码全局语言本地化/国际化"></a>IOS百行代码全局语言本地化/国际化</h1><p>废话不多说先把基本配置搞定图文一起来</p>
+<p><img src="/assets/blogImage/3994053-006976bd750f8324.jpeg" alt="3618569F-C518-4582-8580-9DC73F1E8B2E.png"><br>这里点个“+”直接就o了<br>剩下的就是创建strings文件也就是语言映射文件</p>
+<p><img src="/assets/blogImage/3994053-6172f40aabb17548.jpeg" alt="32E018FA-1E4C-4127-BD87-0AE0B0B1641D.png"></p>
+<p>划线的就是创建时候该点击的InfoPlist.strings就是定义CFBundleDisplayName来确定app的名字<br>Localizable.strings则是正经的语言映射表了<br>xib，storyboard和image也是一个套路看划线那点击就ok了<br><img src="/assets/blogImage/3994053-f2f6768c6d73d371.jpeg" alt="6DCE952A-4868-4652-AAB5-59C36DF129D5.png"></p>
+<h1 id="百行代码全局Hook完成本地化"><a href="#百行代码全局Hook完成本地化" class="headerlink" title="百行代码全局Hook完成本地化"></a>百行代码全局Hook完成本地化</h1><p>废话不多说先放代码在解释<br><a target="_blank" rel="noopener" href="https://github.com/heroims/LocalizedEngine">https://github.com/heroims/LocalizedEngine</a><br>
+        
+          <a class="article-more-a" href="/2017/02/15/IOS%E7%99%BE%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%85%A8%E5%B1%80%E8%AF%AD%E8%A8%80%E6%9C%AC%E5%9C%B0%E5%8C%96:%E5%9B%BD%E9%99%85%E5%8C%96/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">切面</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">百行代码系列</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">本地化/国际化</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">翻译</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/02/15/IOS%E7%99%BE%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%85%A8%E5%B1%80%E8%AF%AD%E8%A8%80%E6%9C%AC%E5%9C%B0%E5%8C%96:%E5%9B%BD%E9%99%85%E5%8C%96/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-IOS组件化与工程管理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/05/IOS%E7%BB%84%E4%BB%B6%E5%8C%96%E4%B8%8E%E5%B7%A5%E7%A8%8B%E7%AE%A1%E7%90%86/">IOS组件化与工程管理</a>
+    </h1>
+  
+
+        
+        <a href="/2017/02/05/IOS%E7%BB%84%E4%BB%B6%E5%8C%96%E4%B8%8E%E5%B7%A5%E7%A8%8B%E7%AE%A1%E7%90%86/" class="archive-article-date">
+  	<time datetime="2017-02-04T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>谈及组件化其实网上也有不少文章了，但我个人认为不结合工程管理去单讲组件化恐怕很难让人理解概念，而去实践的时候也只是照猫画虎。</p>
+<h1 id="工程管理"><a href="#工程管理" class="headerlink" title="工程管理"></a>工程管理</h1><p>组件化的实现很重要的一个组成部分应该是工程拆分，这里我的方案是采取git管理项目pod管理依赖很常见很普通的方法。<br>理想的状态每一个模块都是独立的，可以单独拿出来测试，发布，也就是每一个子模块其实都是一个git仓库，这里紧接着就是子仓库和主项目的关系问题，上边说到了git和pod，还有一个submodule我喜欢用这个来做子仓库的管理上边为啥没提它呢？<br>因为submodule本身就是git自带的就是git的一部分，常用命令有<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 添加子仓库</span><br><span class="line">git submodule add 仓库地址 路径</span><br><span class="line">#初始化所有子仓库</span><br><span class="line">git submodule init</span><br><span class="line"># 更新子仓库</span><br><span class="line">git submodule update</span><br><span class="line"></span><br><span class="line"># 也可以初始化更新一起</span><br><span class="line">git submodule update --init</span><br></pre></td></tr></table></figure></p>
+<p>pod只是帮我把依赖关系理清直接本地pod，因为坑爹的开发阶段难免有互相block的情况，那边东西弄完了，但还没有做发布还不稳定，但另一边已经急着要看一眼整体调用的效果了。。。<br>当然这时候也可以让对面先打个beta的tag，那样可想而知最后会有多少没用的tag，另一方面就是bug联调恢复节点排查的时候，另一方估计只有一个方案就是回滚上一个tag中间哪的问题一点点打tag联调。<br>上边说的打tag也只是个例子，当然你可以改Podfile对应不同branch，但那也是要每次调都要改一下的，但我这种模式由于是本地pod所以podfile不用动了每次都去指向对应的项目，剩下的就是对子仓库随意切换branch甚至commit节点都可以，调ok了直接commit一下submodule指向的更改即可。然后另一方更新一下再pod update把依赖关系重新建立一下（如果没有添加或删除，甚至这步都不需要，本地pod引用目录我们submodule的本地文件夹里面有什么变化这边自动会变，添加删除是因为依赖关系发生变化了所以跟着需要重新建立）,当然理想情况回头有空单独整合一套submodule和pod的命令，submodule更新时判断有增删操作执行pod update其他情况不处理。</p>
+<p>这里紧接着就是公共库的处理以及怎么去建立主仓库与子仓库的依赖，我这里把基本思路给出，具体情况还是自己再改动，这里首先就是建立podspec来提供依赖建立<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">Pod::Spec.new do |s|</span><br><span class="line">s.name                  = &#x27;MainWorkSpaceDemo&#x27;</span><br><span class="line">s.version               = &#x27;1.0.0&#x27;</span><br><span class="line">s.summary               = &#x27;A new container controller to slide  &#x27;</span><br><span class="line">s.homepage              = &#x27;github.com&#x27;</span><br><span class="line">s.license               = &#123; :type =&gt; &#x27;MIT&#x27;, :file =&gt; &#x27;README.md&#x27; &#125;</span><br><span class="line">s.author                = &#123; &#x27;heroims&#x27; =&gt; &#x27;heroims@163.com&#x27; &#125;</span><br><span class="line">s.source                = &#123; :git =&gt; &#x27;&#x27;, :tag =&gt; &quot;#&#123;s.version&#125;&quot; &#125;</span><br><span class="line">s.platform              = :ios, &#x27;5.0&#x27;</span><br><span class="line">s.source_files          = &#x27;ZYQRouter/*.&#123;h,m&#125;&#x27;</span><br><span class="line">s.requires_arc          = true</span><br><span class="line">#公共仓库</span><br><span class="line">s.subspec &#x27;BaseTool&#x27; do |ss|</span><br><span class="line">ss.source_files = &#x27;ZYQRouter/*.&#123;h,m&#125;&#x27;</span><br><span class="line">end</span><br><span class="line">#模块1</span><br><span class="line">s.subspec &#x27;Module1&#x27; do |sss|</span><br><span class="line">sss.source_files = &#x27;Module1/Module1Lib/*.&#123;h,m&#125;&#x27;</span><br><span class="line">end</span><br><span class="line">#模块2</span><br><span class="line">s.subspec &#x27;Module2&#x27; do |ssss|</span><br><span class="line">ssss.source_files = &#x27;Module2/Module2Lib/*.&#123;h,m&#125;&#x27;</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">end</span><br></pre></td></tr></table></figure><br>看见上边相比就明白了把，开发的时候最好要作为模块给人的东西放在一个目录下，当然不放也可以，这里就是为了方便<br>然后就是引用了,下面是module1工程的，只引用了一个公共库，真正开发的时候则会引用很多，然后build测试模块的app给测试，提供给主仓库的东西放在事先约定的目录下，其他的随便看心情，反正对别人没影响就是自己爽不爽<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">target &#x27;Module1&#x27; do</span><br><span class="line"># Uncomment the next line if you&#x27;re using Swift or would like to use dynamic frameworks</span><br><span class="line"># use_frameworks!</span><br><span class="line"></span><br><span class="line"># Pods for Module1</span><br><span class="line">pod &#x27;MainWorkSpaceDemo/BaseTool&#x27;, :path =&gt; &#x27;../MainWorkSpaceDemo.podspec&#x27;</span><br><span class="line"></span><br><span class="line">target &#x27;Module1Tests&#x27; do</span><br><span class="line">inherit! :search_paths</span><br><span class="line"># Pods for testing</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">target &#x27;Module1UITests&#x27; do</span><br><span class="line">inherit! :search_paths</span><br><span class="line"># Pods for testing</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">end</span><br></pre></td></tr></table></figure><br>
+        
+          <a class="article-more-a" href="/2017/02/05/IOS%E7%BB%84%E4%BB%B6%E5%8C%96%E4%B8%8E%E5%B7%A5%E7%A8%8B%E7%AE%A1%E7%90%86/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">工程管理</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">组件化</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">架构设计</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/02/05/IOS%E7%BB%84%E4%BB%B6%E5%8C%96%E4%B8%8E%E5%B7%A5%E7%A8%8B%E7%AE%A1%E7%90%86/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-移动端Model层与Server服务层自动化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/01/%E7%A7%BB%E5%8A%A8%E7%AB%AFModel%E5%B1%82%E4%B8%8EServer%E6%9C%8D%E5%8A%A1%E5%B1%82%E8%87%AA%E5%8A%A8%E5%8C%96/">移动端Model层与Server服务层自动化</a>
+    </h1>
+  
+
+        
+        <a href="/2017/02/01/%E7%A7%BB%E5%8A%A8%E7%AB%AFModel%E5%B1%82%E4%B8%8EServer%E6%9C%8D%E5%8A%A1%E5%B1%82%E8%87%AA%E5%8A%A8%E5%8C%96/" class="archive-article-date">
+  	<time datetime="2017-01-31T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Model层自动化"><a href="#Model层自动化" class="headerlink" title="Model层自动化"></a>Model层自动化</h1><h3 id="前言（纯属捎带扯一下，后端大咖勿看）"><a href="#前言（纯属捎带扯一下，后端大咖勿看）" class="headerlink" title="前言（纯属捎带扯一下，后端大咖勿看）"></a>前言（纯属捎带扯一下，后端大咖勿看）</h3><p>谈到Model层自动化的产出我们就来从最初的地方开始讲，数据库！<br>无论你是用啥写服务器如果还手写Model那真的只能说你够low我服！不过如果是手写Model自动生成数据库那另说，总的来说就是要么从数据库转实体出来，要么从实体转数据库这才有点意思。<br>上边只是开玩笑下面正题，很多时候大家都无奈没办法不能说low不low，其中奥妙各有体会，通常有点规模的团队都是先定义表然后就出Model了</p>
+<h3 id="后端的Model层"><a href="#后端的Model层" class="headerlink" title="后端的Model层"></a>后端的Model层</h3><p>后端数据库和实体互转的方案都不用Google，百度就能出来一大推，有直接读库生成的，也有从实体转sql生成库的，更有提前定义协议然后开始出对应模块对应语言的实体及sql</p>
+<h3 id="移动端的Model层"><a href="#移动端的Model层" class="headerlink" title="移动端的Model层"></a>移动端的Model层</h3><p>先继续谈会后台Model，这里要说的只是最好有一个提前定义的过程，这样一方面规范开发流程提前想好怎样建库合理，一方面有利于跨平台跨语言的开发，有了提前定义的协议，Model和枚举的各平台自动生成就方便了很多，写个简单的小程序即可，类型也就那几类。关键真的是一劳永逸，省去了大家互相校对的过程。<br>自动化生成移动端乃至前端用的Model层说白了就是做个类型映射，细说的话基本就是分为两类，一类直接就着后端现有项目读Model层的文件，然后做个类型的映射直接导出移动端需要的类，另一类也就是设计数据库时先定义Model的协议，然后根据协议自动生成各个平台需要的实体，而协议定义通常用序列化后的数据如xml(极力抵制，结构复杂)，json，pb，sql文件都能干这事。</p>
+<h3 id="Model自动化实现"><a href="#Model自动化实现" class="headerlink" title="Model自动化实现"></a>Model自动化实现</h3><p>上面说到了xml，json，pb，sql文件都能干这件事，但其中最容易就是json，github上搜个json class基本就能有一大片总有你想要的语言，但json的局限在于也就能转换一下model，当然通过特殊定义中间转换，枚举啥的也能搞定，在这我推荐pb，首先它就是专门用来定义协议的，枚举实体不用说都能搞定，包括默认值设置也能写出来，而且是谷歌出品本身是im通讯协议，被它序列化的数据在上面说的里面算是最小的，而另一方面关于转码参考<a target="_blank" rel="noopener" href="https://github.com/google/protobuf/blob/master/docs/third_party.md">https://github.com/google/protobuf/blob/master/docs/third_party.md</a> ，直接开放了各个语言的转换方法，当然你根本用不到它里面写的那么复杂，它的里面实体可是直接带pb转换model方法的，如果不是开发im根本用不到，要删部分源码实现自己的需要也行，。。。（下面讲一下正经方法）</p>
+<h4 id="Protobuf-Convert转码"><a href="#Protobuf-Convert转码" class="headerlink" title="Protobuf Convert转码"></a>Protobuf Convert转码</h4><p>下面放代码片段（反馈的人多放全的，之所以不想放还有个原因是这边实现有点粗）<br>这里以Python为例，只是因为安装执行方便所以选它<br>转成OC的例子，之所以选OC因为我就是个搞IOS的。。。写起来各个公司需求不同每次都要改改改。。。也就是这个原因懒得放全的了，因为用的人说到底还是需要手动改成自己想要的，没有通用的。。。<br>
+        
+          <a class="article-more-a" href="/2017/02/01/%E7%A7%BB%E5%8A%A8%E7%AB%AFModel%E5%B1%82%E4%B8%8EServer%E6%9C%8D%E5%8A%A1%E5%B1%82%E8%87%AA%E5%8A%A8%E5%8C%96/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">网络层</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">自动化</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">架构设计</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Model层</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/02/01/%E7%A7%BB%E5%8A%A8%E7%AB%AFModel%E5%B1%82%E4%B8%8EServer%E6%9C%8D%E5%8A%A1%E5%B1%82%E8%87%AA%E5%8A%A8%E5%8C%96/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-WebView-常见开发误区" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/01/WebView-%E5%B8%B8%E8%A7%81%E5%BC%80%E5%8F%91%E8%AF%AF%E5%8C%BA/">WebView 常见开发误区</a>
+    </h1>
+  
+
+        
+        <a href="/2017/01/01/WebView-%E5%B8%B8%E8%A7%81%E5%BC%80%E5%8F%91%E8%AF%AF%E5%8C%BA/" class="archive-article-date">
+  	<time datetime="2017-01-01T08:13:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="RequestUrl"><a href="#RequestUrl" class="headerlink" title="RequestUrl"></a>RequestUrl</h1><p>setRequestUrl方法内注意fragment的概念，当前段采用了#在url中的时候，且作为新页面传给客户端，一定要注意，因为#也就是fragment是不会触发页面重新加载的如果host和path都一样，这时候需要调用reload方法如下，但另一方面也该给前段说明这是启用一个新页面本来就不该用#，背离了用#的意义<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">-(void)setRequestUrl:(NSString *)requestUrl&#123;</span><br><span class="line">_requestUrl=requestUrl;</span><br><span class="line"></span><br><span class="line">NSURL *tmpUrl=[NSURL URLWithString:requestUrl];</span><br><span class="line"></span><br><span class="line">NSURL *ordUrl=self.lk_webView.request.URL;</span><br><span class="line"></span><br><span class="line">[self.lk_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:_requestUrl]]];</span><br><span class="line"></span><br><span class="line">//fragment不会触发重新加载</span><br><span class="line">if ([tmpUrl.host isEqualToString:ordUrl.host]&amp;&amp;[tmpUrl.path isEqualToString:ordUrl.path]&amp;&amp;![tmpUrl.fragment isEqualToString:ordUrl.fragment]) &#123;</span><br><span class="line">[self.lk_webView reload];</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="异步页面标题设置"><a href="#异步页面标题设置" class="headerlink" title="异步页面标题设置"></a>异步页面标题设置</h1><p>通常客户端直接在webview开始加载或加载完js交互调一下document.title设置就完事了，但是如果网页异步设置页面标题就尴尬了，所以通常要定义一个供网页调用的native方法如下，isDynamicTitle控制是否在开始加载和结束加载webview的时候执行<code>document.title</code>获取标题动态设置，当前端主动设置就要关闭动态设置<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-(void)setWebViewTitle:(NSString*)title&#123;</span><br><span class="line">dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">UIViewController *tmpVC=[UIViewController topViewController];</span><br><span class="line">if ([tmpVC isKindOfClass:[LK_WebViewController class]]) &#123;</span><br><span class="line">[(LK_WebViewController*)tmpVC setIsDynamicTitle:NO];</span><br><span class="line">tmpVC.title=title;</span><br><span class="line">&#125;</span><br><span class="line">&#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="区域内使用webview取消填充"><a href="#区域内使用webview取消填充" class="headerlink" title="区域内使用webview取消填充"></a>区域内使用webview取消填充</h1><p>如果在一个固定区域使用webview，你会发现有时底部会有一条线，设背景图背景色都没用，那是view的opaque在生效，需要设置成NO，webview底部会留1像素的缝隙，只有取消填充才能保证背景图背景色不被那条底线干扰</p>
 
       
 
@@ -200,7 +562,7 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">静态库</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">WebView</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -214,1235 +576,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2015/06/04/Xcode%E6%B7%BB%E5%8A%A0%E9%9D%99%E6%80%81%E5%BA%93%E4%BB%A5%E5%8F%8A%E7%BC%96%E8%AF%91%E9%80%89%E9%A1%B9%E9%85%8D%E7%BD%AE%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-浏览器判断是否安装了ios-android客户端程序" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/04/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E5%AE%89%E8%A3%85%E4%BA%86ios-android%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%A8%8B%E5%BA%8F/">浏览器判断是否安装了ios/android客户端程序</a>
-    </h1>
-  
-
-        
-        <a href="/2014/11/04/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E5%AE%89%E8%A3%85%E4%BA%86ios-android%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%A8%8B%E5%BA%8F/" class="archive-article-date">
-  	<time datetime="2014-11-04T04:10:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2014-11-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line"></span><br><span class="line">&lt;head&gt;</span><br><span class="line"></span><br><span class="line">&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width&quot; /&gt;</span><br><span class="line"></span><br><span class="line">&lt;/head&gt;</span><br><span class="line"></span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">&lt;h2&gt;&lt;a id=&quot;applink1&quot; href=&quot;mtcmtc://profile/116201417&quot;&gt;Open scheme(mtcmtc) defined in iPhone with parameters &lt;/a&gt;&lt;/h2&gt;</span><br><span class="line"></span><br><span class="line">&lt;h2&gt;&lt;a id=&quot;applink2&quot; href=&quot;unknown://nowhere&quot;&gt;open unknown with fallback to appstore&lt;/a&gt;&lt;/h2&gt;</span><br><span class="line"></span><br><span class="line">&lt;p&gt;&lt;i&gt;Only works on iPhone!&lt;/i&gt;&lt;/p&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line"></span><br><span class="line">// To avoid the &quot;protocol not supported&quot; alert, fail must open another app.</span><br><span class="line"></span><br><span class="line">var appstore = &quot;itms://itunes.apple.com/us/app/facebook/id284882215?mt=8&amp;uo=6&quot;;</span><br><span class="line"></span><br><span class="line">function applink(fail)&#123;</span><br><span class="line"></span><br><span class="line">return function()&#123;</span><br><span class="line"></span><br><span class="line">var clickedAt = +new Date;</span><br><span class="line"></span><br><span class="line">// During tests on 3g/3gs this timeout fires immediately if less than 500ms.</span><br><span class="line"></span><br><span class="line">setTimeout(function()&#123;</span><br><span class="line"></span><br><span class="line">// To avoid failing on return to MobileSafari, ensure freshness!</span><br><span class="line"></span><br><span class="line">if (+new Date - clickedAt &lt; 2000)&#123;</span><br><span class="line"></span><br><span class="line">window.location = fail;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;, 500);</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">document.getElementById(&quot;applink1&quot;).onclick = applink(appstore);</span><br><span class="line"></span><br><span class="line">document.getElementById(&quot;applink2&quot;).onclick = applink(appstore);</span><br><span class="line"></span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line"></span><br><span class="line">&lt;/html&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>其原理就是为HTML页面中的超链接点击事件增加一个setTimeout方法.</p>
-<p>如果在iPhone上面500ms内，本机有应用程序能解析这个协议并打开程序，则这个回调方法失效；如果本机没有应用程序能解析该协议或者500ms内没有打开个程序，则执行setTimeout里面的function，就是跳转到apple的itunes。</p>
-<p>我 用同样的原理来处理android的javascript跳转，发现如果本机没有程序注册intent-filter for 这个协议，那么android内置的browser就会处理这个协议并且立即给出反应(404，你懂的),不会像iPhone一样去执行 setTimeout里面的function，即便你把500ms改成0ms也不管用。</p>
-<p>我就开始了我的Google search之旅，最终在stackoverflow一个不起眼的地方找到solution。</p>
-<p>不解释，先给出源代码</p>
-<p>android里面androidManifest.xml文件对activity的配置，如何配置就不表述了，表达能力有限，请参考developer.android.com</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;activity android:name=&quot;.ui.UploadActivity&quot; android:screenOrientation=&quot;portrait&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;intent-filter&gt;</span><br><span class="line"></span><br><span class="line">&lt;data android:scheme=&quot;http&quot; android:host=&quot;192.168.167.33&quot; android:port=&quot;8088&quot; android:path=&quot;/mi-tracker-web/download.html&quot;/&gt;</span><br><span class="line"></span><br><span class="line">&lt;action android:name=&quot;android.intent.action.VIEW&quot; /&gt;</span><br><span class="line"></span><br><span class="line">&lt;category android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;</span><br><span class="line"></span><br><span class="line">&lt;category android:name=&quot;android.intent.category.BROWSABLE&quot; /&gt;</span><br><span class="line"></span><br><span class="line">&lt;/intent-filter&gt;</span><br><span class="line"></span><br><span class="line">&lt;/activity&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>HTML页面中指向该应用程序的hyperlink</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;a id=&quot;applink1&quot; href=&quot;http://192.168.167.33:8088/mi-tracker-web/download.html&quot;&gt;</span><br><span class="line"></span><br><span class="line">Open Application&lt;/a&gt;</span><br></pre></td></tr></table></figure>
-<p>不难发现，在androidManifest.xml中配置的filter中data的属性表述，在下面的HTML.href中全部看到了。请注意，这两个路径要全部一致，不能有差别，否则android系统就不会拦截这个hyperlink。</p>
-<p>好了，为什么我说这个solution能解决我们当初提出来的需求呢，答案在这里：</p>
-<p>如果说本机安装了这个应用程序</p>
-<p>在android browser中点击HTML中的applink1，browser会重定向到指定的链接，但是由于我们的应用程序在android OS中配置了一个intent-filter，也是针对这个制定的链接。就是说现在android系统有两个程序能处理这个链接：一个是系统的 browser，一个是配置了intent-filter的activity。现在点击这个链接，系统就会弹出一个选择：是用browser还是你指定的 activity打开。如果你选择你的activity，系统就会打开你的应用程序，如果你继续选择用browser，就没有然后了。</p>
-<p>如果说本机木有安装这个应用程序</p>
-<p>那么这个HTML里面的这个超链接就起很重要的左右了，这个download.html里面可以forward到android的应用商店</p>
-<p>download.jsp源代码如下。具体为什么请求的是download.html这个地址却访问到了download.jsp，就不解释了，struts2的东西。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=ISO-8859-1&quot;</span><br><span class="line"></span><br><span class="line">pageEncoding=&quot;ISO-8859-1&quot;%&gt;</span><br><span class="line"></span><br><span class="line">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;html&gt;</span><br><span class="line"></span><br><span class="line">&lt;head&gt;</span><br><span class="line"></span><br><span class="line">&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=ISO-8859-1&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;title&gt;Insert title here&lt;/title&gt;</span><br><span class="line"></span><br><span class="line">&lt;/head&gt;</span><br><span class="line"></span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;span style=&quot;white-space:pre&quot;&gt;    &lt;/span&gt;window.location=&quot;market://search?q=com.singtel.travelbuddy.android&quot;;&lt;/script&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">view plaincopy</span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line"></span><br><span class="line">&lt;/html&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>在 androidManifest.xml中定义intent-filter的时候定义的scheme，host，port，path拼凑起来是一个有用的 HTTP路径，这样就算本机没有activity定义了intent-filter来捕获这个链接，那这个链接也会重定向到打开android market place的页面，继而打开应用商店。因为每个android手机都会捕获到market这个协议(如果android手机里面没有market商店，不 怪我哈)，系统就会自动打开market place应用商店并根据参数进入搜索页面并显示结果。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">JavaScript</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Android</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2014/11/04/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E5%AE%89%E8%A3%85%E4%BA%86ios-android%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%A8%8B%E5%BA%8F/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-ffmpeg参数说明" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2013/08/29/ffmpeg%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E/">FFmpeg参数说明</a>
-    </h1>
-  
-
-        
-        <a href="/2013/08/29/ffmpeg%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E/" class="archive-article-date">
-  	<time datetime="2013-08-29T09:48:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2013-08-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>ffmpeg.exe -i F:\1\1.mp3 -ab 56 -ar 22050 -b 500 -r 15 -s 320x240 f:\11.flv<br>ffmpeg -i F:\01.wmv -ab 56 -ar 22050 -b 500 -r 15 -s 320x240 f:\test.flv<br>使用-ss参数 作用（time_off set the start time offset），可以从指定时间点开始转换任务。如:<br>转换文件格式的同时抓缩微图：<br>ffmpeg -i “test.avi” -y -f image2 -ss 8 -t 0.001 -s 350x240 ‘test.jpg’<br>对已有flv抓图：<br>ffmpeg -i “test.flv” -y -f image2 -ss 8 -t 0.001 -s 350x240 ‘test.jpg’<br>-ss后跟的时间单位为秒<br>Ffmpeg转换命令<br>ffmpeg -y -i test.mpeg -bitexact -vcodec h263 -b 128 -r 15 -s 176x144 -acodec aac -ac 2 -ar 22500<br>-ab 24 -f 3gp test.3gp<br>或者<br>ffmpeg -y -i test.mpeg -ac 1 -acodec amr_nb -ar 8000 -s 176x144 -b 128 -r 15 test.3gp</p>
-<p>ffmpeg参数设定解说<br>-bitexact 使用标准比特率<br>-vcodec xvid 使用xvid压缩<br>-s 320x240 指定分辨率<br>-r 29.97 桢速率（可以改，确认非标准桢率会导致音画不同步，所以只能设定为15或者29.97）<br>画面部分，选其一<br>-b &lt;比特率&gt; 指定压缩比特率，似乎ffmpeg是自动VBR的，指定了就大概是平均比特率，比如768，1500这样的<br>就是原来默认项目中有的<br>-qscale &lt;数值&gt; 以&lt;数值&gt;质量为基础的VBR，取值0.01-255，约小质量越好<br>-qmin &lt;数值&gt; 设定最小质量，与-qmax（设定最大质量）共用，比如-qmin 10 -qmax 31<br>-sameq 使用和源同样的质量<br>声音部分<br>-acodec aac 设定声音编码<br>-ac &lt;数值&gt; 设定声道数，1就是单声道，2就是立体声，转换单声道的TVrip可以用1（节省一半容量），高品质<br>的DVDrip就可以用2<br>-ar &lt;采样率&gt; 设定声音采样率，PSP只认24000<br>-ab &lt;比特率&gt; 设定声音比特率，前面-ac设为立体声时要以一半比特率来设置，比如192kbps的就设成96，转换<br>君默认比特率都较小，要听到较高品质声音的话建议设到160kbps（80）以上<br>-vol &lt;百分比&gt; 设定音量，某些DVDrip的AC3轨音量极小，转换时可以用这个提高音量，比如200就是原来的2倍<br>这样，要得到一个高画质音质低容量的MP4的话，首先画面最好不要用固定比特率，而用VBR参数让程序自己去<br>判断，而音质参数可以在原来的基础上提升一点，听起来要舒服很多，也不会太大（看情况调整</p>
-<p>例 子：ffmpeg -y -i “1.avi” -title “Test” -vcodec xvid -s 368x208 -r 29.97 -b 1500 -acodec aac -ac 2 -ar 24000 -ab 128 -vol 200 -f psp -muxvb 768 “1.***”</p>
-<p>解释：以上命令可以在Dos命令行中输入，也可以创建到批处理文件中运行。不过，前提是：要在ffmpeg所在的目录中执行（转换君所在目录下面的cores子目录）。<br>参数：<br>-y（覆盖输出文件，即如果1.<strong><em>文件已经存在的话，不经提示就覆盖掉了）<br>-i “1.avi”（输入文件是和ffmpeg在同一目录下的1.avi文件，可以自己加路径，改名字）<br>-title “Test”（在PSP中显示的影片的标题）<br>-vcodec xvid（使用XVID编码压缩视频，不能改的）<br>-s 368x208（输出的分辨率为368x208，注意片源一定要是16:9的不然会变形）<br>-r 29.97（帧数，一般就用这个吧）<br>-b 1500（视频数据流量，用-b xxxx的指令则使用固定码率，数字随便改，1500以上没效果；还可以用动态码率如：-qscale 4和-qscale 6，4的质量比6高）<br>-acodec aac（音频编码用AAC）<br>-ac 2（声道数1或2）<br>-ar 24000（声音的采样频率，好像PSP只能支持24000Hz）<br>-ab 128（音频数据流量，一般选择32、64、96、128）<br>-vol 200（200%的音量，自己改）<br>-f psp（输出psp专用格式）<br>-muxvb 768（好像是给PSP机器识别的码率，一般选择384、512和768，我改成1500，PSP就说文件损坏了）<br>“1.</em></strong>“（输出文件名，也可以加路径改文件名）</p>
-<p>机器强劲的话，可以多开几个批处理文件，让它们并行处理。</p>
-<h1 id="E-ffmpeg-exe-i-I-1-wmv-b-360-r-25-s-320x240-hq-deinterlace-ab-56-ar-22050-ac-1-D-2-flv"><a href="#E-ffmpeg-exe-i-I-1-wmv-b-360-r-25-s-320x240-hq-deinterlace-ab-56-ar-22050-ac-1-D-2-flv" class="headerlink" title="E:\ffmpeg.exe -i I:\1.wmv -b 360 -r 25 -s 320x240 -hq -deinterlace -ab 56 -ar 22050 -ac 1 D:\2.flv"></a>E:\ffmpeg.exe -i I:\1.wmv -b 360 -r 25 -s 320x240 -hq -deinterlace -ab 56 -ar 22050 -ac 1 D:\2.flv</h1><p>ffmpeg.exe -i F:\闪客之家\闪客之歌.mp3 -ab 56 -ar 22050 -b 500 -r 15 -s 320x240 f:\11.flv ffmpeg -i F:\01.wmv -ab 56 -ar 22050 -b 500 -r 15 -s 320x240 f:\test.flv 使用-ss参数 作用（time_off set the start time offset），可以从指定时间点开始转换任务。如:<br>转换文件格式的同时抓缩微图：<br>ffmpeg -i “test.avi” -y -f image2 -ss 8 -t 0.001 -s 350x240 ‘test.jpg’<br>对已有flv抓图：<br>ffmpeg -i “test.flv” -y -f image2 -ss 8 -t 0.001 -s 350x240 ‘test.jpg’<br>-ss后跟的时间单位为秒 Ffmpeg转换命令<br>ffmpeg -y -i test.mpeg -bitexact -vcodec h263 -b 128 -r 15 -s 176x144 -acodec aac -ac 2 -ar 22500 -ab 24 -f 3gp test.3gp<br>或者<br>ffmpeg -y -i test.mpeg -ac 1 -acodec amr_nb -ar 8000 -s 176x144 -b 128 -r 15 test.3gp ffmpeg参数设定解说<br>-bitexact 使用标准比特率<br>-vcodec xvid 使用xvid压缩<br>-s 320x240 指定分辨率<br>-r 29.97 桢速率（可以改，确认非标准桢率会导致音画不同步，所以只能设定为15或者29.97）</p>
-<p>画面部分，选其一<br>-b &lt;比特率&gt; 指定压缩比特率，似乎ffmpeg是自动VBR的，指定了就大概是平均比特率，比如768，1500这样的就是原来默认项目中有的<br>-qscale &lt;数值&gt; 以&lt;数值&gt;质量为基础的VBR，取值0.01-255，约小质量越好<br>-qmin &lt;数值&gt; 设定最小质量，与-qmax（设定最大质量）共用，比如-qmin 10 -qmax 31<br>-sameq 使用和源同样的质量 声音部分<br>-acodec aac 设定声音编码<br>-ac &lt;数值&gt; 设定声道数，1就是单声道，2就是立体声，转换单声道的TVrip可以用1（节省一半容量），高品质的DVDrip就可以用2<br>-ar &lt;采样率&gt; 设定声音采样率，PSP只认24000<br>-ab &lt;比特率&gt; 设定声音比特率，前面-ac设为立体声时要以一半比特率来设置，比如192kbps的就设成96，转换君默认比特率都较小，要听到较高品质声音的话建议设到160kbps（80）以上<br>-vol &lt;百分比&gt; 设定音量，某些DVDrip的AC3轨音量极小，转换时可以用这个提高音量，比如200就是原来的2倍 这样，要得到一个高画质音质低容量的MP4的话，首先画面最好不要用固定比特率，而用VBR参数让程序自己去判断，而音质参数可以在原来的基础上提升一 点，听起来要舒服很多，也不会太大（看情况调整 例子：ffmpeg -y -i “1.avi” -title “Test” -vcodec xvid -s 368x208 -r 29.97 -b 1500 -acodec aac -ac 2 -ar 24000 -ab 128 -vol 200 -f psp -muxvb 768 “1.***”</p>
-<p>解释：以上命令可以在Dos命令行中输入，也可以创建到批处理文件中运行。不过，前提是：要在ffmpeg所在的目录中执行（转换君所在目录下面的cores子目录）。<br>参数：<br>-y（覆盖输出文件，即如果1.<strong><em>文件已经存在的话，不经提示就覆盖掉了）<br>-i “1.avi”（输入文件是和ffmpeg在同一目录下的1.avi文件，可以自己加路径，改名字）<br>-title “Test”（在PSP中显示的影片的标题）<br>-vcodec xvid（使用XVID编码压缩视频，不能改的）<br>-s 368x208（输出的分辨率为368x208，注意片源一定要是16:9的不然会变形）<br>-r 29.97（帧数，一般就用这个吧）<br>-b 1500（视频数据流量，用-b xxxx的指令则使用固定码率，数字随便改，1500以上没效果；还可以用动态码率如：-qscale 4和-qscale 6，4的质量比6高）<br>-acodec aac（音频编码用AAC）<br>-ac 2（声道数1或2）<br>-ar 24000（声音的采样频率，好像PSP只能支持24000Hz）<br>-ab 128（音频数据流量，一般选择32、64、96、128）<br>-vol 200（200%的音量，自己改）<br>-f psp（输出psp专用格式）<br>-muxvb 768（好像是给PSP机器识别的码率，一般选择384、512和768，我改成1500，PSP就说文件损坏了）<br>“1.</em></strong>“（输出文件名，也可以加路径改文件名）</p>
-<p>P.S. 版主机器强劲的话，可以多开几个批处理文件，让它们并行处理。 E:\ffmpeg.exe -i I:\1.wmv -b 360 -r 25 -s 320x240 -hq -deinterlace -ab 56 -ar 22050 -ac 1 D:\2.flv</p>
-<p>Ffmpeg使用语法</p>
-<p>ffmpeg [[options][`-i’ input_file]]… {[options] output_file}…</p>
-<p>如果没有输入文件，那么视音频捕捉就会起作用。</p>
-<p>作为通用的规则，选项一般用于下一个特定的文件。如果你给 -b 64选项，改选会设置下一个视频速率。对于原始输入文件，格式选项可能是需要的。</p>
-<p>缺省情况下，ffmpeg试图尽可能的无损转换，采用与输入同样的音频视频参数来输出。</p>
-<p>3．选项</p>
-<p>a) 通用选项</p>
-<p>-L license</p>
-<p>-h 帮助</p>
-<p>-fromats 显示可用的格式，编解码的，协议的。。。</p>
-<p>-f fmt 强迫采用格式fmt</p>
-<p>-I filename 输入文件</p>
-<p>-y 覆盖输出文件</p>
-<p>-t duration 设置纪录时间 hh:mm:ss[.xxx]格式的记录时间也支持</p>
-<p>-ss position 搜索到指定的时间 [-]hh:mm:ss[.xxx]的格式也支持</p>
-<p>-title string 设置标题</p>
-<p>-author string 设置作者</p>
-<p>-copyright string 设置版权</p>
-<p>-comment string 设置评论</p>
-<p>-target type 设置目标文件类型(vcd,svcd,dvd) 所有的格式选项（比特率，编解码以及缓冲区大小）自动设置 ，只需要输入如下的就可以了：<br>ffmpeg -i myfile.avi -target vcd /tmp/vcd.mpg</p>
-<p>-hq 激活高质量设置</p>
-<p>-itsoffset offset 设置以秒为基准的时间偏移，该选项影响所有后面的输入文件。该偏移被加到输入文件的时戳，定义一个正偏移意味着相应的流被延迟了 offset秒。 [-]hh:mm:ss[.xxx]的格式也支持</p>
-<p>b) 视频选项</p>
-<p>-b bitrate 设置比特率，缺省200kb/s</p>
-<p>-r fps 设置帧频 缺省25</p>
-<p>-s size 设置帧大小 格式为WXH 缺省160X128.下面的简写也可以直接使用：<br>Sqcif 128X96 qcif 176X144 cif 252X288 4cif 704X576</p>
-<p>-aspect aspect 设置横纵比 4:3 16:9 或 1.3333 1.7777</p>
-<p>-croptop size 设置顶部切除带大小 像素单位</p>
-<p>-cropbottom size -cropleft size -cropright size</p>
-<p>-padtop size 设置顶部补齐的大小 像素单位</p>
-<p>-padbottom size -padleft size -padright size -padcolor color 设置补齐条颜色(hex,6个16进制的数，红:绿:兰排列，比如 000000代表黑色)</p>
-<p>-vn 不做视频记录</p>
-<p>-bt tolerance 设置视频码率容忍度kbit/s</p>
-<p>-maxrate bitrate设置最大视频码率容忍度</p>
-<p>-minrate bitreate 设置最小视频码率容忍度</p>
-<p>-bufsize size 设置码率控制缓冲区大小</p>
-<p>-vcodec codec 强制使用codec编解码方式。 如果用copy表示原始编解码数据必须被拷贝。</p>
-<p>-sameq 使用同样视频质量作为源（VBR）</p>
-<p>-pass n 选择处理遍数（1或者2）。两遍编码非常有用。第一遍生成统计信息，第二遍生成精确的请求的码率</p>
-<p>-passlogfile file 选择两遍的纪录文件名为file</p>
-<p>c)高级视频选项</p>
-<p>-g gop_size 设置图像组大小</p>
-<p>-intra 仅适用帧内编码</p>
-<p>-qscale q 使用固定的视频量化标度(VBR)</p>
-<p>-qmin q 最小视频量化标度(VBR)</p>
-<p>-qmax q 最大视频量化标度(VBR)</p>
-<p>-qdiff q 量化标度间最大偏差 (VBR)</p>
-<p>-qblur blur 视频量化标度柔化(VBR)</p>
-<p>-qcomp compression 视频量化标度压缩(VBR)</p>
-<p>-rc_init_cplx complexity 一遍编码的初始复杂度</p>
-<p>-b_qfactor factor 在p和b帧间的qp因子</p>
-<p>-i_qfactor factor 在p和i帧间的qp因子</p>
-<p>-b_qoffset offset 在p和b帧间的qp偏差</p>
-<p>-i_qoffset offset 在p和i帧间的qp偏差</p>
-<p>-rc_eq equation 设置码率控制方程 默认tex^qComp</p>
-<p>-rc_override override 特定间隔下的速率控制重载</p>
-<p>-me method 设置运动估计的方法 可用方法有 zero phods log x1 epzs(缺省) full</p>
-<p>-dct_algo algo 设置dct的算法 可用的有 0 FF_DCT_AUTO 缺省的DCT 1 FF_DCT_FASTINT 2 FF_DCT_INT 3 FF_DCT_MMX 4 FF_DCT_MLIB 5 FF_DCT_ALTIVEC</p>
-<p>-idct_algo algo 设置idct算法。可用的有 0 FF_IDCT_AUTO 缺省的IDCT 1 FF_IDCT_INT 2 FF_IDCT_SIMPLE 3 FF_IDCT_SIMPLEMMX 4 FF_IDCT_LIBMPEG2MMX 5 FF_IDCT_PS2 6 FF_IDCT_MLIB 7 FF_IDCT_ARM 8 FF_IDCT_ALTIVEC 9 FF_IDCT_SH4 10 FF_IDCT_SIMPLEARM</p>
-<p>-er n 设置错误残留为n 1 FF_ER_CAREFULL 缺省 2 FF_ER_COMPLIANT 3 FF_ER_AGGRESSIVE 4 FF_ER_VERY_AGGRESSIVE</p>
-<p>-ec bit_mask 设置错误掩蔽为bit_mask,该值为如下值的位掩码 1 FF_EC_GUESS_MVS (default=enabled) 2 FF_EC_DEBLOCK (default=enabled)</p>
-<p>-bf frames 使用frames B 帧，支持mpeg1,mpeg2,mpeg4</p>
-<p>-mbd mode 宏块决策 0 FF_MB_DECISION_SIMPLE 使用mb_cmp 1 FF_MB_DECISION_BITS 2 FF_MB_DECISION_RD</p>
-<p>-4mv 使用4个运动矢量 仅用于mpeg4</p>
-<p>-part 使用数据划分 仅用于mpeg4</p>
-<p>-bug param 绕过没有被自动监测到编码器的问题</p>
-<p>-strict strictness 跟标准的严格性</p>
-<p>-aic 使能高级帧内编码 h263+</p>
-<p>-umv 使能无限运动矢量 h263+</p>
-<p>-deinterlace 不采用交织方法</p>
-<p>-interlace 强迫交织法编码 仅对mpeg2和mpeg4有效。当你的输入是交织的并且你想要保持交织以最小图像损失的时候采用该选项。可选的方法是不交织，但是损失更大</p>
-<p>-psnr 计算压缩帧的psnr</p>
-<p>-vstats 输出视频编码统计到vstats_hhmmss.log</p>
-<p>-vhook module 插入视频处理模块 module 包括了模块名和参数，用空格分开</p>
-<p>D)音频选项</p>
-<p>-ab bitrate 设置音频码率</p>
-<p>-ar freq 设置音频采样率</p>
-<p>-ac channels 设置通道 缺省为1</p>
-<p>-an 不使能音频纪录</p>
-<p>-acodec codec 使用codec编解码</p>
-<p>E)音频/视频捕获选项</p>
-<p>-vd device 设置视频捕获设备。比如/dev/video0</p>
-<p>-vc channel 设置视频捕获通道 DV1394专用</p>
-<p>-tvstd standard 设置电视标准 NTSC PAL(SECAM)</p>
-<p>-dv1394 设置DV1394捕获</p>
-<p>-av device 设置音频设备 比如/dev/dsp</p>
-<p>F)高级选项</p>
-<p>-map file:stream 设置输入流映射</p>
-<p>-debug 打印特定调试信息</p>
-<p>-benchmark 为基准测试加入时间</p>
-<p>-hex 倾倒每一个输入包</p>
-<p>-bitexact 仅使用位精确算法 用于编解码测试</p>
-<p>-ps size 设置包大小，以bits为单位</p>
-<p>-re 以本地帧频读数据，主要用于模拟捕获设备</p>
-<p>-loop 循环输入流。只工作于图像流，用于ffserver测试</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">FFmpeg</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2013/08/29/ffmpeg%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-视频处理开发常见问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2013/04/12/%E8%A7%86%E9%A2%91%E5%A4%84%E7%90%86%E5%BC%80%E5%8F%91%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">视频处理开发常见问题</a>
-    </h1>
-  
-
-        
-        <a href="/2013/04/12/%E8%A7%86%E9%A2%91%E5%A4%84%E7%90%86%E5%BC%80%E5%8F%91%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="archive-article-date">
-  	<time datetime="2013-04-12T04:55:52.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2013-04-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="获取视频的方向"><a href="#获取视频的方向" class="headerlink" title="获取视频的方向"></a>获取视频的方向</h1><p>一个视频可以有多个轨道，轨道理论上可以是不同方向的视</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">AVAsset *anAsset = [AVURLAsset URLAssetWithURL:assetUrl options:nil];</span><br><span class="line">AVAssetTrack *track=[[anAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];只有视频轨道上才有方向信息</span><br><span class="line">CGAffineTransform txf=[track preferredTransform];</span><br><span class="line">NSLog(@&quot;%f,%f,%f,%f&quot;,txf.a,txf.b,txf.c,txf.d);</span><br></pre></td></tr></table></figure>
-<p>0  1 -1  0    Right 向右旋转90度</p>
-<p>-1 0  0 -1    Down 旋转180度</p>
-<p>1  0  0  1    Up 不做旋转</p>
-<p>0 -1  1  0    Left 向左旋转90度</p>
-<h1 id="GPUImageCropFilter处理旋转"><a href="#GPUImageCropFilter处理旋转" class="headerlink" title="GPUImageCropFilter处理旋转"></a>GPUImageCropFilter处理旋转</h1><p>GPUImageCropFilter无法直接处理需要旋转的图片，必须通过一次其他的filter处理传给GPUImageCropFilter才能正确处理，GPUImageCropFilter本身对GPUImageMovieMode处理了旋转但不正确需要中间量</p>
-<h1 id="视频压缩"><a href="#视频压缩" class="headerlink" title="视频压缩"></a>视频压缩</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- (void) lowQuailtyWithInputURL:(NSURL*)inputURL</span><br><span class="line">outputURL:(NSURL*)outputURL</span><br><span class="line">blockHandler:(void (^)(AVAssetExportSession*))handler</span><br><span class="line">&#123;</span><br><span class="line">AVURLAsset *asset = [AVURLAsset URLAssetWithURL:inputURL options:nil];</span><br><span class="line">AVAssetExportSession *session = [[AVAssetExportSession alloc] initWithAsset:asset     presetName:AVAssetExportPresetMediumQuality];</span><br><span class="line">session.outputURL = outputURL;</span><br><span class="line">session.outputFileType = AVFileTypeQuickTimeMovie;</span><br><span class="line">[session exportAsynchronouslyWithCompletionHandler:^(void)</span><br><span class="line">&#123;</span><br><span class="line">handler(session);</span><br><span class="line">&#125;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//使用</span><br><span class="line">[self lowQuailtyWithInputURL:video outputURL:output blockHandler:^(AVAssetExportSession *session)</span><br><span class="line">&#123;</span><br><span class="line">if (session.status == AVAssetExportSessionStatusCompleted)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">&#125;];</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>在block里面检测成功，失败，或者是取消，然后释放session.</p>
-<p>期间可以通过不断的查看session的progress属性来获取转换的进度。</p>
-<p>可以设置这些压缩质量</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">AVF_EXPORT NSString *const AVAssetExportPresetLowQuality        NS_AVAILABLE_IOS(4_0);</span><br><span class="line">AVF_EXPORT NSString *const AVAssetExportPresetMediumQuality     NS_AVAILABLE_IOS(4_0);</span><br><span class="line">AVF_EXPORT NSString *const AVAssetExportPresetHighestQuality    NS_AVAILABLE_IOS(4_0);</span><br></pre></td></tr></table></figure>
-<h1 id="GPUImage常用类说明"><a href="#GPUImage常用类说明" class="headerlink" title="GPUImage常用类说明"></a>GPUImage常用类说明</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;GLProgram.h&quot;</span><br><span class="line"></span><br><span class="line">// Base classes</span><br><span class="line">#import &quot;GPUImageOpenGLESContext.h&quot;//封装</span><br><span class="line">#import &quot;GPUImageOutput.h&quot;//输出</span><br><span class="line">#import &quot;GPUImageView.h&quot;//画布</span><br><span class="line">#import &quot;GPUImageVideoCamera.h&quot;//录像</span><br><span class="line">#import &quot;GPUImageStillCamera.h&quot;//拍照</span><br><span class="line">#import &quot;GPUImageMovie.h&quot;//输入视频</span><br><span class="line">#import &quot;GPUImagePicture.h&quot;//输出视频</span><br><span class="line">#import &quot;GPUImageRawDataInput.h&quot;//输入原始数据</span><br><span class="line">#import &quot;GPUImageRawDataOutput.h&quot;//输出原始数据</span><br><span class="line">#import &quot;GPUImageMovieWriter.h&quot;//合成视频写本地</span><br><span class="line">#import &quot;GPUImageFilterPipeline.h&quot;//滤镜组合</span><br><span class="line">#import &quot;GPUImageTextureOutput.h&quot;//输出纹理</span><br><span class="line">#import &quot;GPUImageFilterGroup.h&quot;//滤镜组合</span><br><span class="line">#import &quot;GPUImageTextureInput.h&quot;//OpenGL输入纹理</span><br><span class="line">#import &quot;GPUImageUIElement.h&quot;//视频合成元素，包装view对象进去可以输出到画面上</span><br><span class="line">#import &quot;GPUImageBuffer.h&quot;//视频图片buffer</span><br><span class="line">&lt;!-- more --&gt;</span><br><span class="line"></span><br><span class="line">// Filters</span><br><span class="line">#import &quot;GPUImageFilter.h&quot;</span><br><span class="line">#import &quot;GPUImageTwoInputFilter.h&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#pragma mark - 调整颜色 Handle Color</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageBrightnessFilter.h&quot;                //亮度</span><br><span class="line">#import &quot;GPUImageExposureFilter.h&quot;                  //曝光</span><br><span class="line">#import &quot;GPUImageContrastFilter.h&quot;                  //对比度</span><br><span class="line">#import &quot;GPUImageSaturationFilter.h&quot;                //饱和度</span><br><span class="line">#import &quot;GPUImageGammaFilter.h&quot;                     //伽马线</span><br><span class="line">#import &quot;GPUImageColorInvertFilter.h&quot;               //反色</span><br><span class="line">#import &quot;GPUImageSepiaFilter.h&quot;                     //褐色（怀旧）</span><br><span class="line">#import &quot;GPUImageLevelsFilter.h&quot;                    //色阶</span><br><span class="line">#import &quot;GPUImageGrayscaleFilter.h&quot;                 //灰度</span><br><span class="line">#import &quot;GPUImageHistogramFilter.h&quot;                 //色彩直方图，显示在图片上</span><br><span class="line">#import &quot;GPUImageHistogramGenerator.h&quot;              //色彩直方图</span><br><span class="line">#import &quot;GPUImageRGBFilter.h&quot;                       //RGB</span><br><span class="line">#import &quot;GPUImageToneCurveFilter.h&quot;                 //色调曲线</span><br><span class="line">#import &quot;GPUImageMonochromeFilter.h&quot;                //单色</span><br><span class="line">#import &quot;GPUImageOpacityFilter.h&quot;                   //不透明度</span><br><span class="line">#import &quot;GPUImageHighlightShadowFilter.h&quot;           //提亮阴影</span><br><span class="line">#import &quot;GPUImageFalseColorFilter.h&quot;                //色彩替换（替换亮部和暗部色彩）</span><br><span class="line">#import &quot;GPUImageHueFilter.h&quot;                       //色度</span><br><span class="line">#import &quot;GPUImageChromaKeyFilter.h&quot;                 //色度键</span><br><span class="line">#import &quot;GPUImageWhiteBalanceFilter.h&quot;              //白平横</span><br><span class="line">#import &quot;GPUImageAverageColor.h&quot;                    //像素平均色值</span><br><span class="line">#import &quot;GPUImageSolidColorGenerator.h&quot;             //纯色</span><br><span class="line">#import &quot;GPUImageLuminosity.h&quot;                      //亮度平均</span><br><span class="line">#import &quot;GPUImageAverageLuminanceThresholdFilter.h&quot; //像素色值亮度平均，图像黑白（有类似漫画效果）</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageLookupFilter.h&quot;                    //lookup 色彩调整</span><br><span class="line">#import &quot;GPUImageAmatorkaFilter.h&quot;                  //Amatorka lookup</span><br><span class="line">#import &quot;GPUImageMissEtikateFilter.h&quot;               //MissEtikate lookup</span><br><span class="line">#import &quot;GPUImageSoftEleganceFilter.h&quot;              //SoftElegance lookup</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#pragma mark - 图像处理 Handle Image</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageCrosshairGenerator.h&quot;              //十字</span><br><span class="line">#import &quot;GPUImageLineGenerator.h&quot;                   //线条</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageTransformFilter.h&quot;                 //形状变化</span><br><span class="line">#import &quot;GPUImageCropFilter.h&quot;                      //剪裁</span><br><span class="line">#import &quot;GPUImageSharpenFilter.h&quot;                   //锐化</span><br><span class="line">#import &quot;GPUImageUnsharpMaskFilter.h&quot;               //反遮罩锐化</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageFastBlurFilter.h&quot;                  //模糊</span><br><span class="line">#import &quot;GPUImageGaussianBlurFilter.h&quot;              //高斯模糊</span><br><span class="line">#import &quot;GPUImageGaussianSelectiveBlurFilter.h&quot;     //高斯模糊，选择部分清晰</span><br><span class="line">#import &quot;GPUImageBoxBlurFilter.h&quot;                   //盒状模糊</span><br><span class="line">#import &quot;GPUImageTiltShiftFilter.h&quot;                 //条纹模糊，中间清晰，上下两端模糊</span><br><span class="line">#import &quot;GPUImageMedianFilter.h&quot;                    //中间值，有种稍微模糊边缘的效果</span><br><span class="line">#import &quot;GPUImageBilateralFilter.h&quot;                 //双边模糊</span><br><span class="line">#import &quot;GPUImageErosionFilter.h&quot;                   //侵蚀边缘模糊，变黑白</span><br><span class="line">#import &quot;GPUImageRGBErosionFilter.h&quot;                //RGB侵蚀边缘模糊，有色彩</span><br><span class="line">#import &quot;GPUImageDilationFilter.h&quot;                  //扩展边缘模糊，变黑白</span><br><span class="line">#import &quot;GPUImageRGBDilationFilter.h&quot;               //RGB扩展边缘模糊，有色彩</span><br><span class="line">#import &quot;GPUImageOpeningFilter.h&quot;                   //黑白色调模糊</span><br><span class="line">#import &quot;GPUImageRGBOpeningFilter.h&quot;                //彩色模糊</span><br><span class="line">#import &quot;GPUImageClosingFilter.h&quot;                   //黑白色调模糊，暗色会被提亮</span><br><span class="line">#import &quot;GPUImageRGBClosingFilter.h&quot;                //彩色模糊，暗色会被提亮</span><br><span class="line">#import &quot;GPUImageLanczosResamplingFilter.h&quot;         //Lanczos重取样，模糊效果</span><br><span class="line">#import &quot;GPUImageNonMaximumSuppressionFilter.h&quot;     //非最大抑制，只显示亮度最高的像素，其他为黑</span><br><span class="line">#import &quot;GPUImageThresholdedNonMaximumSuppressionFilter.h&quot; //与上相比，像素丢失更多</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageSobelEdgeDetectionFilter.h&quot;        //Sobel边缘检测算法(白边，黑内容，有点漫画的反色效果)</span><br><span class="line">#import &quot;GPUImageCannyEdgeDetectionFilter.h&quot;        //Canny边缘检测算法（比上更强烈的黑白对比度）</span><br><span class="line">#import &quot;GPUImageThresholdEdgeDetectionFilter.h&quot;    //阈值边缘检测（效果与上差别不大）</span><br><span class="line">#import &quot;GPUImagePrewittEdgeDetectionFilter.h&quot;      //普瑞维特(Prewitt)边缘检测(效果与Sobel差不多，貌似更平滑)</span><br><span class="line">#import &quot;GPUImageXYDerivativeFilter.h&quot;              //XYDerivative边缘检测，画面以蓝色为主，绿色为边缘，带彩色</span><br><span class="line">#import &quot;GPUImageHarrisCornerDetectionFilter.h&quot;     //Harris角点检测，会有绿色小十字显示在图片角点处</span><br><span class="line">#import &quot;GPUImageNobleCornerDetectionFilter.h&quot;      //Noble角点检测，检测点更多</span><br><span class="line">#import &quot;GPUImageShiTomasiFeatureDetectionFilter.h&quot; //ShiTomasi角点检测，与上差别不大</span><br><span class="line">#import &quot;GPUImageMotionDetector.h&quot;                  //动作检测</span><br><span class="line">#import &quot;GPUImageHoughTransformLineDetector.h&quot;      //线条检测</span><br><span class="line">#import &quot;GPUImageParallelCoordinateLineTransformFilter.h&quot; //平行线检测</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageLocalBinaryPatternFilter.h&quot;        //图像黑白化，并有大量噪点</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageLowPassFilter.h&quot;                   //用于图像加亮</span><br><span class="line">#import &quot;GPUImageHighPassFilter.h&quot;                  //图像低于某值时显示为黑</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#pragma mark - 视觉效果 Visual Effect</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageSketchFilter.h&quot;                    //素描</span><br><span class="line">#import &quot;GPUImageThresholdSketchFilter.h&quot;           //阀值素描，形成有噪点的素描</span><br><span class="line">#import &quot;GPUImageToonFilter.h&quot;                      //卡通效果（黑色粗线描边）</span><br><span class="line">#import &quot;GPUImageSmoothToonFilter.h&quot;                //相比上面的效果更细腻，上面是粗旷的画风</span><br><span class="line">#import &quot;GPUImageKuwaharaFilter.h&quot;                  //桑原(Kuwahara)滤波,水粉画的模糊效果；处理时间比较长，慎用</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageMosaicFilter.h&quot;                    //黑白马赛克</span><br><span class="line">#import &quot;GPUImagePixellateFilter.h&quot;                 //像素化</span><br><span class="line">#import &quot;GPUImagePolarPixellateFilter.h&quot;            //同心圆像素化</span><br><span class="line">#import &quot;GPUImageCrosshatchFilter.h&quot;                //交叉线阴影，形成黑白网状画面</span><br><span class="line">#import &quot;GPUImageColorPackingFilter.h&quot;              //色彩丢失，模糊（类似监控摄像效果）</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageVignetteFilter.h&quot;                  //晕影，形成黑色圆形边缘，突出中间图像的效果</span><br><span class="line">#import &quot;GPUImageSwirlFilter.h&quot;                     //漩涡，中间形成卷曲的画面</span><br><span class="line">#import &quot;GPUImageBulgeDistortionFilter.h&quot;           //凸起失真，鱼眼效果</span><br><span class="line">#import &quot;GPUImagePinchDistortionFilter.h&quot;           //收缩失真，凹面镜</span><br><span class="line">#import &quot;GPUImageStretchDistortionFilter.h&quot;         //伸展失真，哈哈镜</span><br><span class="line">#import &quot;GPUImageGlassSphereFilter.h&quot;               //水晶球效果</span><br><span class="line">#import &quot;GPUImageSphereRefractionFilter.h&quot;          //球形折射，图形倒立</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImagePosterizeFilter.h&quot;                 //色调分离，形成噪点效果</span><br><span class="line">#import &quot;GPUImageCGAColorspaceFilter.h&quot;             //CGA色彩滤镜，形成黑、浅蓝、紫色块的画面</span><br><span class="line">#import &quot;GPUImagePerlinNoiseFilter.h&quot;               //柏林噪点，花边噪点</span><br><span class="line">#import &quot;GPUImage3x3ConvolutionFilter.h&quot;            //3x3卷积，高亮大色块变黑，加亮边缘、线条等</span><br><span class="line">#import &quot;GPUImageEmbossFilter.h&quot;                    //浮雕效果，带有点3d的感觉</span><br><span class="line">#import &quot;GPUImagePolkaDotFilter.h&quot;                  //像素圆点花样</span><br><span class="line">#import &quot;GPUImageHalftoneFilter.h&quot;                  //点染,图像黑白化，由黑点构成原图的大致图形</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#pragma mark - 混合模式 Blend</span><br><span class="line"></span><br><span class="line">#import &quot;GPUImageMultiplyBlendFilter.h&quot;             //通常用于创建阴影和深度效果</span><br><span class="line">#import &quot;GPUImageNormalBlendFilter.h&quot;               //正常</span><br><span class="line">#import &quot;GPUImageAlphaBlendFilter.h&quot;                //透明混合,通常用于在背景上应用前景的透明度</span><br><span class="line">#import &quot;GPUImageDissolveBlendFilter.h&quot;             //溶解</span><br><span class="line">#import &quot;GPUImageOverlayBlendFilter.h&quot;              //叠加,通常用于创建阴影效果</span><br><span class="line">#import &quot;GPUImageDarkenBlendFilter.h&quot;               //加深混合,通常用于重叠类型</span><br><span class="line">#import &quot;GPUImageLightenBlendFilter.h&quot;              //减淡混合,通常用于重叠类型</span><br><span class="line">#import &quot;GPUImageSourceOverBlendFilter.h&quot;           //源混合</span><br><span class="line">#import &quot;GPUImageColorBurnBlendFilter.h&quot;            //色彩加深混合</span><br><span class="line">#import &quot;GPUImageColorDodgeBlendFilter.h&quot;           //色彩减淡混合</span><br><span class="line">#import &quot;GPUImageScreenBlendFilter.h&quot;               //屏幕包裹,通常用于创建亮点和镜头眩光</span><br><span class="line">#import &quot;GPUImageExclusionBlendFilter.h&quot;            //排除混合</span><br><span class="line">#import &quot;GPUImageDifferenceBlendFilter.h&quot;           //差异混合,通常用于创建更多变动的颜色</span><br><span class="line">#import &quot;GPUImageSubtractBlendFilter.h&quot;             //差值混合,通常用于创建两个图像之间的动画变暗模糊效果</span><br><span class="line">#import &quot;GPUImageHardLightBlendFilter.h&quot;            //强光混合,通常用于创建阴影效果</span><br><span class="line">#import &quot;GPUImageSoftLightBlendFilter.h&quot;            //柔光混合</span><br><span class="line">#import &quot;GPUImageChromaKeyBlendFilter.h&quot;            //色度键混合</span><br><span class="line">#import &quot;GPUImageMaskFilter.h&quot;                      //遮罩混合</span><br><span class="line">#import &quot;GPUImageHazeFilter.h&quot;                      //朦胧加暗</span><br><span class="line">#import &quot;GPUImageLuminanceThresholdFilter.h&quot;        //亮度阈</span><br><span class="line">#import &quot;GPUImageAdaptiveThresholdFilter.h&quot;         //自适应阈值</span><br><span class="line">#import &quot;GPUImageAddBlendFilter.h&quot;                  //通常用于创建两个图像之间的动画变亮模糊效果</span><br><span class="line">#import &quot;GPUImageDivideBlendFilter.h&quot;               //通常用于创建两个图像之间的动画变暗模糊效果</span><br></pre></td></tr></table></figure>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">常见开发误区</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">视频</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GPUImage</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2013/04/12/%E8%A7%86%E9%A2%91%E5%A4%84%E7%90%86%E5%BC%80%E5%8F%91%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Http中的Content-Type" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2013/02/25/Http%E4%B8%AD%E7%9A%84Content-Type/">Http中的Content-Type</a>
-    </h1>
-  
-
-        
-        <a href="/2013/02/25/Http%E4%B8%AD%E7%9A%84Content-Type/" class="archive-article-date">
-  	<time datetime="2013-02-25T08:16:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2013-02-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>HTTP协议（RFC2616）采用了请求/响应模型。客户端向服务器发送一个请求，请求头包含请求的方法、URI、协议版本、以及包含请求修饰符、客户 信息和内容的类似于MIME的消息结构。服务器以一个状态行作为响应，相应的内容包括消息协议的版本，成功或者错误编码加上包含服务器信息、实体元信息以 及可能的实体内容。</p>
-<p>通常HTTP消息由一个起始行，一个或者多个头域，一个只是头域结束的空行和可选的消息体组成。HTTP的头域包括通用头，请求头，响应头和实体头四个部分。每个头域由一个域名，冒号（:）和域值三部分组成。域名是大小写无关的，域 值前可以添加任何数量的空格符，头域可以被扩展为多行，在每行开始处，使用至少一个空格或制表符。</p>
-<p>请求消息和响应消息都可以包含实体信息，实体信息一般由实体头域和实体组成。实体头域包含关于实体的原信息，实体头包括Allow、Content- Base、Content-Encoding、Content-Language、 Content-Length、Content-Location、Content-MD5、Content-Range、Content-Type、 Etag、Expires、Last-Modified、extension-header。<br>Content-Type是返回消息中非常重要的内容，表示后面的文档属于什么MIME类型。Content-Type: [type]/[subtype]; parameter。例如最常见的就是text/html，它的意思是说返回的内容是文本类型，这个文本又是HTML格式的。原则上浏览器会根据Content-Type来决定如何显示返回的消息体内容。</p>
-<p>type有下面的形式。</p>
-<p>Text：用于标准化地表示的文本信息，文本消息可以是多种字符集和或者多种格式的；</p>
-<p>Multipart：用于连接消息体的多个部分构成一个消息，这些部分可以是不同类型的数据；</p>
-<p>Application：用于传输应用程序数据或者二进制数据；</p>
-<p>Message：用于包装一个E-mail消息；</p>
-<p>Image：用于传输静态图片数据；</p>
-<p>Audio：用于传输音频或者音声数据；</p>
-<p>Video：用于传输动态影像数据，可以是与音频编辑在一起的视频数据格式。</p>
-<p>subtype用于指定type的详细形式。content-type/subtype配对的集合和与此相关的参数，将随着时间而增长。为了确保这些值在一个有序而且公开的状态下开发，MIME使用Internet Assigned Numbers Authority (IANA)作为中心的注册机制来管理这些值。</p>
-<p>parameter可以用来指定附加的信息，更多情况下是用于指定text/plain和text/htm等的文字编码方式的charset参数。MIME根据type制定了默认的subtype，当客户端不能确定消息的subtype的情况下，消息被看作默认的subtype进行处理。Text默认是text/plain，Application默认是application/octet-stream而Multipart默认情况下被看作multipart/mixed。Json常用application/json。</p>
-<p>application/x-www-form-urlencoded：数据被编码为名称/值对。这是标准的编码格式。</p>
-<p>multipart/form-data： 数据被编码为一条消息，页上的每个控件对应消息中的一个部分</p>
-<p>text/plain： 数据以纯文本形式(text/json/xml/html)进行编码，其中不含任何控件或格式字符。postman软件里标的是RAW。</p>
-<p>MIME定义在RFC-2046 MIME Part 2: Media Types 。</p>
-<p>常用类型：</p>
-<p>Mime Types By File Extension</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">Extension</th>
-<th style="text-align:center">Type/sub-type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center"></td>
-<td style="text-align:center">application/octet-stream</td>
-</tr>
-<tr>
-<td style="text-align:center">323</td>
-<td style="text-align:center">text/h323</td>
-</tr>
-<tr>
-<td style="text-align:center">acx</td>
-<td style="text-align:center">application/internet-property-stream</td>
-</tr>
-<tr>
-<td style="text-align:center">ai</td>
-<td style="text-align:center">application/postscript</td>
-</tr>
-<tr>
-<td style="text-align:center">aif</td>
-<td style="text-align:center">audio/x-aiff</td>
-</tr>
-<tr>
-<td style="text-align:center">aifc</td>
-<td style="text-align:center">audio/x-aiff</td>
-</tr>
-<tr>
-<td style="text-align:center">aiff</td>
-<td style="text-align:center">audio/x-aiff</td>
-</tr>
-<tr>
-<td style="text-align:center">asf</td>
-<td style="text-align:center">video/x-ms-asf</td>
-</tr>
-<tr>
-<td style="text-align:center">asr</td>
-<td style="text-align:center">video/x-ms-asf</td>
-</tr>
-<tr>
-<td style="text-align:center">asx</td>
-<td style="text-align:center">video/x-ms-asf</td>
-</tr>
-<tr>
-<td style="text-align:center">au</td>
-<td style="text-align:center">audio/basic</td>
-</tr>
-<tr>
-<td style="text-align:center">avi</td>
-<td style="text-align:center">video/x-msvideo</td>
-</tr>
-<tr>
-<td style="text-align:center">axs</td>
-<td style="text-align:center">application/olescript</td>
-</tr>
-<tr>
-<td style="text-align:center">bas</td>
-<td style="text-align:center">text/plain</td>
-</tr>
-<tr>
-<td style="text-align:center">bcpio</td>
-<td style="text-align:center">application/x-bcpio</td>
-</tr>
-<tr>
-<td style="text-align:center">bin</td>
-<td style="text-align:center">application/octet-stream</td>
-</tr>
-<tr>
-<td style="text-align:center">bmp</td>
-<td style="text-align:center">image/bmp</td>
-</tr>
-<tr>
-<td style="text-align:center">c</td>
-<td style="text-align:center">text/plain</td>
-</tr>
-<tr>
-<td style="text-align:center">cat</td>
-<td style="text-align:center">application/vnd.ms-pkiseccat</td>
-</tr>
-<tr>
-<td style="text-align:center">cdf</td>
-<td style="text-align:center">application/x-cdf</td>
-</tr>
-<tr>
-<td style="text-align:center">cer</td>
-<td style="text-align:center">application/x-x509-ca-cert</td>
-</tr>
-<tr>
-<td style="text-align:center">class</td>
-<td style="text-align:center">application/octet-stream</td>
-</tr>
-<tr>
-<td style="text-align:center">clp</td>
-<td style="text-align:center">application/x-msclip</td>
-</tr>
-<tr>
-<td style="text-align:center">cmx</td>
-<td style="text-align:center">image/x-cmx</td>
-</tr>
-<tr>
-<td style="text-align:center">cod</td>
-<td style="text-align:center">image/cis-cod</td>
-</tr>
-<tr>
-<td style="text-align:center">cpio</td>
-<td style="text-align:center">application/x-cpio</td>
-</tr>
-<tr>
-<td style="text-align:center">crd</td>
-<td style="text-align:center">application/x-mscardfile</td>
-</tr>
-<tr>
-<td style="text-align:center">crl</td>
-<td style="text-align:center">application/pkix-crl</td>
-</tr>
-<tr>
-<td style="text-align:center">crt</td>
-<td style="text-align:center">application/x-x509-ca-cert</td>
-</tr>
-<tr>
-<td style="text-align:center">csh</td>
-<td style="text-align:center">application/x-csh</td>
-</tr>
-<tr>
-<td style="text-align:center">css</td>
-<td style="text-align:center">text/css</td>
-</tr>
-<tr>
-<td style="text-align:center">dcr</td>
-<td style="text-align:center">application/x-director</td>
-</tr>
-<tr>
-<td style="text-align:center">der</td>
-<td style="text-align:center">application/x-x509-ca-cert</td>
-</tr>
-<tr>
-<td style="text-align:center">dir</td>
-<td style="text-align:center">application/x-director</td>
-</tr>
-<tr>
-<td style="text-align:center">dll</td>
-<td style="text-align:center">application/x-msdownload</td>
-</tr>
-<tr>
-<td style="text-align:center">dms</td>
-<td style="text-align:center">application/octet-stream</td>
-</tr>
-<tr>
-<td style="text-align:center">doc</td>
-<td style="text-align:center">application/msword</td>
-</tr>
-<tr>
-<td style="text-align:center">dot</td>
-<td style="text-align:center">application/msword</td>
-</tr>
-<tr>
-<td style="text-align:center">dvi</td>
-<td style="text-align:center">application/x-dvi</td>
-</tr>
-<tr>
-<td style="text-align:center">dxr</td>
-<td style="text-align:center">application/x-director</td>
-</tr>
-<tr>
-<td style="text-align:center">eps</td>
-<td style="text-align:center">application/postscript</td>
-</tr>
-<tr>
-<td style="text-align:center">etx</td>
-<td style="text-align:center">text/x-setext</td>
-</tr>
-<tr>
-<td style="text-align:center">evy</td>
-<td style="text-align:center">application/envoy</td>
-</tr>
-<tr>
-<td style="text-align:center">exe</td>
-<td style="text-align:center">application/octet-stream</td>
-</tr>
-<tr>
-<td style="text-align:center">fif</td>
-<td style="text-align:center">application/fractals</td>
-</tr>
-<tr>
-<td style="text-align:center">flr</td>
-<td style="text-align:center">x-world/x-vrml</td>
-</tr>
-<tr>
-<td style="text-align:center">gif</td>
-<td style="text-align:center">image/gif</td>
-</tr>
-<tr>
-<td style="text-align:center">gtar</td>
-<td style="text-align:center">application/x-gtar</td>
-</tr>
-<tr>
-<td style="text-align:center">gz</td>
-<td style="text-align:center">application/x-gzip</td>
-</tr>
-<tr>
-<td style="text-align:center">h</td>
-<td style="text-align:center">text/plain</td>
-</tr>
-<tr>
-<td style="text-align:center">hdf</td>
-<td style="text-align:center">application/x-hdf</td>
-</tr>
-<tr>
-<td style="text-align:center">hlp</td>
-<td style="text-align:center">application/winhlp</td>
-</tr>
-<tr>
-<td style="text-align:center">hqx</td>
-<td style="text-align:center">application/mac-binhex40</td>
-</tr>
-<tr>
-<td style="text-align:center">hta</td>
-<td style="text-align:center">application/hta</td>
-</tr>
-<tr>
-<td style="text-align:center">htc</td>
-<td style="text-align:center">text/x-component</td>
-</tr>
-<tr>
-<td style="text-align:center">htm</td>
-<td style="text-align:center">text/html</td>
-</tr>
-<tr>
-<td style="text-align:center">html</td>
-<td style="text-align:center">text/html</td>
-</tr>
-<tr>
-<td style="text-align:center">htt</td>
-<td style="text-align:center">text/webviewhtml</td>
-</tr>
-<tr>
-<td style="text-align:center">ico</td>
-<td style="text-align:center">image/x-icon</td>
-</tr>
-<tr>
-<td style="text-align:center">ief</td>
-<td style="text-align:center">image/ief</td>
-</tr>
-<tr>
-<td style="text-align:center">iii</td>
-<td style="text-align:center">application/x-iphone</td>
-</tr>
-<tr>
-<td style="text-align:center">ins</td>
-<td style="text-align:center">application/x-internet-signup</td>
-</tr>
-<tr>
-<td style="text-align:center">isp</td>
-<td style="text-align:center">application/x-internet-signup</td>
-</tr>
-<tr>
-<td style="text-align:center">jfif</td>
-<td style="text-align:center">image/pipeg</td>
-</tr>
-<tr>
-<td style="text-align:center">jpe</td>
-<td style="text-align:center">image/jpeg</td>
-</tr>
-<tr>
-<td style="text-align:center">jpeg</td>
-<td style="text-align:center">image/jpeg</td>
-</tr>
-<tr>
-<td style="text-align:center">jpg</td>
-<td style="text-align:center">image/jpeg</td>
-</tr>
-<tr>
-<td style="text-align:center">js</td>
-<td style="text-align:center">application/x-javascript</td>
-</tr>
-<tr>
-<td style="text-align:center">latex</td>
-<td style="text-align:center">application/x-latex</td>
-</tr>
-<tr>
-<td style="text-align:center">lha</td>
-<td style="text-align:center">application/octet-stream</td>
-</tr>
-<tr>
-<td style="text-align:center">lsf</td>
-<td style="text-align:center">video/x-la-asf</td>
-</tr>
-<tr>
-<td style="text-align:center">lsx</td>
-<td style="text-align:center">video/x-la-asf</td>
-</tr>
-<tr>
-<td style="text-align:center">lzh</td>
-<td style="text-align:center">application/octet-stream</td>
-</tr>
-<tr>
-<td style="text-align:center">m13</td>
-<td style="text-align:center">application/x-msmediaview</td>
-</tr>
-<tr>
-<td style="text-align:center">m14</td>
-<td style="text-align:center">application/x-msmediaview</td>
-</tr>
-<tr>
-<td style="text-align:center">m3u</td>
-<td style="text-align:center">audio/x-mpegurl</td>
-</tr>
-<tr>
-<td style="text-align:center">man</td>
-<td style="text-align:center">application/x-troff-man</td>
-</tr>
-<tr>
-<td style="text-align:center">mdb</td>
-<td style="text-align:center">application/x-msaccess</td>
-</tr>
-<tr>
-<td style="text-align:center">me</td>
-<td style="text-align:center">application/x-troff-me</td>
-</tr>
-<tr>
-<td style="text-align:center">mht</td>
-<td style="text-align:center">message/rfc822</td>
-</tr>
-<tr>
-<td style="text-align:center">mhtml</td>
-<td style="text-align:center">message/rfc822</td>
-</tr>
-<tr>
-<td style="text-align:center">mid</td>
-<td style="text-align:center">audio/mid</td>
-</tr>
-<tr>
-<td style="text-align:center">mny</td>
-<td style="text-align:center">application/x-msmoney</td>
-</tr>
-<tr>
-<td style="text-align:center">mov</td>
-<td style="text-align:center">video/quicktime</td>
-</tr>
-<tr>
-<td style="text-align:center">movie</td>
-<td style="text-align:center">video/x-sgi-movie</td>
-</tr>
-<tr>
-<td style="text-align:center">mp2</td>
-<td style="text-align:center">video/mpeg</td>
-</tr>
-<tr>
-<td style="text-align:center">mp3</td>
-<td style="text-align:center">audio/mpeg</td>
-</tr>
-<tr>
-<td style="text-align:center">mpa</td>
-<td style="text-align:center">video/mpeg</td>
-</tr>
-<tr>
-<td style="text-align:center">mpe</td>
-<td style="text-align:center">video/mpeg</td>
-</tr>
-<tr>
-<td style="text-align:center">mpeg</td>
-<td style="text-align:center">video/mpeg</td>
-</tr>
-<tr>
-<td style="text-align:center">mpg</td>
-<td style="text-align:center">video/mpeg</td>
-</tr>
-<tr>
-<td style="text-align:center">mpp</td>
-<td style="text-align:center">application/vnd.ms-project</td>
-</tr>
-<tr>
-<td style="text-align:center">mpv2</td>
-<td style="text-align:center">video/mpeg</td>
-</tr>
-<tr>
-<td style="text-align:center">ms</td>
-<td style="text-align:center">application/x-troff-ms</td>
-</tr>
-<tr>
-<td style="text-align:center">mvb</td>
-<td style="text-align:center">application/x-msmediaview</td>
-</tr>
-<tr>
-<td style="text-align:center">nws</td>
-<td style="text-align:center">message/rfc822</td>
-</tr>
-<tr>
-<td style="text-align:center">oda</td>
-<td style="text-align:center">application/oda</td>
-</tr>
-<tr>
-<td style="text-align:center">p10</td>
-<td style="text-align:center">application/pkcs10</td>
-</tr>
-<tr>
-<td style="text-align:center">p12</td>
-<td style="text-align:center">application/x-pkcs12</td>
-</tr>
-<tr>
-<td style="text-align:center">p7b</td>
-<td style="text-align:center">application/x-pkcs7-certificates</td>
-</tr>
-<tr>
-<td style="text-align:center">p7c</td>
-<td style="text-align:center">application/x-pkcs7-mime</td>
-</tr>
-<tr>
-<td style="text-align:center">p7m</td>
-<td style="text-align:center">application/x-pkcs7-mime</td>
-</tr>
-<tr>
-<td style="text-align:center">p7r</td>
-<td style="text-align:center">application/x-pkcs7-certreqresp</td>
-</tr>
-<tr>
-<td style="text-align:center">p7s</td>
-<td style="text-align:center">application/x-pkcs7-signature</td>
-</tr>
-<tr>
-<td style="text-align:center">pbm</td>
-<td style="text-align:center">image/x-portable-bitmap</td>
-</tr>
-<tr>
-<td style="text-align:center">pdf</td>
-<td style="text-align:center">application/pdf</td>
-</tr>
-<tr>
-<td style="text-align:center">pfx</td>
-<td style="text-align:center">application/x-pkcs12</td>
-</tr>
-<tr>
-<td style="text-align:center">pgm</td>
-<td style="text-align:center">image/x-portable-graymap</td>
-</tr>
-<tr>
-<td style="text-align:center">pko</td>
-<td style="text-align:center">application/ynd.ms-pkipko</td>
-</tr>
-<tr>
-<td style="text-align:center">pma</td>
-<td style="text-align:center">application/x-perfmon</td>
-</tr>
-<tr>
-<td style="text-align:center">pmc</td>
-<td style="text-align:center">application/x-perfmon</td>
-</tr>
-<tr>
-<td style="text-align:center">pml</td>
-<td style="text-align:center">application/x-perfmon</td>
-</tr>
-<tr>
-<td style="text-align:center">pmr</td>
-<td style="text-align:center">application/x-perfmon</td>
-</tr>
-<tr>
-<td style="text-align:center">pmw</td>
-<td style="text-align:center">application/x-perfmon</td>
-</tr>
-<tr>
-<td style="text-align:center">pnm</td>
-<td style="text-align:center">image/x-portable-anymap</td>
-</tr>
-<tr>
-<td style="text-align:center">pot</td>
-<td style="text-align:center">application/vnd.ms-powerpoint</td>
-</tr>
-<tr>
-<td style="text-align:center">ppm</td>
-<td style="text-align:center">image/x-portable-pixmap</td>
-</tr>
-<tr>
-<td style="text-align:center">pps</td>
-<td style="text-align:center">application/vnd.ms-powerpoint</td>
-</tr>
-<tr>
-<td style="text-align:center">ppt</td>
-<td style="text-align:center">application/vnd.ms-powerpoint</td>
-</tr>
-<tr>
-<td style="text-align:center">prf</td>
-<td style="text-align:center">application/pics-rules</td>
-</tr>
-<tr>
-<td style="text-align:center">ps</td>
-<td style="text-align:center">application/postscript</td>
-</tr>
-<tr>
-<td style="text-align:center">pub</td>
-<td style="text-align:center">application/x-mspublisher</td>
-</tr>
-<tr>
-<td style="text-align:center">qt</td>
-<td style="text-align:center">video/quicktime</td>
-</tr>
-<tr>
-<td style="text-align:center">ra</td>
-<td style="text-align:center">audio/x-pn-realaudio</td>
-</tr>
-<tr>
-<td style="text-align:center">ram</td>
-<td style="text-align:center">audio/x-pn-realaudio</td>
-</tr>
-<tr>
-<td style="text-align:center">ras</td>
-<td style="text-align:center">image/x-cmu-raster</td>
-</tr>
-<tr>
-<td style="text-align:center">rgb</td>
-<td style="text-align:center">image/x-rgb</td>
-</tr>
-<tr>
-<td style="text-align:center">rmi</td>
-<td style="text-align:center">audio/mid</td>
-</tr>
-<tr>
-<td style="text-align:center">roff</td>
-<td style="text-align:center">application/x-troff</td>
-</tr>
-<tr>
-<td style="text-align:center">rtf</td>
-<td style="text-align:center">application/rtf</td>
-</tr>
-<tr>
-<td style="text-align:center">rtx</td>
-<td style="text-align:center">text/richtext</td>
-</tr>
-<tr>
-<td style="text-align:center">scd</td>
-<td style="text-align:center">application/x-msschedule</td>
-</tr>
-<tr>
-<td style="text-align:center">sct</td>
-<td style="text-align:center">text/scriptlet</td>
-</tr>
-<tr>
-<td style="text-align:center">setpay</td>
-<td style="text-align:center">application/set-payment-initiation</td>
-</tr>
-<tr>
-<td style="text-align:center">setreg</td>
-<td style="text-align:center">application/set-registration-initiation</td>
-</tr>
-<tr>
-<td style="text-align:center">sh</td>
-<td style="text-align:center">application/x-sh</td>
-</tr>
-<tr>
-<td style="text-align:center">shar</td>
-<td style="text-align:center">application/x-shar</td>
-</tr>
-<tr>
-<td style="text-align:center">sit</td>
-<td style="text-align:center">application/x-stuffit</td>
-</tr>
-<tr>
-<td style="text-align:center">snd</td>
-<td style="text-align:center">audio/basic</td>
-</tr>
-<tr>
-<td style="text-align:center">spc</td>
-<td style="text-align:center">application/x-pkcs7-certificates</td>
-</tr>
-<tr>
-<td style="text-align:center">spl</td>
-<td style="text-align:center">application/futuresplash</td>
-</tr>
-<tr>
-<td style="text-align:center">src</td>
-<td style="text-align:center">application/x-wais-source</td>
-</tr>
-<tr>
-<td style="text-align:center">sst</td>
-<td style="text-align:center">application/vnd.ms-pkicertstore</td>
-</tr>
-<tr>
-<td style="text-align:center">stl</td>
-<td style="text-align:center">application/vnd.ms-pkistl</td>
-</tr>
-<tr>
-<td style="text-align:center">stm</td>
-<td style="text-align:center">text/html</td>
-</tr>
-<tr>
-<td style="text-align:center">svg</td>
-<td style="text-align:center">image/svg+xml</td>
-</tr>
-<tr>
-<td style="text-align:center">sv4cpio</td>
-<td style="text-align:center">application/x-sv4cpio</td>
-</tr>
-<tr>
-<td style="text-align:center">sv4crc</td>
-<td style="text-align:center">application/x-sv4crc</td>
-</tr>
-<tr>
-<td style="text-align:center">swf</td>
-<td style="text-align:center">application/x-shockwave-flash</td>
-</tr>
-<tr>
-<td style="text-align:center">tapplication/x-troff</td>
-</tr>
-<tr>
-<td style="text-align:center">tar</td>
-<td style="text-align:center">application/x-tar</td>
-</tr>
-<tr>
-<td style="text-align:center">tcl</td>
-<td style="text-align:center">application/x-tcl</td>
-</tr>
-<tr>
-<td style="text-align:center">tex</td>
-<td style="text-align:center">application/x-tex</td>
-</tr>
-<tr>
-<td style="text-align:center">texi</td>
-<td style="text-align:center">application/x-texinfo</td>
-</tr>
-<tr>
-<td style="text-align:center">texinfo</td>
-<td style="text-align:center">application/x-texinfo</td>
-</tr>
-<tr>
-<td style="text-align:center">tgz</td>
-<td style="text-align:center">application/x-compressed</td>
-</tr>
-<tr>
-<td style="text-align:center">tif</td>
-<td style="text-align:center">image/tiff</td>
-</tr>
-<tr>
-<td style="text-align:center">tiff</td>
-<td style="text-align:center">image/tiff</td>
-</tr>
-<tr>
-<td style="text-align:center">tr</td>
-<td style="text-align:center">application/x-troff</td>
-</tr>
-<tr>
-<td style="text-align:center">trm</td>
-<td style="text-align:center">application/x-msterminal</td>
-</tr>
-<tr>
-<td style="text-align:center">tsv</td>
-<td style="text-align:center">text/tab-separated-values</td>
-</tr>
-<tr>
-<td style="text-align:center">txt</td>
-<td style="text-align:center">text/plain</td>
-</tr>
-<tr>
-<td style="text-align:center">uls</td>
-<td style="text-align:center">text/iuls</td>
-</tr>
-<tr>
-<td style="text-align:center">ustar</td>
-<td style="text-align:center">application/x-ustar</td>
-</tr>
-<tr>
-<td style="text-align:center">vcf</td>
-<td style="text-align:center">text/x-vcard</td>
-</tr>
-<tr>
-<td style="text-align:center">vrml</td>
-<td style="text-align:center">x-world/x-vrml</td>
-</tr>
-<tr>
-<td style="text-align:center">wav</td>
-<td style="text-align:center">audio/x-wav</td>
-</tr>
-<tr>
-<td style="text-align:center">wcm</td>
-<td style="text-align:center">application/vnd.ms-works</td>
-</tr>
-<tr>
-<td style="text-align:center">wdb</td>
-<td style="text-align:center">application/vnd.ms-works</td>
-</tr>
-<tr>
-<td style="text-align:center">wks</td>
-<td style="text-align:center">application/vnd.ms-works</td>
-</tr>
-<tr>
-<td style="text-align:center">wmf</td>
-<td style="text-align:center">application/x-msmetafile</td>
-</tr>
-<tr>
-<td style="text-align:center">wps</td>
-<td style="text-align:center">application/vnd.ms-works</td>
-</tr>
-<tr>
-<td style="text-align:center">wri</td>
-<td style="text-align:center">application/x-mswrite</td>
-</tr>
-<tr>
-<td style="text-align:center">wrl</td>
-<td style="text-align:center">x-world/x-vrml</td>
-</tr>
-<tr>
-<td style="text-align:center">wrz</td>
-<td style="text-align:center">x-world/x-vrml</td>
-</tr>
-<tr>
-<td style="text-align:center">xaf</td>
-<td style="text-align:center">x-world/x-vrml</td>
-</tr>
-<tr>
-<td style="text-align:center">xbm</td>
-<td style="text-align:center">image/x-xbitmap</td>
-</tr>
-<tr>
-<td style="text-align:center">xla</td>
-<td style="text-align:center">application/vnd.ms-excel</td>
-</tr>
-<tr>
-<td style="text-align:center">xlc</td>
-<td style="text-align:center">application/vnd.ms-excel</td>
-</tr>
-<tr>
-<td style="text-align:center">xlm</td>
-<td style="text-align:center">application/vnd.ms-excel</td>
-</tr>
-<tr>
-<td style="text-align:center">xls</td>
-<td style="text-align:center">application/vnd.ms-excel</td>
-</tr>
-<tr>
-<td style="text-align:center">xlt</td>
-<td style="text-align:center">application/vnd.ms-excel</td>
-</tr>
-<tr>
-<td style="text-align:center">xlw</td>
-<td style="text-align:center">application/vnd.ms-excel</td>
-</tr>
-<tr>
-<td style="text-align:center">xof</td>
-<td style="text-align:center">x-world/x-vrml</td>
-</tr>
-<tr>
-<td style="text-align:center">xpm</td>
-<td style="text-align:center">image/x-xpixmap</td>
-</tr>
-<tr>
-<td style="text-align:center">xwd</td>
-<td style="text-align:center">image/x-xwindowdump</td>
-</tr>
-<tr>
-<td style="text-align:center">z</td>
-<td style="text-align:center">application/x-compress</td>
-</tr>
-<tr>
-<td style="text-align:center">zip</td>
-<td style="text-align:center">application/zip</td>
-</tr>
-</tbody>
-</table>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">网络</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Content-Type</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2013/02/25/Http%E4%B8%AD%E7%9A%84Content-Type/">查看全文 >></a>
+          <a class="article-more-a" href="/2017/01/01/WebView-%E5%B8%B8%E8%A7%81%E5%BC%80%E5%8F%91%E8%AF%AF%E5%8C%BA/">查看全文 >></a>
         </p>
       
 
@@ -1474,7 +608,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/5/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/7/">Next &amp;raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/5/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/7/">Next &amp;raquo;</a>
     </nav>
   
 
@@ -2007,6 +1141,50 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">交易系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">web3</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">kline</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">go</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">architecture</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">smart-money</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">polymarket</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">prediction-market</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">solana</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">evm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">kafka</a>
               </li>
             
             <div class="clearfix"></div>

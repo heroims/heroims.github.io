@@ -146,31 +146,127 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-OLLVM代码混淆移植与使用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-PCL 点云滤波及分割汇总" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/06/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8/">OLLVM代码混淆移植与使用</a>
+      <a class="article-title" href="/2023/02/27/PCL%20%E7%82%B9%E4%BA%91%E6%BB%A4%E6%B3%A2%E5%8F%8A%E5%88%86%E5%89%B2%E6%B1%87%E6%80%BB/">PCL 点云滤波及分割汇总</a>
     </h1>
   
 
         
-        <a href="/2019/01/06/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8/" class="archive-article-date">
-  	<time datetime="2019-01-05T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-06</time>
+        <a href="/2023/02/27/PCL%20%E7%82%B9%E4%BA%91%E6%BB%A4%E6%B3%A2%E5%8F%8A%E5%88%86%E5%89%B2%E6%B1%87%E6%80%BB/" class="archive-article-date">
+  	<time datetime="2023-02-27T04:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-02-27</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>OLLVM(Obfuscator-LLVM)是瑞士西北应用科技大学安全实验室于2010年6月份发起的一个项目,该项目旨在提供一套开源的针对LLVM的代码混淆工具,以增加对逆向工程的难度。github上地址是<a target="_blank" rel="noopener" href="https://github.com/obfuscator-llvm/obfuscator">https://github.com/obfuscator-llvm/obfuscator</a> ，只不过仅更新到llvm的4.0，2017年开始就没在更新。</p>
-<h1 id="移植"><a href="#移植" class="headerlink" title="移植"></a>移植</h1><p>OLLVM如果自己想拿最新版的LLVM和Clang进行移植功能其实也并不是很难，整理一下其实改动很小，接下来将会讲一下移植的方法。</p>
-<h2 id="个人整理"><a href="#个人整理" class="headerlink" title="个人整理"></a>个人整理</h2><p>先放一下个人移植好的版本地址<a target="_blank" rel="noopener" href="https://github.com/heroims/obfuscator.git">https://github.com/heroims/obfuscator.git</a> ，个人fork原版后又加入了llvm5.0，6.0，7.0以及swift-llvm5.0的版本，应该能满足大部分需求了，如果有新版本下面的讲解，各位也可以自己动手去下载自己需要的llvm和clang进行移植。git上的提交每次都很独立如下图，方便各位cherry-pick。<br>
+        <h2 id="点云滤波汇总"><a href="#点云滤波汇总" class="headerlink" title="点云滤波汇总"></a>点云滤波汇总</h2><h3 id="立方体滤波"><a href="#立方体滤波" class="headerlink" title="立方体滤波"></a>立方体滤波</h3><p>首先是最简单的容易理解的立方体的剪裁滤波，根据对角点确定一个立方体然后获取立方体内或外的点，并且还可以在这立方体基础上加平移或旋转，因为根据两个点确立的立方体只是坐标轴正方向的，不一定能满足所有需求。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pcl/filters/crop_box.h&gt;</span></span></span><br><span class="line"><span class="comment">/// &lt;summary&gt;</span></span><br><span class="line"><span class="comment">/// 立方体滤波</span></span><br><span class="line"><span class="comment">/// &lt;/summary&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;cloud_in&quot;&gt;输入点云&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;cloud_out&quot;&gt;输出点云&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;min&quot;&gt;最小点位 x y z 1&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;max&quot;&gt;最大点位 x y z 1&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;negative&quot;&gt;默认值为 false，输出点云为在设定字段的设定范围内的点集，如果设置为 true 则刚好相反&lt;/param&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">cropFilter</span><span class="params">(pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr cloud_in, pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr &amp;cloud_out, Eigen::Vector4f min, Eigen::Vector4f max, <span class="type">bool</span> negative)</span> </span>&#123;</span><br><span class="line">    pcl::CropBox&lt;pcl::PointXYZ&gt; box_filter;						<span class="comment">//滤波器对象</span></span><br><span class="line">    box_filter.<span class="built_in">setMin</span>(min);	<span class="comment">//Min和Max是指立方体的两个对角点。每个点由一个四维向量表示，通常最后一个是1.</span></span><br><span class="line">    box_filter.<span class="built_in">setMax</span>(max);</span><br><span class="line">    <span class="comment">//box_filter.setRotation(rotation); //旋转 rx ry rz</span></span><br><span class="line">    <span class="comment">//box_filter.setTranslation(tanslation);//仿射矩阵 Affine3f 旋转加平移</span></span><br><span class="line">    <span class="comment">//box_filter.setTransform(transformax);//平移 tx ty tz</span></span><br><span class="line">    box_filter.<span class="built_in">setNegative</span>(negative);</span><br><span class="line">    box_filter.<span class="built_in">setInputCloud</span>(cloud_in);</span><br><span class="line">    box_filter.<span class="built_in">filter</span>(*cloud_out);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>
         
-          <a class="article-more-a" href="/2019/01/06/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8/#more">more >></a>
+          <a class="article-more-a" href="/2023/02/27/PCL%20%E7%82%B9%E4%BA%91%E6%BB%A4%E6%B3%A2%E5%8F%8A%E5%88%86%E5%89%B2%E6%B1%87%E6%80%BB/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">点云</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">PCL</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">机器视觉</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">滤波</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">分割</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/02/27/PCL%20%E7%82%B9%E4%BA%91%E6%BB%A4%E6%B3%A2%E5%8F%8A%E5%88%86%E5%89%B2%E6%B1%87%E6%80%BB/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-OLLVM代码混淆移植与使用(再续)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/04/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E5%86%8D%E7%BB%AD)/">OLLVM代码混淆移植与使用(再续)</a>
+    </h1>
+  
+
+        
+        <a href="/2022/04/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E5%86%8D%E7%BB%AD)/" class="archive-article-date">
+  	<time datetime="2022-04-09T15:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-09</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这波主要自己闲下来了，帮之前兼职区块链公司搞定了Android和iOS的BLE无网通信请了假，准备去自考本科最后四门，结果疫情太厉害直接取消了，本来还想着年中就可以申请毕业直接再准备一下考研请的是长假。。。结果计划永远赶不上变化，毕竟搞学历对现在的自己只是解个心结去个遗憾，对自己工作生活没啥用调整好情绪重新继续正经创业或工作吧，借着长假的时间思考思考人生，搞一搞之前没空处理的遗留项目。下面就直接进入主题把！</p>
+<h1 id="关键修改"><a href="#关键修改" class="headerlink" title="关键修改"></a>关键修改</h1><h3 id="Legacy-PM模式不生效"><a href="#Legacy-PM模式不生效" class="headerlink" title="Legacy PM模式不生效"></a>Legacy PM模式不生效</h3><p>现在由于默认是NEW PM所以经常有人邮件我移植很完美编译也成功，就是没效果，这里做一下解答。主要两种方式解决，一种是在cmake的时候加一下<code>-DLLVM_ENABLE_NEW_PASS_MANAGER=OFF</code>来禁用掉NEW PM，这样在编译完成后使用的时候就可以了，还有一种就是走默认开启这，然后用ollvm编译自己项目时加上-flegacy-pass-manager的cflag，再加-mllvm原来哪些就可以正常使用了</p>
+<h3 id="14-0以后的修改"><a href="#14-0以后的修改" class="headerlink" title="14.0以后的修改"></a>14.0以后的修改</h3><p>主要是<code>StringObfuscation.cpp</code>里面的两个地方，第一个是宏的修改编译时机，第二个就是CreateGEP,CreateLoad等多个方法需要传递指针类型了，原来不传会设置为null到了13.0里就开始内部通过对象获取类型，就像修改的这样，到了14.0干脆就是强制你必须传类型了。<br><img src="/assets/blogImage/1649574671473.jpg" alt="image.png"><br>
+        
+          <a class="article-more-a" href="/2022/04/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E5%86%8D%E7%BB%AD)/#more">more >></a>
         
       
 
@@ -218,7 +314,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/01/06/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8/">查看全文 >></a>
+          <a class="article-more-a" href="/2022/04/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E5%86%8D%E7%BB%AD)/">查看全文 >></a>
         </p>
       
 
@@ -248,29 +344,33 @@
 
 
   
-    <article id="post-AES-128-CBC Base64加密——OC,Java,Golang联调" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Mesh组网与智能路由器系统" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/21/AES-128-CBC%20Base64%E5%8A%A0%E5%AF%86%E2%80%94%E2%80%94OC,Java,Golang%E8%81%94%E8%B0%83/">AES-128-CBC Base64加密——OC,Java,Golang联调</a>
+      <a class="article-title" href="/2021/12/06/Mesh%E7%BB%84%E7%BD%91%E4%B8%8E%E6%99%BA%E8%83%BD%E8%B7%AF%E7%94%B1%E5%99%A8%E7%B3%BB%E7%BB%9F/">Mesh组网与智能路由器系统</a>
     </h1>
   
 
         
-        <a href="/2018/11/21/AES-128-CBC%20Base64%E5%8A%A0%E5%AF%86%E2%80%94%E2%80%94OC,Java,Golang%E8%81%94%E8%B0%83/" class="archive-article-date">
-  	<time datetime="2018-11-20T18:17:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-11-21</time>
+        <a href="/2021/12/06/Mesh%E7%BB%84%E7%BD%91%E4%B8%8E%E6%99%BA%E8%83%BD%E8%B7%AF%E7%94%B1%E5%99%A8%E7%B3%BB%E7%BB%9F/" class="archive-article-date">
+  	<time datetime="2021-12-05T17:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-06</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="AES-128-CBC"><a href="#AES-128-CBC" class="headerlink" title="AES-128-CBC"></a>AES-128-CBC</h1><p>这里首先说说AES加密原理<br>AES加密算法采用分组密码体制，每个分组数据的长度为128位16个字节，密钥长度可以是128位16个字节、192位或256位，一共有四种加密模式（ECB、CBC、CFB、OFB），我们通常采用需要初始向量IV的CBC模式，初始向量的长度规定是128位16个字节。另外就是Padding，这里面有大坑。。。。先说一下Padding的三种模式PKCS5、PKCS7和NOPADDING。PKCS5是指分组数据缺少几个字节，就在数据的末尾填充几个字节的几，比如缺少5个字节，就在末尾填充5个字节的5。PKCS7是指分组数据缺少几个字节，就在数据的末尾填充几个字节的0，比如缺少7个字节，就在末尾填充7个字节的0。NoPadding是指不需要填充，也就是说数据的发送方肯定会保证最后一段数据也正好是16个字节。而PKCS5如果正好是16个字节且最后是16的时候则会再填充16个16用来区分，PKC7则是为0时填充16个0。而在iOS的OC方法里压根没提供PKCS5，只有PKCS7更坑的是真正对接时发现iOS上的PKCS7和其他端PKCS5是一样的。。。。所以才有了现在的想法分享一下踩过的坑，具体啥原因恐怕只有苹果自家知道，系统方法是真的坑！Java可以直接用系统方法填好设置结束战斗。。。Go的话padding这块自己写实现其他的系统都能设置。最后说一下密钥长度这里只有iOS是要自己设置好位数再对应位数写密钥，其他平台直接对应位数写密钥即可，所以最好各平台自己在封装下判断密钥长度出事向量长度，不然各端对应起来还是要犯傻。<br>
+        <h1 id="Mesh路由系统"><a href="#Mesh路由系统" class="headerlink" title="Mesh路由系统"></a>Mesh路由系统</h1><p>这里首先记录下当时调研的一些路由器系统，这方面的资料再网上比较少。</p>
+<p>开源的智能路由系统其实挺多不少这个后面再说，比较偏向专业Mesh组网的智能路由系统比较少下面就列一下我了解到的几个还不错的。</p>
+<p><img src="/assets/blogImage/83356518.png" alt="image.png"></p>
+<p>1.libremesh</p>
+<p><a target="_blank" rel="noopener" href="http://libremesh.org/">http://libremesh.org/</a><br>支持各种漫游协议，各种连接方法，固件支持常见路由，但7620系统无线有bug，mini系统有简易配置页面，全系统可设置更改全面协议，理论上只要设备足，覆盖一个城都没有问题，而且最牛逼的是持续更新开发者都很活跃，参与人较多，文档较全，而且有每月互动email可以演习。我们当时户外版就是采用的这个系统，这倒是跟区块链很配绝对去中心，而且是完全自治独立于现有互联网的平行网络。</p>
         
-          <a class="article-more-a" href="/2018/11/21/AES-128-CBC%20Base64%E5%8A%A0%E5%AF%86%E2%80%94%E2%80%94OC,Java,Golang%E8%81%94%E8%B0%83/#more">more >></a>
+          <a class="article-more-a" href="/2021/12/06/Mesh%E7%BB%84%E7%BD%91%E4%B8%8E%E6%99%BA%E8%83%BD%E8%B7%AF%E7%94%B1%E5%99%A8%E7%B3%BB%E7%BB%9F/#more">more >></a>
         
       
 
@@ -284,19 +384,35 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">AES-128-CBC</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Mesh组网</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Objective-C</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">异地组网</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">OpenWRT</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Golang</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Libremesh</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">batman</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">bmx</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">OpenVPN</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">frp</a>
         		</li>
       		
 		</ul>
@@ -306,7 +422,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/11/21/AES-128-CBC%20Base64%E5%8A%A0%E5%AF%86%E2%80%94%E2%80%94OC,Java,Golang%E8%81%94%E8%B0%83/">查看全文 >></a>
+          <a class="article-more-a" href="/2021/12/06/Mesh%E7%BB%84%E7%BD%91%E4%B8%8E%E6%99%BA%E8%83%BD%E8%B7%AF%E7%94%B1%E5%99%A8%E7%B3%BB%E7%BB%9F/">查看全文 >></a>
         </p>
       
 
@@ -336,251 +452,41 @@
 
 
   
-    <article id="post-Cocoa-iOS-OSX-安保系统设计实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-(无网通信)MDNS实现设备间的发现与通信" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/21/Cocoa-iOS-OSX-%E5%AE%89%E4%BF%9D%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E5%AE%9E%E7%8E%B0/">Cocoa(iOS,OSX)安保系统设计实现</a>
+      <a class="article-title" href="/2021/12/01/(%E6%97%A0%E7%BD%91%E9%80%9A%E4%BF%A1)MDNS%E5%AE%9E%E7%8E%B0%E8%AE%BE%E5%A4%87%E9%97%B4%E7%9A%84%E5%8F%91%E7%8E%B0%E4%B8%8E%E9%80%9A%E4%BF%A1/">(无网通信)MDNS实现设备间的发现与通信</a>
     </h1>
   
 
         
-        <a href="/2017/12/21/Cocoa-iOS-OSX-%E5%AE%89%E4%BF%9D%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E5%AE%9E%E7%8E%B0/" class="archive-article-date">
-  	<time datetime="2017-12-21T10:38:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-12-21</time>
+        <a href="/2021/12/01/(%E6%97%A0%E7%BD%91%E9%80%9A%E4%BF%A1)MDNS%E5%AE%9E%E7%8E%B0%E8%AE%BE%E5%A4%87%E9%97%B4%E7%9A%84%E5%8F%91%E7%8E%B0%E4%B8%8E%E9%80%9A%E4%BF%A1/" class="archive-article-date">
+  	<time datetime="2021-11-30T16:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-01</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="/assets/blogImage/3994053-6cb0e72bd8827012.jpg" alt="3994053-6cb0e72bd8827012.png"></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这里主要以iOS和OSX讲讲crash闪退怎么防御。<br>其中最新的OSX应用本身就有一定闪退防御，但有点类似<code>@try @catch</code>在最外层包了一下普通的越界调用空方法都会中断在操作位置不向下执行，如果没有进一步复杂逻辑不会闪退，只是影响后续的操作。</p>
-<p>而iOS则没这么好说话了，二话不说直接闪退给你看没有上面的那种机制。</p>
-<p>所以才有了设计一个安保系统的意义，来保证最大程度的健壮性，理想的状态就是不crash且能继续正常运行后面的逻辑。</p>
-<p>参考了众多网上的资料有了下面的小成果分享出来，这其实只是安保系统最后的一个环节的防御</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/heroims/SafeObjectProxy">https://github.com/heroims/SafeObjectProxy</a></p>
-<h1 id="安保系统设计"><a href="#安保系统设计" class="headerlink" title="安保系统设计"></a>安保系统设计</h1><p>这里我所认为的安保系统应该从代码和规范两个层面看，毕竟想抓到所有的crash情况是一定不可能的，现实中即使处处try catch都没法保证抓到所有crash！</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><ul>
-<li>swizzing切面</li>
-<li>方法防御选型</li>
-<li>防御成功上报</li>
-</ul>
-        
-          <a class="article-more-a" href="/2017/12/21/Cocoa-iOS-OSX-%E5%AE%89%E4%BF%9D%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E5%AE%9E%E7%8E%B0/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">OSX</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">安保系统</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Crash防御</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Cocoa</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/12/21/Cocoa-iOS-OSX-%E5%AE%89%E4%BF%9D%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E5%AE%9E%E7%8E%B0/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Xcode-配置多种scheme完美使用（配合Pods）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/01/Xcode-%E9%85%8D%E7%BD%AE%E5%A4%9A%E7%A7%8Dscheme%E5%AE%8C%E7%BE%8E%E4%BD%BF%E7%94%A8%EF%BC%88%E9%85%8D%E5%90%88Pods%EF%BC%89/">Xcode 配置多种scheme完美使用（配合Pods）</a>
-    </h1>
-  
-
-        
-        <a href="/2017/11/01/Xcode-%E9%85%8D%E7%BD%AE%E5%A4%9A%E7%A7%8Dscheme%E5%AE%8C%E7%BE%8E%E4%BD%BF%E7%94%A8%EF%BC%88%E9%85%8D%E5%90%88Pods%EF%BC%89/" class="archive-article-date">
-  	<time datetime="2017-11-01T12:21:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这里说到scheme其实配置不难，但真正应用到大项目中会发现一个神奇的问题，调试的时候自己自定义的scheme变量值都是nil，即使配置好也那样，主要场景就是工程内的其他工程，所以你的配置其实是要应用到所有子工程下的，是不是瞬间压力山大，，，，，本文最后就讲讲结合pod后轻松解决的办法，开头还是由浅入深，这样受众多点，文章也不至于太单调，就从配置开始一路讲到调试使用。</p>
-<h1 id="配置-Configurations"><a href="#配置-Configurations" class="headerlink" title="配置 Configurations"></a>配置 Configurations</h1><p>这一步主要是创建我们的编译配置项，比如添加备机,测试环境的调试和发布项，下面是添加了测试环境</p>
-<p><img src="/assets/blogImage/3994053-36feba23b8a9e57d.png" alt="屏幕快照 2017-10-31 下午7.10.33.png"><br>这里环境分离时最好也是分Debug和Release,我添加了SchemeAppTest_Debug和SchemeAppTest_Release相当于测试环境下的Debug和Release还有每次创建新的一定要基于Debug或Release不然出现啥配置不对真的是会排查到疯！</p>
-<h1 id="配置-Preprocessor-Macros"><a href="#配置-Preprocessor-Macros" class="headerlink" title="配置 Preprocessor Macros"></a>配置 Preprocessor Macros</h1><p><img src="/assets/blogImage/3994053-0cbf93e2a6e0e7b9.png" alt="屏幕快照 2017-10-31 下午7.28.20.png"><br>有了配置项，现在需要添加预编译宏，这样我们的代码里就可以用它来判断我们正在编译的是哪个环境了。<br>上图我分别对SchemeAppTest_Debug和SchemeAppTest_Release配置了<code>SCHEMETESTDEBUG=2</code>和<code>SCHEMETESTRELEASE=3</code>，内部其实写什么都可以只不过用的时候就要用你写的哪个宏，这里的写法只是效仿系统，完全可以把SchemeAppTest_Debug定为<code>ABC=1000</code>,也没问题，只不过用的时候就如下就可以了，ABC就代表了SchemeAppTest_Debug<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#ifdef ABC</span><br><span class="line">#else</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure><br>
-        
-          <a class="article-more-a" href="/2017/11/01/Xcode-%E9%85%8D%E7%BD%AE%E5%A4%9A%E7%A7%8Dscheme%E5%AE%8C%E7%BE%8E%E4%BD%BF%E7%94%A8%EF%BC%88%E9%85%8D%E5%90%88Pods%EF%BC%89/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CocoaPods</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Scheme</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">预编译宏</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Configurations</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Preprocessor Macros</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">User-Defined-Setting</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/01/Xcode-%E9%85%8D%E7%BD%AE%E5%A4%9A%E7%A7%8Dscheme%E5%AE%8C%E7%BE%8E%E4%BD%BF%E7%94%A8%EF%BC%88%E9%85%8D%E5%90%88Pods%EF%BC%89/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-IOS-各类获取授权处理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/29/IOS-%E5%90%84%E7%B1%BB%E8%8E%B7%E5%8F%96%E6%8E%88%E6%9D%83%E5%A4%84%E7%90%86/">IOS 各类获取授权常用处理</a>
-    </h1>
-  
-
-        
-        <a href="/2017/09/29/IOS-%E5%90%84%E7%B1%BB%E8%8E%B7%E5%8F%96%E6%8E%88%E6%9D%83%E5%A4%84%E7%90%86/" class="archive-article-date">
-  	<time datetime="2017-09-29T08:50:41.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="地理位置授权"><a href="#地理位置授权" class="headerlink" title="地理位置授权"></a>地理位置授权</h1><p>需要引用<code>#import &lt;CoreLocation/CoreLocation.h&gt;</code></p>
+        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>这里无网通信指的是没有互联网的通信方式，之前在区块链公司是做这块，现在怕自己以后忘了写一遍，之前搞工业机器人实在太忙，整个博客停了，也不搞移动了，现在离职了，创业也败了，该恢复一下之前的技术调整心态继续找工作了。</p>
+<p>所谓无网通信其实是不同设备互相发现然后连接进行通信，而互相发现的方式可以归纳成三种</p>
 <ul>
-<li>plist<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">始终允许访问位置</span><br><span class="line">NSLocationAlwaysUsageDescription</span><br><span class="line">位置</span><br><span class="line">NSLocationUsageDescription</span><br><span class="line">在使用期间访问位置</span><br><span class="line">NSLocationWhenInUseUsageDescription</span><br><span class="line">始终允许访问位置并且在使用期间访问位置</span><br><span class="line">NSLocationAlwaysAndWhenInUseUsageDescription</span><br></pre></td></tr></table></figure></li>
-<li>判断<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//判断是否开启</span><br><span class="line">[CLLocationManager locationServicesEnabled];</span><br><span class="line">//获取具体状态</span><br><span class="line">[CLLocationManager authorizationStatus];</span><br></pre></td></tr></table></figure></li>
-<li>授权<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CLLocationManager *locManager = [[CLLocationManager alloc] init];</span><br><span class="line">[locManager ]</span><br><span class="line">//获取始终允许访问位置权限</span><br><span class="line">[locManager requestWhenInUseAuthorization];</span><br><span class="line">//获取在使用期间访问位置</span><br><span class="line">[locManager requestAlwaysAuthorization];</span><br></pre></td></tr></table></figure>
-<h1 id="相册授权"><a href="#相册授权" class="headerlink" title="相册授权"></a>相册授权</h1>需要引用<code>#import &lt;AssetsLibrary/AssetsLibrary.h&gt;</code>或<code>#import &lt;Photos/Photos.h&gt;</code></li>
-<li>plist<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">访问相册</span><br><span class="line">NSPhotoLibraryUsageDescription</span><br><span class="line">添加相册</span><br><span class="line">NSPhotoAddLibraryUsageDescription</span><br></pre></td></tr></table></figure></li>
-<li>判断<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[ALAssetsLibrary authorizationStatus];</span><br><span class="line"></span><br><span class="line">[PHPhotoLibrary authorizationStatus];</span><br></pre></td></tr></table></figure></li>
-<li>授权<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) &#123;</span><br><span class="line">if (status == PHAuthorizationStatusAuthorized) &#123;</span><br><span class="line">// 用户同意授权</span><br><span class="line">&#125;</span><br><span class="line">else &#123;</span><br><span class="line">// 用户拒绝授权</span><br><span class="line">&#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<h1 id="相机-amp-麦克风授权"><a href="#相机-amp-麦克风授权" class="headerlink" title="相机&amp;麦克风授权"></a>相机&amp;麦克风授权</h1>需要引用<code>#import &lt;AVFoundation/AVFoundation.h&gt;</code></li>
-<li>plist<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">相机</span><br><span class="line">NSCameraUsageDescription</span><br><span class="line">麦克风</span><br><span class="line">NSMicrophoneUsageDescription</span><br></pre></td></tr></table></figure></li>
-<li>判断<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//AVMediaTypeVideo相机 AVMediaTypeAudio麦克风</span><br><span class="line">[AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];</span><br></pre></td></tr></table></figure></li>
-<li>授权<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">//AVMediaTypeVideo相机 AVMediaTypeAudio麦克风</span><br><span class="line">[AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) &#123;</span><br><span class="line"></span><br><span class="line">if (granted)&#123;// 用户同意授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">else &#123;// 用户拒绝授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">//不推荐慎用</span><br><span class="line">[[AVAudioSession sharedInstance] performSelector:@selector(requestRecordPermission:) withObject:^(BOOL granted) &#123;</span><br><span class="line">if (granted)&#123;// 用户同意授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">else &#123;// 用户拒绝授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<h1 id="通讯录授权"><a href="#通讯录授权" class="headerlink" title="通讯录授权"></a>通讯录授权</h1>需要引用<code>#import &lt;Contacts/Contacts.h&gt;</code></li>
-<li>plist<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">通讯录</span><br><span class="line">NSContactsUsageDescription</span><br></pre></td></tr></table></figure></li>
-<li>判断<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts]</span><br></pre></td></tr></table></figure></li>
-<li>授权<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">CNContactStore*contactStore = [[CNContactStore alloc] init];</span><br><span class="line"></span><br><span class="line">[contactStore requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted,NSError*_Nullable error) &#123;</span><br><span class="line">if (granted)&#123;// 用户同意授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">else &#123;// 用户拒绝授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+<li>两个设备连接在同一个WIFI</li>
+<li>两个设备通过WLAN创建点对点连接</li>
+<li>两个设备通过蓝牙BLE创建点对点连接</li>
+</ul>
+<p>而前两种是最稳定的方式，可以使用Wifi Direct实现，而蓝牙BLE的方式就比较鸡肋了距离有限制大小也有限制，能Wifi直连肯定不用蓝牙。然而蓝牙的发现连接标准其实各个设备基本都遵循的是一套，但Wifi Direct则是实现方式多种多样像UPnP、Bonjour、DLNA、SLP抑或是其他技术都能实现。iOS用的自家Bonjour，而Android4.0后开始支持直接就叫Wifi Direct，不同设备直连基本都会遇到问题。这里以Android和iOS为例实现的基本逻辑其实都由MDNS与DNS-SD演化而来。</p>
+<p>确定了Wifi Direct以后又会发现一个问题就是这解决的是设备与设备的通信，也就是一对一，而理想的无网通信是多对多，信息流之间希望有多跳的能力也就是Mesh，这个最终我们也没完美解决，虽然Android和iOS里有一定的解决方案(创建群组实现多对多)但也有不同系统无法互通的问题和群组上限问题，但当时我们选择了更简单的方式就是由路由器去Mesh其他路由器，而设备加入到路由器的网络里直接用MDNS去发现然后链接通信，专业设备做专业事，Mesh组网和设备通信分摊到两个地方。</p>
+<h2 id="MDNS-Multicast-DNS-与DNS-SD-DNS-Service-Discovery"><a href="#MDNS-Multicast-DNS-与DNS-SD-DNS-Service-Discovery" class="headerlink" title="MDNS(Multicast DNS)与DNS-SD(DNS Service Discovery)"></a>MDNS(Multicast DNS)与DNS-SD(DNS Service Discovery)</h2><p>简介里介绍完基本就确定了技术点就是Wifi Direct，而这项技术则是由MDNS(Multicast DNS)与DNS-SD(DNS Service Discovery)演化而来。</p>
+<p>首先MDNS和DNS-SD是DNS协议的两个扩展。MDNS扩展了域名服务系统，在链路本地多播上运行。DNS-SD添加了通过DNS发现网络服务的支持。MDNS原理就是在基于udp加入网络后向所有主机组播一个消息。</p>
+<p>基本流程就是基于某个自定义域名发布服务，发现设备，连接设备</p>
+<p><img src="/assets/blogImage/WX20211206-012426@2x.png" alt="Bonjour API" title="Bonjour API"></p>
         
-          <a class="article-more-a" href="/2017/09/29/IOS-%E5%90%84%E7%B1%BB%E8%8E%B7%E5%8F%96%E6%8E%88%E6%9D%83%E5%A4%84%E7%90%86/#more">more >></a>
+          <a class="article-more-a" href="/2021/12/01/(%E6%97%A0%E7%BD%91%E9%80%9A%E4%BF%A1)MDNS%E5%AE%9E%E7%8E%B0%E8%AE%BE%E5%A4%87%E9%97%B4%E7%9A%84%E5%8F%91%E7%8E%B0%E4%B8%8E%E9%80%9A%E4%BF%A1/#more">more >></a>
         
       
 
@@ -594,43 +500,35 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Wifi Direct</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">实用技巧</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NDS</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">授权</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">MDNS</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">地理位置</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">DNS-SD</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">网络判断</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">相册</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Andoid</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">相机</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">无网通信</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">麦克风</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">通讯录</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">蜂窝网络</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">BLE</a>
         		</li>
       		
 		</ul>
@@ -640,7 +538,108 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/29/IOS-%E5%90%84%E7%B1%BB%E8%8E%B7%E5%8F%96%E6%8E%88%E6%9D%83%E5%A4%84%E7%90%86/">查看全文 >></a>
+          <a class="article-more-a" href="/2021/12/01/(%E6%97%A0%E7%BD%91%E9%80%9A%E4%BF%A1)MDNS%E5%AE%9E%E7%8E%B0%E8%AE%BE%E5%A4%87%E9%97%B4%E7%9A%84%E5%8F%91%E7%8E%B0%E4%B8%8E%E9%80%9A%E4%BF%A1/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-OLLVM代码混淆移植与使用(续)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/11/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E7%BB%AD)/">OLLVM代码混淆移植与使用(续)</a>
+    </h1>
+  
+
+        
+        <a href="/2021/11/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E7%BB%AD)/" class="archive-article-date">
+  	<time datetime="2021-11-09T15:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-09</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="现状"><a href="#现状" class="headerlink" title="现状"></a>现状</h1><p>随着时间时间推移，类似库都基本不维护了，毕竟LLVM新版本改动多还好说，再多只要看看关键位置就大差不差知道怎么改怎么兼容，最难的就是编译，每次编译调试不知不觉没干啥就能耗人一天，另外就是以前的人现在都不知道还在不在业内，回归正题，其实修改的地方并不多，下面我就整理了一下关键位置，主要就是类型和调用顺序变了一下，了解以后去修改类似的项目也是手到擒来。</p>
+<h1 id="关键修改"><a href="#关键修改" class="headerlink" title="关键修改"></a>关键修改</h1><h3 id="9-0以后的修改"><a href="#9-0以后的修改" class="headerlink" title="9.0以后的修改"></a>9.0以后的修改</h3><p>这里类型写法更加标准一步一步转<br><img src="/assets/blogImage/3994053-8d78f46f6c1acb2c.webp" alt="image.png"><br>这里是9以后不在调用这个方法了，导致fla不生效，也可以在<code>Flattening.cpp</code>里面修改添加<br><img src="/assets/blogImage/3994053-8354e86d99016a71.webp" alt="image.png"></p>
+        
+          <a class="article-more-a" href="/2021/11/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E7%BB%AD)/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">LLVM</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">OLLVM</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Clang</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">混淆</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">XCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NDK</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Visual Studio</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/11/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E7%BB%AD)/">查看全文 >></a>
         </p>
       
 
@@ -672,7 +671,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/2/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/4/">Next &amp;raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/2/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/4/">Next &amp;raquo;</a>
     </nav>
   
 
@@ -1205,6 +1204,50 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">交易系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">web3</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">kline</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">go</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">architecture</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">smart-money</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">polymarket</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">prediction-market</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">solana</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">evm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">kafka</a>
               </li>
             
             <div class="clearfix"></div>

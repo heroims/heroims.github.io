@@ -146,29 +146,544 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-PCL 点云滤波及分割汇总" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Web3 钱包系统详解" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2023/02/27/PCL%20%E7%82%B9%E4%BA%91%E6%BB%A4%E6%B3%A2%E5%8F%8A%E5%88%86%E5%89%B2%E6%B1%87%E6%80%BB/">PCL 点云滤波及分割汇总</a>
+      <a class="article-title" href="/2025/05/06/Web3%20%E9%92%B1%E5%8C%85%E7%B3%BB%E7%BB%9F%E8%AF%A6%E8%A7%A3/">Web3 钱包系统详解</a>
     </h1>
   
 
         
-        <a href="/2023/02/27/PCL%20%E7%82%B9%E4%BA%91%E6%BB%A4%E6%B3%A2%E5%8F%8A%E5%88%86%E5%89%B2%E6%B1%87%E6%80%BB/" class="archive-article-date">
-  	<time datetime="2023-02-27T04:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-02-27</time>
+        <a href="/2025/05/06/Web3%20%E9%92%B1%E5%8C%85%E7%B3%BB%E7%BB%9F%E8%AF%A6%E8%A7%A3/" class="archive-article-date">
+  	<time datetime="2025-05-05T16:10:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2025-05-06</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="点云滤波汇总"><a href="#点云滤波汇总" class="headerlink" title="点云滤波汇总"></a>点云滤波汇总</h2><h3 id="立方体滤波"><a href="#立方体滤波" class="headerlink" title="立方体滤波"></a>立方体滤波</h3><p>首先是最简单的容易理解的立方体的剪裁滤波，根据对角点确定一个立方体然后获取立方体内或外的点，并且还可以在这立方体基础上加平移或旋转，因为根据两个点确立的立方体只是坐标轴正方向的，不一定能满足所有需求。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pcl/filters/crop_box.h&gt;</span></span></span><br><span class="line"><span class="comment">/// &lt;summary&gt;</span></span><br><span class="line"><span class="comment">/// 立方体滤波</span></span><br><span class="line"><span class="comment">/// &lt;/summary&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;cloud_in&quot;&gt;输入点云&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;cloud_out&quot;&gt;输出点云&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;min&quot;&gt;最小点位 x y z 1&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;max&quot;&gt;最大点位 x y z 1&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;negative&quot;&gt;默认值为 false，输出点云为在设定字段的设定范围内的点集，如果设置为 true 则刚好相反&lt;/param&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">cropFilter</span><span class="params">(pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr cloud_in, pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr &amp;cloud_out, Eigen::Vector4f min, Eigen::Vector4f max, <span class="type">bool</span> negative)</span> </span>&#123;</span><br><span class="line">    pcl::CropBox&lt;pcl::PointXYZ&gt; box_filter;						<span class="comment">//滤波器对象</span></span><br><span class="line">    box_filter.<span class="built_in">setMin</span>(min);	<span class="comment">//Min和Max是指立方体的两个对角点。每个点由一个四维向量表示，通常最后一个是1.</span></span><br><span class="line">    box_filter.<span class="built_in">setMax</span>(max);</span><br><span class="line">    <span class="comment">//box_filter.setRotation(rotation); //旋转 rx ry rz</span></span><br><span class="line">    <span class="comment">//box_filter.setTranslation(tanslation);//仿射矩阵 Affine3f 旋转加平移</span></span><br><span class="line">    <span class="comment">//box_filter.setTransform(transformax);//平移 tx ty tz</span></span><br><span class="line">    box_filter.<span class="built_in">setNegative</span>(negative);</span><br><span class="line">    box_filter.<span class="built_in">setInputCloud</span>(cloud_in);</span><br><span class="line">    box_filter.<span class="built_in">filter</span>(*cloud_out);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>
+        <blockquote>
+<p>钱包不是一个按钮，也不是一个地址展示页。它是 Web3 产品里连接身份、资产、交易、安全和用户体验的核心系统。尤其在 Telegram Mini App、Trading Bot、Meme 预售和链上交易工具中，钱包系统往往同时包含托管钱包和端侧 Web3 钱包两种形态。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p><strong>姊妹篇：<a href="/2025/05/05/从 Meme 预售到 Telegram Trading Bot：Web3 增长型交易产品全景入门">《从 Meme 预售到 Telegram Trading Bot：Web3 增长型交易产品全景入门》</a></strong>——提供了该系列所分析的多个 Web3 增长型项目（预售站、Telegram Mini App 交易机器人、运营后台）的全景视角。本文是钱包系统的深入拆分篇，建议先阅读主线文档第 1-3 章建立全景认知。</p>
+</blockquote>
+<hr>
+<h2 id="1-钱包系统到底负责什么"><a href="#1-钱包系统到底负责什么" class="headerlink" title="1. 钱包系统到底负责什么"></a>1. 钱包系统到底负责什么</h2><p>钱包系统至少负责五件事：</p>
+<table>
+<thead>
+<tr>
+<th>职责</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>身份</td>
+<td>用户是谁，是否有权限操作某个地址</td>
+</tr>
+<tr>
+<td>控权</td>
+<td>私钥在哪里，谁能签名</td>
+</tr>
+<tr>
+<td>资产</td>
+<td>用户有哪些链、哪些 Token、多少余额</td>
+</tr>
+<tr>
+<td>交易</td>
+<td>如何发起、签名、广播、追踪交易</td>
+</tr>
+<tr>
+<td>安全</td>
+<td>如何防止私钥泄露、误转、盗号和高风险交易</td>
+</tr>
+</tbody>
+</table>
+<p>所以“钱包系统”不能只理解为 Web3 前端连接 MetaMask。真实产品里，钱包往往是一套跨前端、后端、数据库、第三方索引服务、链上 RPC、风控和用户认证的完整系统。</p>
         
-          <a class="article-more-a" href="/2023/02/27/PCL%20%E7%82%B9%E4%BA%91%E6%BB%A4%E6%B3%A2%E5%8F%8A%E5%88%86%E5%89%B2%E6%B1%87%E6%80%BB/#more">more >></a>
+          <a class="article-more-a" href="/2025/05/06/Web3%20%E9%92%B1%E5%8C%85%E7%B3%BB%E7%BB%9F%E8%AF%A6%E8%A7%A3/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Web3</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">钱包</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">托管钱包</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">私钥</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">多链</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">交易系统</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2025/05/06/Web3%20%E9%92%B1%E5%8C%85%E7%B3%BB%E7%BB%9F%E8%AF%A6%E8%A7%A3/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-从 Meme 预售到 Telegram Trading Bot：Web3 增长型交易产品全景入门" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2025/05/05/%E4%BB%8E%20Meme%20%E9%A2%84%E5%94%AE%E5%88%B0%20Telegram%20Trading%20Bot%EF%BC%9AWeb3%20%E5%A2%9E%E9%95%BF%E5%9E%8B%E4%BA%A4%E6%98%93%E4%BA%A7%E5%93%81%E5%85%A8%E6%99%AF%E5%85%A5%E9%97%A8/">从 Meme 预售到 Telegram Trading Bot：Web3 增长型交易产品全景入门</a>
+    </h1>
+  
+
+        
+        <a href="/2025/05/05/%E4%BB%8E%20Meme%20%E9%A2%84%E5%94%AE%E5%88%B0%20Telegram%20Trading%20Bot%EF%BC%9AWeb3%20%E5%A2%9E%E9%95%BF%E5%9E%8B%E4%BA%A4%E6%98%93%E4%BA%A7%E5%93%81%E5%85%A8%E6%99%AF%E5%85%A5%E9%97%A8/" class="archive-article-date">
+  	<time datetime="2025-05-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2025-05-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>这是一份面向产品与工程理解的 Web3 增长型交易产品入门文档。它不把 Web3 只理解为钱包连接或链上交易，而是从 Meme Token 的发行、增长、认领、质押、交易工具、运营后台与发币基础设施演进几个层面建立完整视角。</p>
+</blockquote>
+<hr>
+<h2 id="1-产品形态总览"><a href="#1-产品形态总览" class="headerlink" title="1. 产品形态总览"></a>1. 产品形态总览</h2><p>Meme Token 相关产品通常不是单一形态，而是一组围绕“发币、获客、资产沉淀、交易转化”的组合系统。</p>
+<p>早期常见做法是：项目方搭建官网预售页，用户通过钱包或法币入口购买代币，后台记录订单和分配额度，等到代币上线后再通过 Claim 页面完成领取。这个模式的核心是“项目方先组织流量和订单，再把资产交付到链上”。</p>
+<p>随着 Telegram Mini App、移动端钱包和链上交易工具的发展，这类产品逐渐从“单次预售页面”变成了“持续交易入口”。用户不只是买一次 Token，还会在同一个入口里查看资产、领取奖励、参与任务、邀请好友、质押、查看行情、发起 Swap 或 Snipe。</p>
+<p>可以把这种产品拆成四层：</p>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>作用</th>
+<th>典型能力</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>增长入口层</td>
+<td>获取用户和传播</td>
+<td>官网、Telegram Bot、邀请链接、活动码、UTM</td>
+</tr>
+<tr>
+<td>资产承接层</td>
+<td>记录用户权益</td>
+<td>订单、Claim、积分、质押、推荐奖励</td>
+</tr>
+<tr>
+<td>钱包与交易层</td>
+<td>让用户持有和流转资产</td>
+<td>钱包、余额、收款、转账、Swap、限价单、Snipe</td>
+</tr>
+<tr>
+<td>运营管理层</td>
+<td>配置活动和修正数据</td>
+<td>活动后台、任务上下线、积分配置、用户管理</td>
+</tr>
+</tbody>
+</table>
+<p>这种产品最重要的理解方式，不是先看某个页面，而是先看用户生命周期：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">流量进入</span><br><span class="line">  -&gt; 绑定身份</span><br><span class="line">  -&gt; 购买或获得权益</span><br><span class="line">  -&gt; 资产确认</span><br><span class="line">  -&gt; Claim / Staking / Referral</span><br><span class="line">  -&gt; 钱包沉淀</span><br><span class="line">  -&gt; 行情与交易</span><br><span class="line">  -&gt; 持续活动与复访</span><br></pre></td></tr></table></figure>
+        
+          <a class="article-more-a" href="/2025/05/05/%E4%BB%8E%20Meme%20%E9%A2%84%E5%94%AE%E5%88%B0%20Telegram%20Trading%20Bot%EF%BC%9AWeb3%20%E5%A2%9E%E9%95%BF%E5%9E%8B%E4%BA%A4%E6%98%93%E4%BA%A7%E5%93%81%E5%85%A8%E6%99%AF%E5%85%A5%E9%97%A8/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Web3</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Meme</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Telegram Mini App</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Trading Bot</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Token Launch</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">钱包</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2025/05/05/%E4%BB%8E%20Meme%20%E9%A2%84%E5%94%AE%E5%88%B0%20Telegram%20Trading%20Bot%EF%BC%9AWeb3%20%E5%A2%9E%E9%95%BF%E5%9E%8B%E4%BA%A4%E6%98%93%E4%BA%A7%E5%93%81%E5%85%A8%E6%99%AF%E5%85%A5%E9%97%A8/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-SSB（Secure Scuttlebutt）生态系统完整文档" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2024/03/06/SSB%EF%BC%88Secure%20Scuttlebutt%EF%BC%89%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E5%AE%8C%E6%95%B4%E6%96%87%E6%A1%A3/">SSB（Secure Scuttlebutt）生态系统完整文档</a>
+    </h1>
+  
+
+        
+        <a href="/2024/03/06/SSB%EF%BC%88Secure%20Scuttlebutt%EF%BC%89%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E5%AE%8C%E6%95%B4%E6%96%87%E6%A1%A3/" class="archive-article-date">
+  	<time datetime="2024-03-06T10:49:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-03-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>SSB 生态系统完整技术参考，涵盖核心框架、插件体系、移动端集成及蓝牙模块。</p>
+</blockquote>
+<hr>
+<h2 id="1-SSB-简介"><a href="#1-SSB-简介" class="headerlink" title="1. SSB 简介"></a>1. SSB 简介</h2><p><strong>Secure Scuttlebutt（SSB）</strong> 是一个分布式的、<strong>无需中心服务器</strong>的点对点社交网络协议。它具有以下核心特性：</p>
+<pre class="mermaid">graph TD
+    subgraph "SSB 核心特性"
+        A[无需服务器] --> B[点对点直接通信]
+        C[不可篡改] --> D[仅追加的签名消息链]
+        E[离线优先] --> F[局域网/蓝牙也可同步]
+        G[隐私保护] --> H[端到端加密/秘密握手]
+    end</pre>
+
+<h3 id="核心设计原则"><a href="#核心设计原则" class="headerlink" title="核心设计原则"></a>核心设计原则</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>无需主机（Hostless）</strong></td>
+<td>每台设备安装相同软件，网络中拥有平等权利</td>
+</tr>
+<tr>
+<td><strong>仅追加（Append-only）</strong></td>
+<td>消息链不可删除或修改，确保全网收敛到相同状态</td>
+</tr>
+<tr>
+<td><strong>身份即密钥</strong></td>
+<td>每个身份就是一个 ed25519 密钥对，公钥即为身份标识</td>
+</tr>
+<tr>
+<td><strong>内容哈希链接</strong></td>
+<td>消息通过哈希值引用其他消息、文件和 Feed</td>
+</tr>
+<tr>
+<td><strong>全局八卦协议</strong></td>
+<td>信息通过 Gossip 协议在节点间传播，无需直接连接</td>
+</tr>
+<tr>
+<td><strong>局域网发现</strong></td>
+<td>通过多播 UDP 自动发现局域网内的其他节点</td>
+</tr>
+</tbody>
+</table>
+<hr>
+        
+          <a class="article-more-a" href="/2024/03/06/SSB%EF%BC%88Secure%20Scuttlebutt%EF%BC%89%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E5%AE%8C%E6%95%B4%E6%96%87%E6%A1%A3/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">SSB</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Secure Scuttlebutt</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">点对点网络</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">去中心化</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">P2P</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2024/03/06/SSB%EF%BC%88Secure%20Scuttlebutt%EF%BC%89%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E5%AE%8C%E6%95%B4%E6%96%87%E6%A1%A3/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-深度相机(3D相机)点云生成" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/03/12/%E6%B7%B1%E5%BA%A6%E7%9B%B8%E6%9C%BA(3D%E7%9B%B8%E6%9C%BA)%E7%82%B9%E4%BA%91%E7%94%9F%E6%88%90/">深度相机(3D相机)点云生成</a>
+    </h1>
+  
+
+        
+        <a href="/2023/03/12/%E6%B7%B1%E5%BA%A6%E7%9B%B8%E6%9C%BA(3D%E7%9B%B8%E6%9C%BA)%E7%82%B9%E4%BA%91%E7%94%9F%E6%88%90/" class="archive-article-date">
+  	<time datetime="2023-03-12T11:55:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-03-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>之前做工业机器人公司搞视觉接触了很多3D相机，这里记录一下这些相机点云的生成，以及各种类型相机的一些基础实现原理。我用过的有单目结构光相机，双目结构光，TOF相机，线扫相机(自研)，多视角相机(自研)。<br>首先深度相机一般畸变都比较小，当然如果自己不放心可以标定看看结果。如果深度相机是自己买模组然后调教生成点云那就一定逃不了校准标定了。</p>
+<h3 id="相机成像原理"><a href="#相机成像原理" class="headerlink" title="相机成像原理"></a>相机成像原理</h3><pre class="mermaid">graph TB
+A[世界坐标系] --> |刚体变换| B[相机坐标系]
+B --> |透视投影| C[理想图像坐标系]
+C --> |畸变矫正| D[真实图像坐标]
+D --> |数字化图像| E[数字化图像坐标系]</pre>
+
+<p>相机的图像有时候会出现<br>修正图像需要相机两种参数：</p>
+<ul>
+<li>相机的内部参数。例如镜头的焦距，光学中心和径向畸变系数。</li>
+<li>外部参数：这是指摄像机相对于某些世界坐标系的方向（旋转和平移）</li>
+</ul>
+<h3 id="相机校准"><a href="#相机校准" class="headerlink" title="相机校准"></a>相机校准</h3><p>OpenCV给出了非常详细的操作步骤可以参考<a target="_blank" rel="noopener" href="https://docs.opencv.org/2.4/doc/tutorials/calib3d/camera_calibration/camera_calibration.html">这里</a>，下载棋盘格去opencv官网如下：<br><img src="http://docs.opencv.org/2.4/_downloads/pattern.png" alt="image">。<br>
+        
+          <a class="article-more-a" href="/2023/03/12/%E6%B7%B1%E5%BA%A6%E7%9B%B8%E6%9C%BA(3D%E7%9B%B8%E6%9C%BA)%E7%82%B9%E4%BA%91%E7%94%9F%E6%88%90/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">点云</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">工业相机</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">深度相机</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">视觉</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/03/12/%E6%B7%B1%E5%BA%A6%E7%9B%B8%E6%9C%BA(3D%E7%9B%B8%E6%9C%BA)%E7%82%B9%E4%BA%91%E7%94%9F%E6%88%90/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-PCL点云常用方法及配准" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/02/28/PCL%E7%82%B9%E4%BA%91%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95%E5%8F%8A%E9%85%8D%E5%87%86/">PCL 点云常用方法及配准</a>
+    </h1>
+  
+
+        
+        <a href="/2023/02/28/PCL%E7%82%B9%E4%BA%91%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95%E5%8F%8A%E9%85%8D%E5%87%86/" class="archive-article-date">
+  	<time datetime="2023-02-28T04:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-02-28</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="点云配准汇总"><a href="#点云配准汇总" class="headerlink" title="点云配准汇总"></a>点云配准汇总</h2><p>配准比较常用的套路就是法线提取，然后fpfh特征提取，粗配准，最后再来精配准，基本就能得到比较准确的旋转矩阵和模板点云配上。</p>
+<h3 id="特征提取"><a href="#特征提取" class="headerlink" title="特征提取"></a>特征提取</h3><h4 id="轮廓提取"><a href="#轮廓提取" class="headerlink" title="轮廓提取"></a>轮廓提取</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pcl/features/boundary.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// &lt;summary&gt;</span></span><br><span class="line"><span class="comment">/// 轮廓计算</span></span><br><span class="line"><span class="comment">/// &lt;/summary&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;cloud_in&quot;&gt;输入点云&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;normals_in&quot;&gt;输入法线&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;radius&quot;&gt;半径&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;angle&quot;&gt;角度&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;cloud_out&quot;&gt;输出点云&lt;/param&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">boundaryEstimationFeatures</span><span class="params">(pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr cloud_in, pcl::PointCloud&lt;pcl::Normal&gt;::Ptr normals_in, pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr&amp; cloud_out, <span class="type">double</span> radius, <span class="type">float</span> angle)</span> </span>&#123;</span><br><span class="line">    pcl::BoundaryEstimation&lt;pcl::PointXYZ, pcl::Normal, pcl::Boundary&gt; be;</span><br><span class="line">    be.<span class="built_in">setInputCloud</span>(cloud_in);</span><br><span class="line">    be.<span class="built_in">setInputNormals</span>(normals_in);</span><br><span class="line">    pcl::search::KdTree&lt;pcl::PointXYZ&gt;::<span class="function">Ptr <span class="title">tree</span><span class="params">(<span class="keyword">new</span> pcl::search::KdTree&lt;pcl::PointXYZ&gt;)</span></span>;</span><br><span class="line">    tree-&gt;<span class="built_in">setInputCloud</span>(cloud_in);</span><br><span class="line">    <span class="comment">//设置搜索时所用的球半径,参数radius为设置搜索球体半径</span></span><br><span class="line">    be.<span class="built_in">setRadiusSearch</span>(radius);</span><br><span class="line">    <span class="comment">//设置搜索时近邻的来源点云,参数cloud指向搜索时被搜索的点云对象,常常用稠密的原始点云,而不用稀疏的下采样后的点云,在特征描述和提取中查询点往往是关键点</span></span><br><span class="line">    <span class="comment">//be.setSearchSurface(overlap_cloud);</span></span><br><span class="line">    <span class="comment">//设置搜索时所用的k近邻个数,参数k为设置搜索近邻个数</span></span><br><span class="line">    <span class="comment">//be.setKSearch(k);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//设置将点标记为边界或规则的决定边界(角度阈值)。</span></span><br><span class="line">    be.<span class="built_in">setAngleThreshold</span>(angle);</span><br><span class="line">    pcl::PointCloud&lt;pcl::Boundary&gt;::<span class="function">Ptr <span class="title">boundarys</span><span class="params">(<span class="keyword">new</span> pcl::PointCloud&lt;pcl::Boundary&gt;())</span></span>;</span><br><span class="line">    be.<span class="built_in">compute</span>(*boundarys);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; cloud_in-&gt;<span class="built_in">size</span>(); i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> ((*boundarys)[i].boundary_point &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            cloud_out-&gt;points.<span class="built_in">push_back</span>(cloud_in-&gt;points[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        
+          <a class="article-more-a" href="/2023/02/28/PCL%E7%82%B9%E4%BA%91%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95%E5%8F%8A%E9%85%8D%E5%87%86/#more">more >></a>
         
       
 
@@ -198,11 +713,19 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">滤波</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">配准</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">分割</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">压缩</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">轮廓</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">特征</a>
         		</li>
       		
 		</ul>
@@ -212,434 +735,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2023/02/27/PCL%20%E7%82%B9%E4%BA%91%E6%BB%A4%E6%B3%A2%E5%8F%8A%E5%88%86%E5%89%B2%E6%B1%87%E6%80%BB/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-OLLVM代码混淆移植与使用(再续)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/04/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E5%86%8D%E7%BB%AD)/">OLLVM代码混淆移植与使用(再续)</a>
-    </h1>
-  
-
-        
-        <a href="/2022/04/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E5%86%8D%E7%BB%AD)/" class="archive-article-date">
-  	<time datetime="2022-04-09T15:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这波主要自己闲下来了，帮之前兼职区块链公司搞定了Android和iOS的BLE无网通信请了假，准备去自考本科最后四门，结果疫情太厉害直接取消了，本来还想着年中就可以申请毕业直接再准备一下考研请的是长假。。。结果计划永远赶不上变化，毕竟搞学历对现在的自己只是解个心结去个遗憾，对自己工作生活没啥用调整好情绪重新继续正经创业或工作吧，借着长假的时间思考思考人生，搞一搞之前没空处理的遗留项目。下面就直接进入主题把！</p>
-<h1 id="关键修改"><a href="#关键修改" class="headerlink" title="关键修改"></a>关键修改</h1><h3 id="Legacy-PM模式不生效"><a href="#Legacy-PM模式不生效" class="headerlink" title="Legacy PM模式不生效"></a>Legacy PM模式不生效</h3><p>现在由于默认是NEW PM所以经常有人邮件我移植很完美编译也成功，就是没效果，这里做一下解答。主要两种方式解决，一种是在cmake的时候加一下<code>-DLLVM_ENABLE_NEW_PASS_MANAGER=OFF</code>来禁用掉NEW PM，这样在编译完成后使用的时候就可以了，还有一种就是走默认开启这，然后用ollvm编译自己项目时加上-flegacy-pass-manager的cflag，再加-mllvm原来哪些就可以正常使用了</p>
-<h3 id="14-0以后的修改"><a href="#14-0以后的修改" class="headerlink" title="14.0以后的修改"></a>14.0以后的修改</h3><p>主要是<code>StringObfuscation.cpp</code>里面的两个地方，第一个是宏的修改编译时机，第二个就是CreateGEP,CreateLoad等多个方法需要传递指针类型了，原来不传会设置为null到了13.0里就开始内部通过对象获取类型，就像修改的这样，到了14.0干脆就是强制你必须传类型了。<br><img src="/assets/blogImage/1649574671473.jpg" alt="image.png"><br>
-        
-          <a class="article-more-a" href="/2022/04/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E5%86%8D%E7%BB%AD)/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">LLVM</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">OLLVM</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Clang</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">混淆</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">XCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NDK</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Visual Studio</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/04/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E5%86%8D%E7%BB%AD)/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Mesh组网与智能路由器系统" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/12/06/Mesh%E7%BB%84%E7%BD%91%E4%B8%8E%E6%99%BA%E8%83%BD%E8%B7%AF%E7%94%B1%E5%99%A8%E7%B3%BB%E7%BB%9F/">Mesh组网与智能路由器系统</a>
-    </h1>
-  
-
-        
-        <a href="/2021/12/06/Mesh%E7%BB%84%E7%BD%91%E4%B8%8E%E6%99%BA%E8%83%BD%E8%B7%AF%E7%94%B1%E5%99%A8%E7%B3%BB%E7%BB%9F/" class="archive-article-date">
-  	<time datetime="2021-12-05T17:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Mesh路由系统"><a href="#Mesh路由系统" class="headerlink" title="Mesh路由系统"></a>Mesh路由系统</h1><p>这里首先记录下当时调研的一些路由器系统，这方面的资料再网上比较少。</p>
-<p>开源的智能路由系统其实挺多不少这个后面再说，比较偏向专业Mesh组网的智能路由系统比较少下面就列一下我了解到的几个还不错的。</p>
-<p><img src="/assets/blogImage/83356518.png" alt="image.png"></p>
-<p>1.libremesh</p>
-<p><a target="_blank" rel="noopener" href="http://libremesh.org/">http://libremesh.org/</a><br>支持各种漫游协议，各种连接方法，固件支持常见路由，但7620系统无线有bug，mini系统有简易配置页面，全系统可设置更改全面协议，理论上只要设备足，覆盖一个城都没有问题，而且最牛逼的是持续更新开发者都很活跃，参与人较多，文档较全，而且有每月互动email可以演习。我们当时户外版就是采用的这个系统，这倒是跟区块链很配绝对去中心，而且是完全自治独立于现有互联网的平行网络。</p>
-        
-          <a class="article-more-a" href="/2021/12/06/Mesh%E7%BB%84%E7%BD%91%E4%B8%8E%E6%99%BA%E8%83%BD%E8%B7%AF%E7%94%B1%E5%99%A8%E7%B3%BB%E7%BB%9F/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Mesh组网</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">异地组网</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">OpenWRT</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Libremesh</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">batman</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">bmx</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">OpenVPN</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">frp</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/12/06/Mesh%E7%BB%84%E7%BD%91%E4%B8%8E%E6%99%BA%E8%83%BD%E8%B7%AF%E7%94%B1%E5%99%A8%E7%B3%BB%E7%BB%9F/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-(无网通信)MDNS实现设备间的发现与通信" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/12/01/(%E6%97%A0%E7%BD%91%E9%80%9A%E4%BF%A1)MDNS%E5%AE%9E%E7%8E%B0%E8%AE%BE%E5%A4%87%E9%97%B4%E7%9A%84%E5%8F%91%E7%8E%B0%E4%B8%8E%E9%80%9A%E4%BF%A1/">(无网通信)MDNS实现设备间的发现与通信</a>
-    </h1>
-  
-
-        
-        <a href="/2021/12/01/(%E6%97%A0%E7%BD%91%E9%80%9A%E4%BF%A1)MDNS%E5%AE%9E%E7%8E%B0%E8%AE%BE%E5%A4%87%E9%97%B4%E7%9A%84%E5%8F%91%E7%8E%B0%E4%B8%8E%E9%80%9A%E4%BF%A1/" class="archive-article-date">
-  	<time datetime="2021-11-30T16:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>这里无网通信指的是没有互联网的通信方式，之前在区块链公司是做这块，现在怕自己以后忘了写一遍，之前搞工业机器人实在太忙，整个博客停了，也不搞移动了，现在离职了，创业也败了，该恢复一下之前的技术调整心态继续找工作了。</p>
-<p>所谓无网通信其实是不同设备互相发现然后连接进行通信，而互相发现的方式可以归纳成三种</p>
-<ul>
-<li>两个设备连接在同一个WIFI</li>
-<li>两个设备通过WLAN创建点对点连接</li>
-<li>两个设备通过蓝牙BLE创建点对点连接</li>
-</ul>
-<p>而前两种是最稳定的方式，可以使用Wifi Direct实现，而蓝牙BLE的方式就比较鸡肋了距离有限制大小也有限制，能Wifi直连肯定不用蓝牙。然而蓝牙的发现连接标准其实各个设备基本都遵循的是一套，但Wifi Direct则是实现方式多种多样像UPnP、Bonjour、DLNA、SLP抑或是其他技术都能实现。iOS用的自家Bonjour，而Android4.0后开始支持直接就叫Wifi Direct，不同设备直连基本都会遇到问题。这里以Android和iOS为例实现的基本逻辑其实都由MDNS与DNS-SD演化而来。</p>
-<p>确定了Wifi Direct以后又会发现一个问题就是这解决的是设备与设备的通信，也就是一对一，而理想的无网通信是多对多，信息流之间希望有多跳的能力也就是Mesh，这个最终我们也没完美解决，虽然Android和iOS里有一定的解决方案(创建群组实现多对多)但也有不同系统无法互通的问题和群组上限问题，但当时我们选择了更简单的方式就是由路由器去Mesh其他路由器，而设备加入到路由器的网络里直接用MDNS去发现然后链接通信，专业设备做专业事，Mesh组网和设备通信分摊到两个地方。</p>
-<h2 id="MDNS-Multicast-DNS-与DNS-SD-DNS-Service-Discovery"><a href="#MDNS-Multicast-DNS-与DNS-SD-DNS-Service-Discovery" class="headerlink" title="MDNS(Multicast DNS)与DNS-SD(DNS Service Discovery)"></a>MDNS(Multicast DNS)与DNS-SD(DNS Service Discovery)</h2><p>简介里介绍完基本就确定了技术点就是Wifi Direct，而这项技术则是由MDNS(Multicast DNS)与DNS-SD(DNS Service Discovery)演化而来。</p>
-<p>首先MDNS和DNS-SD是DNS协议的两个扩展。MDNS扩展了域名服务系统，在链路本地多播上运行。DNS-SD添加了通过DNS发现网络服务的支持。MDNS原理就是在基于udp加入网络后向所有主机组播一个消息。</p>
-<p>基本流程就是基于某个自定义域名发布服务，发现设备，连接设备</p>
-<p><img src="/assets/blogImage/WX20211206-012426@2x.png" alt="Bonjour API" title="Bonjour API"></p>
-        
-          <a class="article-more-a" href="/2021/12/01/(%E6%97%A0%E7%BD%91%E9%80%9A%E4%BF%A1)MDNS%E5%AE%9E%E7%8E%B0%E8%AE%BE%E5%A4%87%E9%97%B4%E7%9A%84%E5%8F%91%E7%8E%B0%E4%B8%8E%E9%80%9A%E4%BF%A1/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Wifi Direct</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NDS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">MDNS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">DNS-SD</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Andoid</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">无网通信</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">BLE</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/12/01/(%E6%97%A0%E7%BD%91%E9%80%9A%E4%BF%A1)MDNS%E5%AE%9E%E7%8E%B0%E8%AE%BE%E5%A4%87%E9%97%B4%E7%9A%84%E5%8F%91%E7%8E%B0%E4%B8%8E%E9%80%9A%E4%BF%A1/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-OLLVM代码混淆移植与使用(续)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/11/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E7%BB%AD)/">OLLVM代码混淆移植与使用(续)</a>
-    </h1>
-  
-
-        
-        <a href="/2021/11/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E7%BB%AD)/" class="archive-article-date">
-  	<time datetime="2021-11-09T15:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="现状"><a href="#现状" class="headerlink" title="现状"></a>现状</h1><p>随着时间时间推移，类似库都基本不维护了，毕竟LLVM新版本改动多还好说，再多只要看看关键位置就大差不差知道怎么改怎么兼容，最难的就是编译，每次编译调试不知不觉没干啥就能耗人一天，另外就是以前的人现在都不知道还在不在业内，回归正题，其实修改的地方并不多，下面我就整理了一下关键位置，主要就是类型和调用顺序变了一下，了解以后去修改类似的项目也是手到擒来。</p>
-<h1 id="关键修改"><a href="#关键修改" class="headerlink" title="关键修改"></a>关键修改</h1><h3 id="9-0以后的修改"><a href="#9-0以后的修改" class="headerlink" title="9.0以后的修改"></a>9.0以后的修改</h3><p>这里类型写法更加标准一步一步转<br><img src="/assets/blogImage/3994053-8d78f46f6c1acb2c.webp" alt="image.png"><br>这里是9以后不在调用这个方法了，导致fla不生效，也可以在<code>Flattening.cpp</code>里面修改添加<br><img src="/assets/blogImage/3994053-8354e86d99016a71.webp" alt="image.png"></p>
-        
-          <a class="article-more-a" href="/2021/11/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E7%BB%AD)/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">LLVM</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">OLLVM</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Clang</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">混淆</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">XCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NDK</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Visual Studio</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/11/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E7%BB%AD)/">查看全文 >></a>
+          <a class="article-more-a" href="/2023/02/28/PCL%E7%82%B9%E4%BA%91%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95%E5%8F%8A%E9%85%8D%E5%87%86/">查看全文 >></a>
         </p>
       
 
@@ -671,7 +767,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/">Next &amp;raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/3/">Next &amp;raquo;</a>
     </nav>
   
 
@@ -1204,6 +1300,50 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">交易系统</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">web3</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">kline</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">go</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">architecture</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">smart-money</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">polymarket</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">prediction-market</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">blockchain</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">solana</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">evm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">kafka</a>
               </li>
             
             <div class="clearfix"></div>
