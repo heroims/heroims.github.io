@@ -146,6 +146,107 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-OLLVM代码混淆移植与使用(续)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/11/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E7%BB%AD)/">OLLVM代码混淆移植与使用(续)</a>
+    </h1>
+  
+
+        
+        <a href="/2021/11/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E7%BB%AD)/" class="archive-article-date">
+  	<time datetime="2021-11-09T15:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-09</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="现状"><a href="#现状" class="headerlink" title="现状"></a>现状</h1><p>随着时间时间推移，类似库都基本不维护了，毕竟LLVM新版本改动多还好说，再多只要看看关键位置就大差不差知道怎么改怎么兼容，最难的就是编译，每次编译调试不知不觉没干啥就能耗人一天，另外就是以前的人现在都不知道还在不在业内，回归正题，其实修改的地方并不多，下面我就整理了一下关键位置，主要就是类型和调用顺序变了一下，了解以后去修改类似的项目也是手到擒来。</p>
+<h1 id="关键修改"><a href="#关键修改" class="headerlink" title="关键修改"></a>关键修改</h1><h3 id="9-0以后的修改"><a href="#9-0以后的修改" class="headerlink" title="9.0以后的修改"></a>9.0以后的修改</h3><p>这里类型写法更加标准一步一步转<br><img src="/assets/blogImage/3994053-8d78f46f6c1acb2c.webp" alt="image.png"><br>这里是9以后不在调用这个方法了，导致fla不生效，也可以在<code>Flattening.cpp</code>里面修改添加<br><img src="/assets/blogImage/3994053-8354e86d99016a71.webp" alt="image.png"></p>
+        
+          <a class="article-more-a" href="/2021/11/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E7%BB%AD)/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">LLVM</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">OLLVM</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Clang</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">混淆</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">XCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NDK</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Visual Studio</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/11/09/OLLVM%E4%BB%A3%E7%A0%81%E6%B7%B7%E6%B7%86%E7%A7%BB%E6%A4%8D%E4%B8%8E%E4%BD%BF%E7%94%A8(%E7%BB%AD)/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-OLLVM代码混淆移植与使用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -513,134 +614,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/11/01/Xcode-%E9%85%8D%E7%BD%AE%E5%A4%9A%E7%A7%8Dscheme%E5%AE%8C%E7%BE%8E%E4%BD%BF%E7%94%A8%EF%BC%88%E9%85%8D%E5%90%88Pods%EF%BC%89/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-IOS-各类获取授权处理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/29/IOS-%E5%90%84%E7%B1%BB%E8%8E%B7%E5%8F%96%E6%8E%88%E6%9D%83%E5%A4%84%E7%90%86/">IOS 各类获取授权常用处理</a>
-    </h1>
-  
-
-        
-        <a href="/2017/09/29/IOS-%E5%90%84%E7%B1%BB%E8%8E%B7%E5%8F%96%E6%8E%88%E6%9D%83%E5%A4%84%E7%90%86/" class="archive-article-date">
-  	<time datetime="2017-09-29T08:50:41.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="地理位置授权"><a href="#地理位置授权" class="headerlink" title="地理位置授权"></a>地理位置授权</h1><p>需要引用<code>#import &lt;CoreLocation/CoreLocation.h&gt;</code></p>
-<ul>
-<li>plist<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">始终允许访问位置</span><br><span class="line">NSLocationAlwaysUsageDescription</span><br><span class="line">位置</span><br><span class="line">NSLocationUsageDescription</span><br><span class="line">在使用期间访问位置</span><br><span class="line">NSLocationWhenInUseUsageDescription</span><br><span class="line">始终允许访问位置并且在使用期间访问位置</span><br><span class="line">NSLocationAlwaysAndWhenInUseUsageDescription</span><br></pre></td></tr></table></figure></li>
-<li>判断<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//判断是否开启</span><br><span class="line">[CLLocationManager locationServicesEnabled];</span><br><span class="line">//获取具体状态</span><br><span class="line">[CLLocationManager authorizationStatus];</span><br></pre></td></tr></table></figure></li>
-<li>授权<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CLLocationManager *locManager = [[CLLocationManager alloc] init];</span><br><span class="line">[locManager ]</span><br><span class="line">//获取始终允许访问位置权限</span><br><span class="line">[locManager requestWhenInUseAuthorization];</span><br><span class="line">//获取在使用期间访问位置</span><br><span class="line">[locManager requestAlwaysAuthorization];</span><br></pre></td></tr></table></figure>
-<h1 id="相册授权"><a href="#相册授权" class="headerlink" title="相册授权"></a>相册授权</h1>需要引用<code>#import &lt;AssetsLibrary/AssetsLibrary.h&gt;</code>或<code>#import &lt;Photos/Photos.h&gt;</code></li>
-<li>plist<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">访问相册</span><br><span class="line">NSPhotoLibraryUsageDescription</span><br><span class="line">添加相册</span><br><span class="line">NSPhotoAddLibraryUsageDescription</span><br></pre></td></tr></table></figure></li>
-<li>判断<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[ALAssetsLibrary authorizationStatus];</span><br><span class="line"></span><br><span class="line">[PHPhotoLibrary authorizationStatus];</span><br></pre></td></tr></table></figure></li>
-<li>授权<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) &#123;</span><br><span class="line">if (status == PHAuthorizationStatusAuthorized) &#123;</span><br><span class="line">// 用户同意授权</span><br><span class="line">&#125;</span><br><span class="line">else &#123;</span><br><span class="line">// 用户拒绝授权</span><br><span class="line">&#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<h1 id="相机-amp-麦克风授权"><a href="#相机-amp-麦克风授权" class="headerlink" title="相机&amp;麦克风授权"></a>相机&amp;麦克风授权</h1>需要引用<code>#import &lt;AVFoundation/AVFoundation.h&gt;</code></li>
-<li>plist<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">相机</span><br><span class="line">NSCameraUsageDescription</span><br><span class="line">麦克风</span><br><span class="line">NSMicrophoneUsageDescription</span><br></pre></td></tr></table></figure></li>
-<li>判断<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//AVMediaTypeVideo相机 AVMediaTypeAudio麦克风</span><br><span class="line">[AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];</span><br></pre></td></tr></table></figure></li>
-<li>授权<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">//AVMediaTypeVideo相机 AVMediaTypeAudio麦克风</span><br><span class="line">[AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) &#123;</span><br><span class="line"></span><br><span class="line">if (granted)&#123;// 用户同意授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">else &#123;// 用户拒绝授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">//不推荐慎用</span><br><span class="line">[[AVAudioSession sharedInstance] performSelector:@selector(requestRecordPermission:) withObject:^(BOOL granted) &#123;</span><br><span class="line">if (granted)&#123;// 用户同意授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">else &#123;// 用户拒绝授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-<h1 id="通讯录授权"><a href="#通讯录授权" class="headerlink" title="通讯录授权"></a>通讯录授权</h1>需要引用<code>#import &lt;Contacts/Contacts.h&gt;</code></li>
-<li>plist<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">通讯录</span><br><span class="line">NSContactsUsageDescription</span><br></pre></td></tr></table></figure></li>
-<li>判断<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts]</span><br></pre></td></tr></table></figure></li>
-<li>授权<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">CNContactStore*contactStore = [[CNContactStore alloc] init];</span><br><span class="line"></span><br><span class="line">[contactStore requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted,NSError*_Nullable error) &#123;</span><br><span class="line">if (granted)&#123;// 用户同意授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">else &#123;// 用户拒绝授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2017/09/29/IOS-%E5%90%84%E7%B1%BB%E8%8E%B7%E5%8F%96%E6%8E%88%E6%9D%83%E5%A4%84%E7%90%86/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">实用技巧</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">授权</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">地理位置</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">网络判断</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">相册</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">相机</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">麦克风</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">通讯录</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">蜂窝网络</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/29/IOS-%E5%90%84%E7%B1%BB%E8%8E%B7%E5%8F%96%E6%8E%88%E6%9D%83%E5%A4%84%E7%90%86/">查看全文 >></a>
         </p>
       
 
@@ -1249,6 +1222,30 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">kafka</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">cex</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">exchange</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">matching-engine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">clearing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">market-making</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
             
             <div class="clearfix"></div>

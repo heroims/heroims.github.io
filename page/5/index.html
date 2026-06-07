@@ -146,6 +146,134 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-IOS-各类获取授权处理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/09/29/IOS-%E5%90%84%E7%B1%BB%E8%8E%B7%E5%8F%96%E6%8E%88%E6%9D%83%E5%A4%84%E7%90%86/">IOS 各类获取授权常用处理</a>
+    </h1>
+  
+
+        
+        <a href="/2017/09/29/IOS-%E5%90%84%E7%B1%BB%E8%8E%B7%E5%8F%96%E6%8E%88%E6%9D%83%E5%A4%84%E7%90%86/" class="archive-article-date">
+  	<time datetime="2017-09-29T08:50:41.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="地理位置授权"><a href="#地理位置授权" class="headerlink" title="地理位置授权"></a>地理位置授权</h1><p>需要引用<code>#import &lt;CoreLocation/CoreLocation.h&gt;</code></p>
+<ul>
+<li>plist<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">始终允许访问位置</span><br><span class="line">NSLocationAlwaysUsageDescription</span><br><span class="line">位置</span><br><span class="line">NSLocationUsageDescription</span><br><span class="line">在使用期间访问位置</span><br><span class="line">NSLocationWhenInUseUsageDescription</span><br><span class="line">始终允许访问位置并且在使用期间访问位置</span><br><span class="line">NSLocationAlwaysAndWhenInUseUsageDescription</span><br></pre></td></tr></table></figure></li>
+<li>判断<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//判断是否开启</span><br><span class="line">[CLLocationManager locationServicesEnabled];</span><br><span class="line">//获取具体状态</span><br><span class="line">[CLLocationManager authorizationStatus];</span><br></pre></td></tr></table></figure></li>
+<li>授权<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CLLocationManager *locManager = [[CLLocationManager alloc] init];</span><br><span class="line">[locManager ]</span><br><span class="line">//获取始终允许访问位置权限</span><br><span class="line">[locManager requestWhenInUseAuthorization];</span><br><span class="line">//获取在使用期间访问位置</span><br><span class="line">[locManager requestAlwaysAuthorization];</span><br></pre></td></tr></table></figure>
+<h1 id="相册授权"><a href="#相册授权" class="headerlink" title="相册授权"></a>相册授权</h1>需要引用<code>#import &lt;AssetsLibrary/AssetsLibrary.h&gt;</code>或<code>#import &lt;Photos/Photos.h&gt;</code></li>
+<li>plist<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">访问相册</span><br><span class="line">NSPhotoLibraryUsageDescription</span><br><span class="line">添加相册</span><br><span class="line">NSPhotoAddLibraryUsageDescription</span><br></pre></td></tr></table></figure></li>
+<li>判断<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[ALAssetsLibrary authorizationStatus];</span><br><span class="line"></span><br><span class="line">[PHPhotoLibrary authorizationStatus];</span><br></pre></td></tr></table></figure></li>
+<li>授权<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) &#123;</span><br><span class="line">if (status == PHAuthorizationStatusAuthorized) &#123;</span><br><span class="line">// 用户同意授权</span><br><span class="line">&#125;</span><br><span class="line">else &#123;</span><br><span class="line">// 用户拒绝授权</span><br><span class="line">&#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+<h1 id="相机-amp-麦克风授权"><a href="#相机-amp-麦克风授权" class="headerlink" title="相机&amp;麦克风授权"></a>相机&amp;麦克风授权</h1>需要引用<code>#import &lt;AVFoundation/AVFoundation.h&gt;</code></li>
+<li>plist<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">相机</span><br><span class="line">NSCameraUsageDescription</span><br><span class="line">麦克风</span><br><span class="line">NSMicrophoneUsageDescription</span><br></pre></td></tr></table></figure></li>
+<li>判断<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//AVMediaTypeVideo相机 AVMediaTypeAudio麦克风</span><br><span class="line">[AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];</span><br></pre></td></tr></table></figure></li>
+<li>授权<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">//AVMediaTypeVideo相机 AVMediaTypeAudio麦克风</span><br><span class="line">[AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) &#123;</span><br><span class="line"></span><br><span class="line">if (granted)&#123;// 用户同意授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">else &#123;// 用户拒绝授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">//不推荐慎用</span><br><span class="line">[[AVAudioSession sharedInstance] performSelector:@selector(requestRecordPermission:) withObject:^(BOOL granted) &#123;</span><br><span class="line">if (granted)&#123;// 用户同意授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">else &#123;// 用户拒绝授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+<h1 id="通讯录授权"><a href="#通讯录授权" class="headerlink" title="通讯录授权"></a>通讯录授权</h1>需要引用<code>#import &lt;Contacts/Contacts.h&gt;</code></li>
+<li>plist<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">通讯录</span><br><span class="line">NSContactsUsageDescription</span><br></pre></td></tr></table></figure></li>
+<li>判断<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts]</span><br></pre></td></tr></table></figure></li>
+<li>授权<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">CNContactStore*contactStore = [[CNContactStore alloc] init];</span><br><span class="line"></span><br><span class="line">[contactStore requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted,NSError*_Nullable error) &#123;</span><br><span class="line">if (granted)&#123;// 用户同意授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">else &#123;// 用户拒绝授权</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+        
+          <a class="article-more-a" href="/2017/09/29/IOS-%E5%90%84%E7%B1%BB%E8%8E%B7%E5%8F%96%E6%8E%88%E6%9D%83%E5%A4%84%E7%90%86/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">实用技巧</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">授权</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">地理位置</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">网络判断</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">相册</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">相机</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">麦克风</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">通讯录</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">蜂窝网络</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/09/29/IOS-%E5%90%84%E7%B1%BB%E8%8E%B7%E5%8F%96%E6%8E%88%E6%9D%83%E5%A4%84%E7%90%86/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Pods的static-framework使用感受" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -515,100 +643,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/08/02/IOS%20%E5%88%87%E9%9D%A2%E7%BB%9F%E8%AE%A1%E4%BA%8B%E4%BB%B6%E8%A7%A3%E8%80%A6/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-IOS 百行代码切面日志" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/22/IOS%20%E7%99%BE%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%88%87%E9%9D%A2%E6%97%A5%E5%BF%97/">IOS 百行代码切面日志</a>
-    </h1>
-  
-
-        
-        <a href="/2017/03/22/IOS%20%E7%99%BE%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%88%87%E9%9D%A2%E6%97%A5%E5%BF%97/" class="archive-article-date">
-  	<time datetime="2017-03-21T18:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="AOPLogger"><a href="#AOPLogger" class="headerlink" title="AOPLogger"></a>AOPLogger</h1><h3 id="切面日志作用"><a href="#切面日志作用" class="headerlink" title="切面日志作用"></a>切面日志作用</h3><p>说到日志，切面的实现最大的好处也就是分离出来，单独开发，包括埋点，记录输出log都可以在不影响项目内逻辑的情况下完成，形成完全的一个独立模块。</p>
-<h4 id="这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。"><a href="#这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。" class="headerlink" title="这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。"></a>这里的切面日志，只是作为分离业务而用，所以它的作用只是记录，至于上传删除，这些逻辑同样可以分离出来单独写，存的过程解决了渗透入工程内，上传删除包括分级这些逻辑其实本身就很独立。</h4><p>在实现上用了Aspects这个库，主要就是hook方法，用它主要是对一些例外情况处理不错，自己写简单实现其实就只写写方法交换剩下的就不管了。。。</p>
-<p>下面说一下.h<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">extern NSString * const AOPLoggerMethod;//要统计的日志方法Key</span><br><span class="line">extern NSString * const AOPLoggerLogInfo;//要统计的日志信息Key</span><br><span class="line">extern NSString * const AOPLoggerPositionAfter;//方法执行后统计日志</span><br><span class="line">extern NSString * const AOPLoggerPositionBefore;//方法执行前统计日志</span><br><span class="line">extern NSString * const AOPLoggerPositionType;//执行日志统计的类型Key</span><br><span class="line"></span><br><span class="line">@protocol AOPLoggerGetConfigInfoProtocol &lt;NSObject&gt;</span><br><span class="line"></span><br><span class="line">@required</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">创建类扩展如果使用此协议必须实现此方法</span><br><span class="line">此方法返回统计的配置信息，可以从网络取也可以从本地取</span><br><span class="line">@return 统计配置字典</span><br><span class="line">*/</span><br><span class="line">-(NSDictionary*)al_getConfigInfo;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line">@protocol AOPLoggerBLLProtocol &lt;NSObject&gt;</span><br><span class="line"></span><br><span class="line">@required</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">创建类扩展如果使用此协议必须实现此方法</span><br><span class="line">此方法主要来处理切面方法后的log信息处理可以存本地也可以使用其他任意第三方输出</span><br><span class="line">@param log 配置文件里定义的AOPLoggerLogInfo信息</span><br><span class="line">@param originAOP AspectInfo的方法信息，第三方库Aspect返回的切面方法的所有信息</span><br><span class="line">*/</span><br><span class="line">-(void)al_logger:(id)log originAOP:(id)originAOP;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface AOPLogger : NSObject</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">开始读取日志Plist配置文件</span><br><span class="line">*/</span><br><span class="line">+(void)startAOPLoggerWithPlist;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">统计日志的调用方法</span><br><span class="line">（如果不想增加开机时间可以采取每个模块创建一个日志统计类适时调用，在该类里提供一个初始化方法，内部调用此即可）</span><br><span class="line">@param classString 类名</span><br><span class="line">@param methodString 方法名</span><br><span class="line">@param log 相当于AOPLoggerLogInfo信息</span><br><span class="line">*/</span><br><span class="line">+(void)AOPLoggerWithClassString:(NSString*)classString methodString:(NSString*)methodString log:(id)log;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">统计日志的调用方法</span><br><span class="line">（如果不想增加开机时间可以采取每个模块创建一个日志统计类适时调用，在该类里提供一个初始化方法，内部调用此即可）</span><br><span class="line">@param classString 类名</span><br><span class="line">@param methodString 方法名</span><br><span class="line">@param log 相当于AOPLoggerLogInfo信息</span><br><span class="line">@param logPosition 日志统计时位置，可放在方法运行前或运行后（默认运行后执行日志统计）</span><br><span class="line">*/</span><br><span class="line">+(void)AOPLoggerWithClassString:(NSString *)classString methodString:(NSString *)methodString log:(id)log logPosition:(NSString*)logPosition;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure><br>
-        
-          <a class="article-more-a" href="/2017/03/22/IOS%20%E7%99%BE%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%88%87%E9%9D%A2%E6%97%A5%E5%BF%97/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">IOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">切面</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AOP</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">日志</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">百行代码系列</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/03/22/IOS%20%E7%99%BE%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%88%87%E9%9D%A2%E6%97%A5%E5%BF%97/">查看全文 >></a>
         </p>
       
 
@@ -1217,6 +1251,30 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">kafka</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">cex</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">exchange</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">matching-engine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">clearing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">market-making</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
             
             <div class="clearfix"></div>

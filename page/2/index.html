@@ -146,6 +146,152 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-CEX中心化交易所技术架构深度解析-从撮合清算到做市系统" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2026/03/06/CEX%E4%B8%AD%E5%BF%83%E5%8C%96%E4%BA%A4%E6%98%93%E6%89%80%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90-%E4%BB%8E%E6%92%AE%E5%90%88%E6%B8%85%E7%AE%97%E5%88%B0%E5%81%9A%E5%B8%82%E7%B3%BB%E7%BB%9F/">CEX 中心化交易所技术架构深度解析：从撮合清算到做市系统</a>
+    </h1>
+  
+
+        
+        <a href="/2026/03/06/CEX%E4%B8%AD%E5%BF%83%E5%8C%96%E4%BA%A4%E6%98%93%E6%89%80%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90-%E4%BB%8E%E6%92%AE%E5%90%88%E6%B8%85%E7%AE%97%E5%88%B0%E5%81%9A%E5%B8%82%E7%B3%BB%E7%BB%9F/" class="archive-article-date">
+  	<time datetime="2026-03-06T10:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-03-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>中心化交易所（CEX）是加密货币生态的核心基础设施。一个生产级 CEX 背后是多个高度耦合又职责分离的子系统：<strong>撮合系统</strong>负责将买卖订单匹配成交，<strong>清算系统</strong>负责计算交易结果、管理用户资产和仓位，<strong>做市系统</strong>负责提供流动性、维护健康的盘口深度。</p>
+<p>本文从一个中型 CEX 的真实技术实现为蓝本，从以下四个核心系统展开：</p>
+<ol>
+<li><strong>撮合系统（Matching Engine）</strong> — 订单如何被匹配，盘口如何维护</li>
+<li><strong>清算系统（Clearing &amp; Settlement）</strong> — 成交后资金如何清算，合约仓位如何管理，强平如何触发</li>
+<li><strong>风控与限价体系</strong> — 杠杆、强平、止盈止损、市场干预</li>
+<li><strong>做市系统（Market Making）</strong> — 做市机器人如何实现流动性管理，价格策略如何工作</li>
+</ol>
+<p>配合三套生产级做市机器人（现货基础做市 / 智能策略做市 / 永续合约做市）的实现分析，完整呈现一套 CEX 做市基础设施的真实面貌。</p>
+<h2 id="一、CEX-整体架构概览"><a href="#一、CEX-整体架构概览" class="headerlink" title="一、CEX 整体架构概览"></a>一、CEX 整体架构概览</h2><p>一个典型的 CEX 系统采用<strong>分层+事件驱动</strong>架构，从用户接入到资金管理共分为五层：</p>
+<pre class="mermaid">graph TB
+    subgraph 用户层
+        WEB[Web/App/API]
+    end
+    subgraph 接入层
+        GW[Gateway/Proxy<br/>协议转换·限流·认证]
+    end
+    subgraph 业务核心层
+        QUOTE[行情系统<br/>OrderBook/深度/K线]
+        MATCH[撮合系统<br/>Matching Engine]
+        ACCOUNT[账户系统<br/>资产管理/充提]
+    end
+    subgraph 清算风控层
+        CLEAR[清算系统<br/>Clearing/Settlement<br/>PnL计算/强平检查]
+        RISK[风控系统<br/>杠杆/限额/市场监控]
+    end
+    subgraph 资金层
+        FUND[资金系统<br/>热钱包/冷钱包/归集/链上转账]
+    end
+
+    WEB --> GW
+    GW --> QUOTE
+    GW --> MATCH
+    GW --> ACCOUNT
+    MATCH --> CLEAR
+    ACCOUNT --> CLEAR
+    MATCH --> QUOTE
+    CLEAR --> RISK
+    RISK --> ACCOUNT
+    CLEAR --> FUND</pre>
+
+<p><strong>分层设计的意义</strong>：每一层都可以独立扩展、独立部署、独立故障。撮合系统需要毫秒级延迟，通常部署在裸金属服务器上靠近 CPU；而清算系统需要强一致性和事务保障，可以使用数据库集群；资金系统需要最高级别的安全隔离，通常运行在独立的网络环境中。</p>
+<p>本文聚焦于<strong>撮合系统</strong>、<strong>清算系统</strong>和<strong>做市系统</strong>这三个最核心的子系统。</p>
+        
+          <a class="article-more-a" href="/2026/03/06/CEX%E4%B8%AD%E5%BF%83%E5%8C%96%E4%BA%A4%E6%98%93%E6%89%80%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90-%E4%BB%8E%E6%92%AE%E5%90%88%E6%B8%85%E7%AE%97%E5%88%B0%E5%81%9A%E5%B8%82%E7%B3%BB%E7%BB%9F/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">web3</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">architecture</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">cex</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">exchange</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">matching-engine</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">clearing</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">market-making</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">python</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2026/03/06/CEX%E4%B8%AD%E5%BF%83%E5%8C%96%E4%BA%A4%E6%98%93%E6%89%80%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90-%E4%BB%8E%E6%92%AE%E5%90%88%E6%B8%85%E7%AE%97%E5%88%B0%E5%81%9A%E5%B8%82%E7%B3%BB%E7%BB%9F/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Web3 钱包系统详解" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -631,111 +777,6 @@ D --> |数字化图像| E[数字化图像坐标系]</pre>
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2023/03/12/%E6%B7%B1%E5%BA%A6%E7%9B%B8%E6%9C%BA(3D%E7%9B%B8%E6%9C%BA)%E7%82%B9%E4%BA%91%E7%94%9F%E6%88%90/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-PCL点云常用方法及配准" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/02/28/PCL%E7%82%B9%E4%BA%91%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95%E5%8F%8A%E9%85%8D%E5%87%86/">PCL 点云常用方法及配准</a>
-    </h1>
-  
-
-        
-        <a href="/2023/02/28/PCL%E7%82%B9%E4%BA%91%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95%E5%8F%8A%E9%85%8D%E5%87%86/" class="archive-article-date">
-  	<time datetime="2023-02-28T04:09:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-02-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="点云配准汇总"><a href="#点云配准汇总" class="headerlink" title="点云配准汇总"></a>点云配准汇总</h2><p>配准比较常用的套路就是法线提取，然后fpfh特征提取，粗配准，最后再来精配准，基本就能得到比较准确的旋转矩阵和模板点云配上。</p>
-<h3 id="特征提取"><a href="#特征提取" class="headerlink" title="特征提取"></a>特征提取</h3><h4 id="轮廓提取"><a href="#轮廓提取" class="headerlink" title="轮廓提取"></a>轮廓提取</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pcl/features/boundary.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// &lt;summary&gt;</span></span><br><span class="line"><span class="comment">/// 轮廓计算</span></span><br><span class="line"><span class="comment">/// &lt;/summary&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;cloud_in&quot;&gt;输入点云&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;normals_in&quot;&gt;输入法线&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;radius&quot;&gt;半径&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;angle&quot;&gt;角度&lt;/param&gt;</span></span><br><span class="line"><span class="comment">/// &lt;param name=&quot;cloud_out&quot;&gt;输出点云&lt;/param&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">boundaryEstimationFeatures</span><span class="params">(pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr cloud_in, pcl::PointCloud&lt;pcl::Normal&gt;::Ptr normals_in, pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr&amp; cloud_out, <span class="type">double</span> radius, <span class="type">float</span> angle)</span> </span>&#123;</span><br><span class="line">    pcl::BoundaryEstimation&lt;pcl::PointXYZ, pcl::Normal, pcl::Boundary&gt; be;</span><br><span class="line">    be.<span class="built_in">setInputCloud</span>(cloud_in);</span><br><span class="line">    be.<span class="built_in">setInputNormals</span>(normals_in);</span><br><span class="line">    pcl::search::KdTree&lt;pcl::PointXYZ&gt;::<span class="function">Ptr <span class="title">tree</span><span class="params">(<span class="keyword">new</span> pcl::search::KdTree&lt;pcl::PointXYZ&gt;)</span></span>;</span><br><span class="line">    tree-&gt;<span class="built_in">setInputCloud</span>(cloud_in);</span><br><span class="line">    <span class="comment">//设置搜索时所用的球半径,参数radius为设置搜索球体半径</span></span><br><span class="line">    be.<span class="built_in">setRadiusSearch</span>(radius);</span><br><span class="line">    <span class="comment">//设置搜索时近邻的来源点云,参数cloud指向搜索时被搜索的点云对象,常常用稠密的原始点云,而不用稀疏的下采样后的点云,在特征描述和提取中查询点往往是关键点</span></span><br><span class="line">    <span class="comment">//be.setSearchSurface(overlap_cloud);</span></span><br><span class="line">    <span class="comment">//设置搜索时所用的k近邻个数,参数k为设置搜索近邻个数</span></span><br><span class="line">    <span class="comment">//be.setKSearch(k);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//设置将点标记为边界或规则的决定边界(角度阈值)。</span></span><br><span class="line">    be.<span class="built_in">setAngleThreshold</span>(angle);</span><br><span class="line">    pcl::PointCloud&lt;pcl::Boundary&gt;::<span class="function">Ptr <span class="title">boundarys</span><span class="params">(<span class="keyword">new</span> pcl::PointCloud&lt;pcl::Boundary&gt;())</span></span>;</span><br><span class="line">    be.<span class="built_in">compute</span>(*boundarys);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; cloud_in-&gt;<span class="built_in">size</span>(); i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> ((*boundarys)[i].boundary_point &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            cloud_out-&gt;points.<span class="built_in">push_back</span>(cloud_in-&gt;points[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2023/02/28/PCL%E7%82%B9%E4%BA%91%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95%E5%8F%8A%E9%85%8D%E5%87%86/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">点云</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">PCL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">机器视觉</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">配准</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">压缩</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">轮廓</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">特征</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2023/02/28/PCL%E7%82%B9%E4%BA%91%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95%E5%8F%8A%E9%85%8D%E5%87%86/">查看全文 >></a>
         </p>
       
 
@@ -1344,6 +1385,30 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">kafka</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">cex</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">exchange</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">matching-engine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">clearing</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">market-making</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
             
             <div class="clearfix"></div>
