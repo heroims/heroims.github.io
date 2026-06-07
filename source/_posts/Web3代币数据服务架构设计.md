@@ -69,6 +69,7 @@ tags: [web3, go, architecture, blockchain, solana, evm]
 5. **Scheduler** - 注册 29+ 个定时任务
 6. **Monitor** - 暴露 Prometheus 指标（`:8091/metrics`）
 
+<!-- more -->
 ### 2.2 存储选型
 
 | 存储 | 用途 | 选型理由 |

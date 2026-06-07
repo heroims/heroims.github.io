@@ -47,6 +47,7 @@ flowchart LR
     Storage --> FE
 ```
 
+<!-- more -->
 ### 核心启动流程
 
 Worker 的启动入口在 `cmd/worker/main.go`，启动顺序如下：

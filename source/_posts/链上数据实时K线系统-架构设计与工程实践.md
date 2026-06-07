@@ -51,6 +51,7 @@ currentTs = tradeTime - (tradeTime % duration)
 cacheKey = "kline:{token}:{pool}:{interval}"
 ```
 
+<!-- more -->
 ### 1.4 K 线更新逻辑（核心）
 
 这是单条交易合并到 K 线的完整过程：
