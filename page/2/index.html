@@ -146,6 +146,183 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-多链交易解析服务-架构设计与工程实践" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2026/05/27/%E5%A4%9A%E9%93%BE%E4%BA%A4%E6%98%93%E8%A7%A3%E6%9E%90%E6%9C%8D%E5%8A%A1-%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/">多链交易解析服务 — 架构设计与工程实践</a>
+    </h1>
+  
+
+        
+        <a href="/2026/05/27/%E5%A4%9A%E9%93%BE%E4%BA%A4%E6%98%93%E8%A7%A3%E6%9E%90%E6%9C%8D%E5%8A%A1-%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/" class="archive-article-date">
+  	<time datetime="2026-05-27T06:10:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-05-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在 Web3 领域,链上交易数据是上层应用的基础。无论是聪明钱追踪、代币数据服务、还是实时 K 线系统,都依赖同一个底层能力:<strong><br>将区块链上的原始交易数据解析成结构化、可消费的业务事件。</strong></p>
+<p>但构建这样的解析层面临几个核心挑战:</p>
+<ul>
+<li><strong>多链异构</strong>:Solana 和 EVM 链(BSC、Base)的区块结构、交易模型、RPC 接口完全不同。Solana 有 Account Model、指令嵌套和 CPI(Cross-Program Invocation);EVM 链有 <code>types.Block</code>、Receipt、Event Log。解析器需要统一这两种范式。</li>
+<li><strong>协议多样性</strong>:仅 Solana 生态就有 Raydium、Meteora、PumpFun、Orca、Pancake 等十几种 DEX 协议,每种协议的指令编码方式(Borsh/自定)和账本结构各不相同。</li>
+<li><strong>实时性要求高</strong>:从区块产生 → 扫链 → 解析 → 发送下游,需要在秒级完成。区块不能积压,解析失败需自动重试。</li>
+<li><strong>可观测性</strong>:生产环境需要监控解析延迟、失败率、Kafka 生产速率、RPC 可用性等指标。</li>
+</ul>
+<p>本文介绍一个用 Golang 构建的生产级多链交易解析服务。该服务已覆盖 Solana、BSC、Base、Polygon 四条链,支持 12+ DEX 协议,每日处理百万级交易。</p>
+<h2 id="一、系统架构"><a href="#一、系统架构" class="headerlink" title="一、系统架构"></a>一、系统架构</h2><h3 id="1-1-整体架构"><a href="#1-1-整体架构" class="headerlink" title="1.1 整体架构"></a>1.1 整体架构</h3><p>整个系统分为两个独立微服务:<strong>Scanner</strong>(扫链)和 <strong>Parser</strong>(解析),通过 Kafka 解耦。<br>另外对于高实时要求的链如Solana会有<strong>GRPC</strong>(监听)，redis里用lua脚本去重存到待解析tx队列，解析都是基于tx，而扫链也会结合ws监听出块已减少rpc请求(rpc节点压力过大性能会下降)。</p>
+<pre class="mermaid">flowchart TB
+    subgraph Blockchain["区块链网络"]
+        BSC["BSC Node"]
+        BASE["Base Node"]
+        POLYGON["Polygon Node"]
+        SOLANA["Solana Node"]
+    end
+
+    subgraph Scanner["Scanner Service"]
+        EVM1["EVM Scanner BSC<br/>轮询 + RLP编码"]
+        EVM2["EVM Scanner Base<br/>轮询 + RLP编码"]
+        EVM3["EVM Scanner Polygon<br/>轮询 + RLP编码"]
+        SOL["Solana Scanner<br/>轮询 + Vote过滤 + 拆分"]
+
+        RedisScan["Redis<br/>扫描状态<br/>最后区块号"]
+    end
+
+    subgraph Kafka["Kafka Message Queue"]
+        TOPIC_BSC["raw_block_BSC"]
+        TOPIC_BASE["raw_block_BASE"]
+        TOPIC_POLYGON["raw_block_POLYGON"]
+        TOPIC_SOL["raw_block_SOLANA"]
+    end
+
+    subgraph Parser["Parser Service"]
+        EP1["EVM Parser BSC<br/>Receipt解析 + ERC20提取 + 并行"]
+        EP2["EVM Parser Base<br/>Receipt解析 + ERC20提取 + 并行"]
+        SOLP["Solana Parser<br/>Plugin 指令解析器<br/>Token → DEX 两阶段"]
+
+        Sub["Submitter<br/>多Topic分发"]
+    end
+
+    subgraph Output["下游 Kafka Topics"]
+        BT["block_topic<br/>完整区块"]
+        TT["transfer_topic<br/>钱包转账"]
+        LQ["liquidity_events<br/>流动性变化"]
+        CT["token_events<br/>代币创建/更新/发射"]
+        BL["balance_topic<br/>余额快照"]
+        TL["trade_events<br/>交易记录/币对创建"]
+    end
+
+    subgraph Storage["存储"]
+        PG[("PostgreSQL<br/>钱包配置")]
+        RC[("Redis<br/>状态/缓存/回溯")]
+    end
+
+    BSC --> EVM1
+    BASE --> EVM2
+    POLYGON --> EVM3
+    SOLANA --> SOL
+
+    EVM1 --> TOPIC_BSC
+    EVM2 --> TOPIC_BASE
+    EVM3 --> TOPIC_POLYGON
+    SOL --> TOPIC_SOL
+
+    RedisScan -.-> EVM1 & EVM2 & EVM3 & SOL
+
+    TOPIC_BSC --> EP1
+    TOPIC_BASE --> EP2
+    TOPIC_POLYGON --> EP2
+    TOPIC_SOL --> SOLP
+
+    EP1 & EP2 & SOLP --> Sub
+    Sub --> BT & TT & LQ & CT & BL
+
+    PG -.-> Parser
+    RC -.-> Scanner & Parser</pre>
+        
+          <a class="article-more-a" href="/2026/05/27/%E5%A4%9A%E9%93%BE%E4%BA%A4%E6%98%93%E8%A7%A3%E6%9E%90%E6%9C%8D%E5%8A%A1-%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">web3</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">go</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">architecture</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">blockchain</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">solana</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">evm</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">kafka</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2026/05/27/%E5%A4%9A%E9%93%BE%E4%BA%A4%E6%98%93%E8%A7%A3%E6%9E%90%E6%9C%8D%E5%8A%A1-%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-CEX中心化交易所技术架构深度解析-从撮合清算到做市系统" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -706,106 +883,6 @@
 
 
   
-    <article id="post-深度相机(3D相机)点云生成" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/03/12/%E6%B7%B1%E5%BA%A6%E7%9B%B8%E6%9C%BA(3D%E7%9B%B8%E6%9C%BA)%E7%82%B9%E4%BA%91%E7%94%9F%E6%88%90/">深度相机(3D相机)点云生成</a>
-    </h1>
-  
-
-        
-        <a href="/2023/03/12/%E6%B7%B1%E5%BA%A6%E7%9B%B8%E6%9C%BA(3D%E7%9B%B8%E6%9C%BA)%E7%82%B9%E4%BA%91%E7%94%9F%E6%88%90/" class="archive-article-date">
-  	<time datetime="2023-03-12T11:55:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-03-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>之前做工业机器人公司搞视觉接触了很多3D相机，这里记录一下这些相机点云的生成，以及各种类型相机的一些基础实现原理。我用过的有单目结构光相机，双目结构光，TOF相机，线扫相机(自研)，多视角相机(自研)。<br>首先深度相机一般畸变都比较小，当然如果自己不放心可以标定看看结果。如果深度相机是自己买模组然后调教生成点云那就一定逃不了校准标定了。</p>
-<h3 id="相机成像原理"><a href="#相机成像原理" class="headerlink" title="相机成像原理"></a>相机成像原理</h3><pre class="mermaid">graph TB
-A[世界坐标系] --> |刚体变换| B[相机坐标系]
-B --> |透视投影| C[理想图像坐标系]
-C --> |畸变矫正| D[真实图像坐标]
-D --> |数字化图像| E[数字化图像坐标系]</pre>
-
-<p>相机的图像有时候会出现<br>修正图像需要相机两种参数：</p>
-<ul>
-<li>相机的内部参数。例如镜头的焦距，光学中心和径向畸变系数。</li>
-<li>外部参数：这是指摄像机相对于某些世界坐标系的方向（旋转和平移）</li>
-</ul>
-<h3 id="相机校准"><a href="#相机校准" class="headerlink" title="相机校准"></a>相机校准</h3><p>OpenCV给出了非常详细的操作步骤可以参考<a target="_blank" rel="noopener" href="https://docs.opencv.org/2.4/doc/tutorials/calib3d/camera_calibration/camera_calibration.html">这里</a>，下载棋盘格去opencv官网如下：<br><img src="http://docs.opencv.org/2.4/_downloads/pattern.png" alt="image">。<br>
-        
-          <a class="article-more-a" href="/2023/03/12/%E6%B7%B1%E5%BA%A6%E7%9B%B8%E6%9C%BA(3D%E7%9B%B8%E6%9C%BA)%E7%82%B9%E4%BA%91%E7%94%9F%E6%88%90/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">点云</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">工业相机</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">深度相机</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">视觉</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2023/03/12/%E6%B7%B1%E5%BA%A6%E7%9B%B8%E6%9C%BA(3D%E7%9B%B8%E6%9C%BA)%E7%82%B9%E4%BA%91%E7%94%9F%E6%88%90/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/3/">Next &amp;raquo;</a>
@@ -853,10 +930,13 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
 
 
 
+	<style>
+	  .mermaid * { text-shadow: none !important; }
+	</style>
 	<script src='https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js'></script>
 	<script>
 	  if (window.mermaid) {
-		mermaid.initialize({ theme: 'forest', startOnLoad: true });
+		mermaid.initialize({ theme: 'neutral', startOnLoad: true });
 	  }
 	</script>
 
@@ -1409,6 +1489,34 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">llm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">api</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ai</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">agent</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tools</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">function-calling</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">memory</a>
               </li>
             
             <div class="clearfix"></div>

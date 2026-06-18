@@ -146,6 +146,139 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-LLM Agent 核心链路：从 DAG 到 MCP 再到记忆系统" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2026/06/18/LLM%20Agent%20%E6%A0%B8%E5%BF%83%E9%93%BE%E8%B7%AF%EF%BC%9A%E4%BB%8E%20DAG%20%E5%88%B0%20MCP%20%E5%86%8D%E5%88%B0%E8%AE%B0%E5%BF%86%E7%B3%BB%E7%BB%9F/">LLM Agent 核心链路：从 DAG 到 MCP 再到记忆系统</a>
+    </h1>
+  
+
+        
+        <a href="/2026/06/18/LLM%20Agent%20%E6%A0%B8%E5%BF%83%E9%93%BE%E8%B7%AF%EF%BC%9A%E4%BB%8E%20DAG%20%E5%88%B0%20MCP%20%E5%86%8D%E5%88%B0%E8%AE%B0%E5%BF%86%E7%B3%BB%E7%BB%9F/" class="archive-article-date">
+  	<time datetime="2026-06-18T12:10:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-06-18</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>一个 LLM Agent，归根结底是四个要素的组合：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Agent = LLM + Prompt + Tool + Memory</span><br></pre></td></tr></table></figure>
+<p>这四个东西拼在一起，就是一个可组装 Pipeline。最基础的形态是<strong>顺序多轮对话</strong>——一步接一步走下去，当前步的输出是下一步的输入。LangChain 就是这个思路的典型代表。</p>
+<p>但是现实任务往往没这么规整。三个分析步骤可以并行跑；查完数据之后，是发邮件还是继续分析，取决于数据的值。这时候你需要一张 <strong>有向无环图（DAG）</strong>——节点是操作，边是依赖，LLM 在节点处做决策。而加上循环和持久化状态，就从 DAG 扩展到了完整的图编排——<strong>LangGraph</strong> 就是这个思路。</p>
+<p>这就是本文要讲的：<strong>从线性 Pipeline 到 DAG，把 Agent 的四个要素拆开，看每一层在 API 层面到底发生了什么。</strong></p>
+<p>我们会先画出 DAG 这张执行蓝图，然后深入 API 的消息协议理解节点间通信，接着给模型注册能力、加上参数校验闭环，再看 MCP 如何把工具集成标准化，最后理解记忆——<strong>记忆的本质就是状态管理</strong>，无论是 LangGraph 的 StateGraph 还是 Agent 的记忆系统，都是在解决同一个问题：跨步骤的数据怎么保持、怎么读取、怎么更新。</p>
+<hr>
+<h2 id="一、从最简单的调用到任务编排"><a href="#一、从最简单的调用到任务编排" class="headerlink" title="一、从最简单的调用到任务编排"></a>一、从最简单的调用到任务编排</h2><h3 id="一次调用就够了？"><a href="#一次调用就够了？" class="headerlink" title="一次调用就够了？"></a>一次调用就够了？</h3><p>先看最基础的用法——问一句答一句：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> reply = <span class="keyword">await</span> openai.<span class="property">chat</span>.<span class="property">completions</span>.<span class="title function_">create</span>(&#123;</span><br><span class="line">  <span class="attr">model</span>: <span class="string">&quot;gpt-4o&quot;</span>,</span><br><span class="line">  <span class="attr">messages</span>: [</span><br><span class="line">    &#123; <span class="attr">role</span>: <span class="string">&quot;user&quot;</span>, <span class="attr">content</span>: <span class="string">&quot;以太坊创始人是谁&quot;</span> &#125;,</span><br><span class="line">  ],</span><br><span class="line">&#125;)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(reply.<span class="property">choices</span>[<span class="number">0</span>].<span class="property">message</span>.<span class="property">content</span>)</span><br><span class="line"><span class="comment">// &quot;以太坊创始人是 Vitalik Buterin...&quot;</span></span><br></pre></td></tr></table></figure>
+<p>简单 Q&amp;A 场景，一次调用够了。但真实需求不会这么乖。假设用户说：</p>
+<blockquote>
+<p>“查一下以太坊最近7天的链上活跃地址趋势，发邮件给我”</p>
+</blockquote>
+<p>这条指令背后需要：</p>
+<ol>
+<li>查 Dune 仪表盘拿到原始数据</li>
+<li>分析数据判断趋势（增长 / 下降 / 震荡）</li>
+<li>写一段分析报告</li>
+<li>调用邮件 API 发送出去</li>
+</ol>
+<p>一个 <code>chat.completions.create</code> 做不到——模型不会帮你查 Dune，不会发邮件。你需要把一个大问题拆成多个步骤，分步执行，再把结果串起来。</p>
+<h3 id="用团队分工来理解"><a href="#用团队分工来理解" class="headerlink" title="用团队分工来理解"></a>用团队分工来理解</h3><p>想象一个项目组接到任务”出一份以太坊近期链上分析报告”：</p>
+<pre class="mermaid">graph LR
+    A[产品定义需求] --> B[研究员拉取基础数据]
+    B --> C[数据分析师<br>量化维度]
+    B --> D[竞品分析师<br>竞争维度]
+    B --> E[用户研究员<br>体验维度]
+    C --> F[报告汇总]
+    D --> F
+    E --> F</pre>
+        
+          <a class="article-more-a" href="/2026/06/18/LLM%20Agent%20%E6%A0%B8%E5%BF%83%E9%93%BE%E8%B7%AF%EF%BC%9A%E4%BB%8E%20DAG%20%E5%88%B0%20MCP%20%E5%86%8D%E5%88%B0%E8%AE%B0%E5%BF%86%E7%B3%BB%E7%BB%9F/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">architecture</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">llm</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">api</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">ai</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">agent</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tools</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">function-calling</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">memory</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2026/06/18/LLM%20Agent%20%E6%A0%B8%E5%BF%83%E9%93%BE%E8%B7%AF%EF%BC%9A%E4%BB%8E%20DAG%20%E5%88%B0%20MCP%20%E5%86%8D%E5%88%B0%E8%AE%B0%E5%BF%86%E7%B3%BB%E7%BB%9F/">查看全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Prediction Market 数据同步服务架构设计与工程实践" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -622,183 +755,6 @@
 
 
   
-    <article id="post-多链交易解析服务-架构设计与工程实践" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2026/05/27/%E5%A4%9A%E9%93%BE%E4%BA%A4%E6%98%93%E8%A7%A3%E6%9E%90%E6%9C%8D%E5%8A%A1-%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/">多链交易解析服务 — 架构设计与工程实践</a>
-    </h1>
-  
-
-        
-        <a href="/2026/05/27/%E5%A4%9A%E9%93%BE%E4%BA%A4%E6%98%93%E8%A7%A3%E6%9E%90%E6%9C%8D%E5%8A%A1-%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/" class="archive-article-date">
-  	<time datetime="2026-05-27T06:10:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-05-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在 Web3 领域,链上交易数据是上层应用的基础。无论是聪明钱追踪、代币数据服务、还是实时 K 线系统,都依赖同一个底层能力:<strong><br>将区块链上的原始交易数据解析成结构化、可消费的业务事件。</strong></p>
-<p>但构建这样的解析层面临几个核心挑战:</p>
-<ul>
-<li><strong>多链异构</strong>:Solana 和 EVM 链(BSC、Base)的区块结构、交易模型、RPC 接口完全不同。Solana 有 Account Model、指令嵌套和 CPI(Cross-Program Invocation);EVM 链有 <code>types.Block</code>、Receipt、Event Log。解析器需要统一这两种范式。</li>
-<li><strong>协议多样性</strong>:仅 Solana 生态就有 Raydium、Meteora、PumpFun、Orca、Pancake 等十几种 DEX 协议,每种协议的指令编码方式(Borsh/自定)和账本结构各不相同。</li>
-<li><strong>实时性要求高</strong>:从区块产生 → 扫链 → 解析 → 发送下游,需要在秒级完成。区块不能积压,解析失败需自动重试。</li>
-<li><strong>可观测性</strong>:生产环境需要监控解析延迟、失败率、Kafka 生产速率、RPC 可用性等指标。</li>
-</ul>
-<p>本文介绍一个用 Golang 构建的生产级多链交易解析服务。该服务已覆盖 Solana、BSC、Base、Polygon 四条链,支持 12+ DEX 协议,每日处理百万级交易。</p>
-<h2 id="一、系统架构"><a href="#一、系统架构" class="headerlink" title="一、系统架构"></a>一、系统架构</h2><h3 id="1-1-整体架构"><a href="#1-1-整体架构" class="headerlink" title="1.1 整体架构"></a>1.1 整体架构</h3><p>整个系统分为两个独立微服务:<strong>Scanner</strong>(扫链)和 <strong>Parser</strong>(解析),通过 Kafka 解耦。<br>另外对于高实时要求的链如Solana会有<strong>GRPC</strong>(监听)，redis里用lua脚本去重存到待解析tx队列，解析都是基于tx，而扫链也会结合ws监听出块已减少rpc请求(rpc节点压力过大性能会下降)。</p>
-<pre class="mermaid">flowchart TB
-    subgraph Blockchain["区块链网络"]
-        BSC["BSC Node"]
-        BASE["Base Node"]
-        POLYGON["Polygon Node"]
-        SOLANA["Solana Node"]
-    end
-
-    subgraph Scanner["Scanner Service"]
-        EVM1["EVM Scanner BSC<br/>轮询 + RLP编码"]
-        EVM2["EVM Scanner Base<br/>轮询 + RLP编码"]
-        EVM3["EVM Scanner Polygon<br/>轮询 + RLP编码"]
-        SOL["Solana Scanner<br/>轮询 + Vote过滤 + 拆分"]
-
-        RedisScan["Redis<br/>扫描状态<br/>最后区块号"]
-    end
-
-    subgraph Kafka["Kafka Message Queue"]
-        TOPIC_BSC["raw_block_BSC"]
-        TOPIC_BASE["raw_block_BASE"]
-        TOPIC_POLYGON["raw_block_POLYGON"]
-        TOPIC_SOL["raw_block_SOLANA"]
-    end
-
-    subgraph Parser["Parser Service"]
-        EP1["EVM Parser BSC<br/>Receipt解析 + ERC20提取 + 并行"]
-        EP2["EVM Parser Base<br/>Receipt解析 + ERC20提取 + 并行"]
-        SOLP["Solana Parser<br/>Plugin 指令解析器<br/>Token → DEX 两阶段"]
-
-        Sub["Submitter<br/>多Topic分发"]
-    end
-
-    subgraph Output["下游 Kafka Topics"]
-        BT["block_topic<br/>完整区块"]
-        TT["transfer_topic<br/>钱包转账"]
-        LQ["liquidity_events<br/>流动性变化"]
-        CT["token_events<br/>代币创建/更新/发射"]
-        BL["balance_topic<br/>余额快照"]
-        TL["trade_events<br/>交易记录/币对创建"]
-    end
-
-    subgraph Storage["存储"]
-        PG[("PostgreSQL<br/>钱包配置")]
-        RC[("Redis<br/>状态/缓存/回溯")]
-    end
-
-    BSC --> EVM1
-    BASE --> EVM2
-    POLYGON --> EVM3
-    SOLANA --> SOL
-
-    EVM1 --> TOPIC_BSC
-    EVM2 --> TOPIC_BASE
-    EVM3 --> TOPIC_POLYGON
-    SOL --> TOPIC_SOL
-
-    RedisScan -.-> EVM1 & EVM2 & EVM3 & SOL
-
-    TOPIC_BSC --> EP1
-    TOPIC_BASE --> EP2
-    TOPIC_POLYGON --> EP2
-    TOPIC_SOL --> SOLP
-
-    EP1 & EP2 & SOLP --> Sub
-    Sub --> BT & TT & LQ & CT & BL
-
-    PG -.-> Parser
-    RC -.-> Scanner & Parser</pre>
-        
-          <a class="article-more-a" href="/2026/05/27/%E5%A4%9A%E9%93%BE%E4%BA%A4%E6%98%93%E8%A7%A3%E6%9E%90%E6%9C%8D%E5%8A%A1-%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">web3</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">go</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">architecture</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">blockchain</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">solana</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">evm</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">kafka</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2026/05/27/%E5%A4%9A%E9%93%BE%E4%BA%A4%E6%98%93%E8%A7%A3%E6%9E%90%E6%9C%8D%E5%8A%A1-%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/">查看全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/">Next &amp;raquo;</a>
@@ -846,10 +802,13 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
 
 
 
+	<style>
+	  .mermaid * { text-shadow: none !important; }
+	</style>
 	<script src='https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js'></script>
 	<script>
 	  if (window.mermaid) {
-		mermaid.initialize({ theme: 'forest', startOnLoad: true });
+		mermaid.initialize({ theme: 'neutral', startOnLoad: true });
 	  }
 	</script>
 
@@ -1402,6 +1361,34 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">llm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">api</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ai</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">agent</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tools</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">function-calling</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">memory</a>
               </li>
             
             <div class="clearfix"></div>
