@@ -21,6 +21,9 @@
 <% } %>
 
 <% if (theme.mermaid.enable) { %>
+	<style>
+	  .mermaid * { text-shadow: none !important; }
+	</style>
 	<script src='https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js'></script>
 	<script>
 	  if (window.mermaid) {
