@@ -473,7 +473,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
 	<style>
 	  .mermaid * { text-shadow: none !important; }
 	  .toc-container.tooltip-left .tooltip-east .tooltip-content {
-	    background: rgba(48,48,48,.96);
+	    background: rgba(48,48,48,.9);
 	    text-shadow: none;
 	    border-radius: 8px;
 	    padding: 8px 16px 8px 20px;
@@ -483,6 +483,40 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
 	  }
 	  .toc-container.tooltip-left .tooltip-east .tooltip-content a:hover {
 	    color: #fff;
+	  }
+	  .share-icons a {
+	    text-shadow: none !important;
+	  }
+	  .toc-container.tooltip-left .tooltip-east .tooltip-content,
+	  .share-btn.tooltip-left .tooltip-east .tooltip-content {
+	    background: rgba(48,48,48,.9) !important;
+	    text-shadow: none !important;
+	  }
+	  .tooltip-left .tooltip:hover a.share-outer {
+	    background: rgba(48,48,48,.7) !important;
+	  }
+	  .toc-container.tooltip-left:hover,
+	  .jump-container:hover .icon-back {
+	    background: rgba(48,48,48,.7) !important;
+	  }
+	  .mod-side-operation__jump-to-top .icon-back:hover {
+	    background: rgba(48,48,48,.7) !important;
+	    color: #fff !important;
+	  }
+	  .toc-container.tooltip-left .tooltip-east .tooltip-content::after,
+	  .share-btn.tooltip-left .tooltip-east .tooltip-content::after {
+	    content: "";
+	    width: 2em;
+	    height: 2em;
+	    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath fill='rgba(48,48,48,0.9)' d='M80,0c0,0-5.631,14.445-25.715,27.213C29.946,42.688,12.79,33.997,3.752,30.417c-3.956-1.567-4.265,1.021-2.966,3.814C16.45,67.934,80,79.614,80,79.614l0,0V0z'/%3E%3C/svg%3E") no-repeat center center;
+	    background-size: 100%;
+	    position: absolute;
+	    left: 99% !important;
+	    transform: scaleX(-1);
+	  }
+	  .toc-container.tooltip-left .tooltip-east .tooltip-content::after {
+	    top: auto !important;
+	    bottom: 23px !important;
 	  }
 	</style>
 	<script src='https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js'></script>
